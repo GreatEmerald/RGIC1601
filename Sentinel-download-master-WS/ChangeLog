@@ -1,0 +1,379 @@
+commit 29c96d59ba3f3b833e7abc32dca18b058e2de707 (HEAD, tag: release-1.23.0)
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Update NEWS
+
+commit a37e8fecddec02128401d288e0fec79d59158a60
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Update Android third-party library
+
+commit 724d036b3a5198bcacc0c897b56bd07b782d3677
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Update bash_completion
+
+commit 9d41f159cd0ac69847ee4a3f5762a86755e41ef2
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Bump up version number to 1.23.0
+
+commit d821cb3133a2199ab6711be24a4e224831ae3700
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Update AUTHORS
+
+commit 2449ee6a760a1857100ff2210e739baf8a4899a4
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-14
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Simplify cache write
+    
+    The previous cache write routine was too complex.  I'm sure I can
+    rewrite it to more elegantly.  But the primary motivation of this
+    complex logic is for disk activity reduction on Windows 7, and I
+    observed it on my old IDE disk.  I checked it again recently, and
+    there is no difference between with and without this complex logic.
+    For this reason, it was removed.  Will revert this change if many of
+    users are not happy with this.
+
+commit bafbbe7c1d5ea39e67e233f9c32975fda7843874
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Allow subsecond value in ns cookie.txt file's expiry time field
+
+commit 6976ffed9e96ccc70f161aa5a38abddaf9d9befe
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-15
+
+    Adjust chromium cookie time
+
+commit 3443349fc3ea9b99a796bf4f2835950f75de729a
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-14
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-14
+
+    Refactor
+
+commit 566cac5023b665662d69a8840a3bb22fa8626f1e
+Merge: ef9ab6c c5b83fe
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-12
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-12
+
+    Merge pull request #646 from Arthur2e5/patch-1
+    
+    import-po: iterate on glob, not ls output
+
+commit ef9ab6c534e48274e0a8039bfb5d9188126fa460
+Merge: e174b90 c140a52
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-12
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-12
+
+    Merge pull request #647 from Arthur2e5/patch-2
+    
+    po/README: deflate -> inflate
+
+commit c140a5246864468730d479a15109d6d1ad7c7ac0
+Author:     Mingye Wang <arthur200126@gmail.com>
+AuthorDate: 2016-05-07
+Commit:     Mingye Wang <arthur200126@gmail.com>
+CommitDate: 2016-05-07
+
+    po/README: deflate -> inflate
+
+commit c5b83fed361b91d0f3356557e53a60ca2df48e43
+Author:     Mingye Wang <arthur200126@gmail.com>
+AuthorDate: 2016-05-07
+Commit:     Mingye Wang <arthur200126@gmail.com>
+CommitDate: 2016-05-07
+
+    import-po: iterate on glob, not ls output
+
+commit e174b90ff22d9e467a169069bb9c1cbe0df50147
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-05-02
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-05-02
+
+    Fix compile error
+
+commit 7c336766589040c6e7dbb08a6263b5f6b6494d6d
+Merge: 94a45bf 47c5377
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-29
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-29
+
+    Merge pull request #641 from ITriskTI/patch-1
+    
+    Update aria2c.rst
+
+commit 47c5377fc943ae51f56331e2ad841d5c2ac4ee7f
+Author:     ITriskTI <ITriskTI@gmail.com>
+AuthorDate: 2016-04-29
+Commit:     ITriskTI <ITriskTI@gmail.com>
+CommitDate: 2016-04-29
+
+    Update aria2c.rst
+
+commit 94a45bfbfcd4a4bc2f2e2ae668dd7f96a5696e55
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-27
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-27
+
+    Documented new options
+
+commit db239c2853cb2982260be39a521fb5672c7e8245
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-27
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-27
+
+    Add --stderr option to redirect all stdout log output to stderr
+
+commit aa863fa4d11e93f8363e70cda0e558776485a7b9
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-26
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-26
+
+    Add "hide" to --download-result option
+
+commit 3c637fa3d5436c6e6fd7115dc08d69844b15358f
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-23
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-23
+
+    Fix downloaded metaurl torrent filename
+
+commit 1ce6ac0b238b653d9b49a1c9f913d08db2b74c69
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-23
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-23
+
+    Add error handling for sigaction, signal and strdup
+
+commit b316b2cec5ac3bc2d584e2545c0b9a32a330cfe1
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-21
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-21
+
+    clang-format
+
+commit aab24723904bf999f1a73ec6fed70cb331eeff43
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-21
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-21
+
+    Remove trailing "." from SAN and CN
+
+commit 3bb294643763a1b83e98556c4158963276e3546a
+Merge: af107b8 cf4a176
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-20
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-20
+
+    Merge pull request #632 from ReadmeCritic/master
+    
+    Update README URLs based on HTTP redirects
+
+commit af107b85c7df9fa7553d347188a6135d301642b9
+Merge: afccc90 cefea5d
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-20
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-20
+
+    Merge branch 'RoToRx88-master'
+
+commit cefea5db5acc3f2f7268de394f4bac2b5945998e
+Author:     rotor <you@example.com>
+AuthorDate: 2016-04-19
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-20
+
+    Add a little bit of color to have a better visual of important informations
+
+commit cf4a1762d0fc9f7c05b10ae69539d60339b6efe1
+Author:     ReadmeCritic <frankensteinbot@gmail.com>
+AuthorDate: 2016-04-19
+Commit:     ReadmeCritic <frankensteinbot@gmail.com>
+CommitDate: 2016-04-19
+
+    Update README URLs based on HTTP redirects
+
+commit afccc903b9b42c657994d343026b8d1a82cd9e7a
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-18
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-18
+
+    Include gmp 6.1.0 patch
+
+commit e8bd019570d031befc9f9e59759d59687755dc68
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-18
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-18
+
+    Relocate from github.com/tatsuhiro-t/aria2 to github.com/aria2/aria2
+
+commit d7391f9e0d22a7bf2bb34cd1d01df63c43dbc07f
+Merge: 1126722 3a6f39c
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-18
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-18
+
+    Merge pull request #629 from ITriskTI/patch-1
+    
+    Update aria2c.rst
+
+commit 1126722bd3e21dec8ecc84b9129c8998ac2bb661
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-18
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-18
+
+    mingw: Defer the falloc warning until falloc is specified by option
+
+commit 3a6f39ca7a1e0b6946c4c72f7fa37dbe6c382121
+Author:     ITriskTI <ITriskTI@gmail.com>
+AuthorDate: 2016-04-18
+Commit:     ITriskTI <ITriskTI@gmail.com>
+CommitDate: 2016-04-18
+
+    Update aria2c.rst
+
+commit c9e2223741f9627f27b3d2befef48acdd79d504d
+Merge: 79298da ca634a8
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-17
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-17
+
+    Merge branch 'add-btkey-to-completed'
+
+commit ca634a82bde8764681a0abbedb38a23222dde608
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-17
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-17
+
+    Add bittorrent key to aria2.tellStopped status
+
+commit 79298daf5feff76e2f7739e37c9f853d722afc94
+Merge: 7105ce3 7f2f83c
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-16
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-16
+
+    Merge branch 'kkartaltepe-RpcTellStatus-Hashing'
+
+commit 7f2f83c6fb30492196573dc75d0170fd1f6a1d84
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-16
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-16
+
+    Document verifiedLength and verifiedIntegrityPending keys in the manual
+
+commit 2e0e8ed0e5722de51a30885d4a4f164deeb842a7
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-15
+
+    Amend
+
+commit 302bdfd9a0d5b199f8dffa323b5b29fe7ca2745b
+Merge: 7105ce3 2417225
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-15
+
+    Merge branch 'RpcTellStatus-Hashing' of https://github.com/kkartaltepe/aria2 into kkartaltepe-RpcTellStatus-Hashing
+
+commit 7105ce31f232b895e859a612ab8f1a551b12ea2a
+Merge: 437d4aa 8fc28a9
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-15
+
+    Merge branch 'sonnyp-system.listNotifications'
+
+commit 8fc28a9e4381ac4317d0536919c6e8d56f91687c
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-15
+
+    clang-format
+
+commit cf1dd06d034cc02eea1e8ff65bd602902be37ac8
+Merge: 437d4aa d3f16a5
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2016-04-15
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2016-04-15
+
+    Merge branch 'system.listNotifications' of https://github.com/sonnyp/aria2 into sonnyp-system.listNotifications
+
+commit d3f16a5711f6d4131c13f548efd3d22d9fac7952
+Author:     Sonny Piers <sonny@fastmail.net>
+AuthorDate: 2016-04-08
+Commit:     Sonny Piers <sonny@fastmail.net>
+CommitDate: 2016-04-08
+
+    system.listNotifications RPC method
+
+commit 2417225023d1bc94d994a639c7251ec6aa588f5f
+Author:     Kurt Kartaltepe <kkartalepe@gmail.com>
+AuthorDate: 2016-03-16
+Commit:     Kurt Kartaltepe <kkartalepe@gmail.com>
+CommitDate: 2016-03-22
+
+    Report CheckIntegrity info in tellStatus
+    
+    - Adds verifiedLength to tellStatus. Reports the length of data that has
+    been verified of the current RequestGroup being verified.
+    - Adds verifyPending to tellStatus. Reports if the RequestGroup has a
+    verification of integrity pending.
+    
+    Closes #561
