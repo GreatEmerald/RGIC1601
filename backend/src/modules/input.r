@@ -16,8 +16,8 @@
 
 #### Required libraries ####
 
-library(rgdal)
-
+library(raster)
+# Might require rgdal too
 
 ## Function for importing spatial files into the backend, using GDAL
 #
@@ -35,10 +35,26 @@ library(rgdal)
 #   Prints an error() and returns NA
 #
 # Returns:
-#   A (multiband) SpatialGridDataFrame object containing the input raster,
+#   A RasterBrick object containing the input raster (may be multiband),
 #   stacked into one if there were multiple input files.
 
-Input = function(filename = "../data/input.tif")
+Input = function(filename = file.path("..", "data", "input.tif"))
 {
-
+    for (file in filename)
+    {
+        if (!file.exists(file))
+        {
+            error(paste("Input: No file(s) with the name", file))
+            return(NA)
+        }
+    }
+    
+    if (length(filename) > 1)
+    {
+        RS = stack(filename)
+        return(brick(RS))
+    }
+    
+    RB = brick(filename)
+    return(RB)
 }

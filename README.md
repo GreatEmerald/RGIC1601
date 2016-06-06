@@ -1,2 +1,4 @@
 # RGIC1601
-Repository for the Remote Sensing and GIS Integration course team
+A tool for creating agriculture management zones out of UAV or airborne imagery
+for use in the field by farmers ("backend"), and an app for visualising said
+zones ("frontend").
