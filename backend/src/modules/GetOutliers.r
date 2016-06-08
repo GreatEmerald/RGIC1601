@@ -17,7 +17,7 @@
 #### Required libraries ####
 
 library(raster)
-# Might require rgdal too
+#library(rgdal)
 
 ## Function for detecting outliers in a single band rater file, using GDAL
 #
