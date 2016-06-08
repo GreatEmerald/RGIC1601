@@ -1,5 +1,5 @@
 # Main script for the backend of the management zone generation tool
-# Copyright (C) 2016 Dainius Masiliunas
+# Copyright (C) 2016 Dainius Masiliunas, William Schuch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,12 @@
 #### Import modules ####
 
 source(modules/input.r)
+source(modules/GetOutliers.r)
 
 #### Main script ####
 
 InputImage = Input()
+
+
+
+SingleBandImageToOutlierPoints = GetOutliers()
