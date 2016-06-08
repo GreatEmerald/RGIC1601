@@ -19,13 +19,15 @@
 
 #### Import modules ####
 
-source(modules/input.r)
-source(modules/GetOutliers.r)
+source("modules/input.r")
+source("modules/GetOutliers.r")
 
 #### Main script ####
 
-InputImage = Input()
-
-
+InputImageCumulative = Input()
+InputImage = Input(c("../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif",
+    "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif",
+    "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif",
+    "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif"), bands=c(1,3,5,7))
 
 SingleBandImageToOutlierPoints = GetOutliers()
