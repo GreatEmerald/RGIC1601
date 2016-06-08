@@ -32,7 +32,7 @@ library(raster)
 #   Input files
 #
 # On violation:
-#   Prints an error with stop() and returns NA
+#   Prints an error with stop()
 #
 # Returns:
 #   A RasterBrick object containing the input raster (may be multiband),
@@ -41,13 +41,8 @@ library(raster)
 Input = function(filename = file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"), ...)
 {
     for (file in filename)
-    {
         if (!file.exists(file))
-        {
             stop(paste("Input: No file(s) with the name", file))
-            return(NA)
-        }
-    }
     
     if (length(filename) > 1)
     {
