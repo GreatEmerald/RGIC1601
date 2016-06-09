@@ -42,9 +42,10 @@ library(rgdal)
 #   On voilation: Input raster file 
 
 #### main.r #####
-obj = raster(file.path("..","..","data","2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
-method = "kMeans"
-        
+#setwd("/home/grathee/Documents/RGIC01/backend/src/modules")
+#obj = raster(file.path("..","..","data","2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+#method = "kMeans"
+
 ClassifyToZones = function(obj, method, zones_count = 3)
 {   
     if (method != "kMeans")
@@ -61,12 +62,13 @@ ClassifyToZones = function(obj, method, zones_count = 3)
         rNA = getValues(rNA)
         
         valueTable = as.data.frame(valueTable)
-        valueTable$zone[rNA == 1] = NAvalue
+        valueTable[rNA == 1,] = NA
+        valueTable[rNA == 0,] = km$cluster
         
         Zones = raster(obj)
-        Zones = setValues(Zones, valueTable$zone)
+        Zones = setValues(Zones, valueTable[[1]])
         return(Zones)
     }
 }
 
-#ClassifiedZones = ClassifyToZones(obj, method, zones_count)
+#ClassifiedZones = ClassifyToZones(obj, method)
