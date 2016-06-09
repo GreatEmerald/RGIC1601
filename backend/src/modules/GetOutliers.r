@@ -21,10 +21,12 @@ library(rgdal)
 ## Function for detecting outliers in a single band rater file, using GDAL
 #
 # Arguments:
-#   raster_in:
+#   rast_in:
 #       character string: RasterLayer to use as input. Must be a format handled by GDAL.
 #       character vector: RasterLayer to use as input, single-band.
 #           Must be a format handled by GDAL.
+#   Q:
+#       character string: Quantile for outlier. 
 #
 # Maintains:
 #   (Environment)
@@ -41,33 +43,35 @@ library(rgdal)
 #ls() ## no objects left in the workspace
 #start.time = Sys.time()
 
-GetOutliers = function(filename = file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
-{
-  for (file in filename)
-    {
-    if (!file.exists(file))
-    {
-      error(paste("Input: No file(s) with the name", file))
-      return(NA)
-      }
-    }
-  
-  if (nbands(filename) < 2)
-    {
-    error(paste("Input:", file, "is not a single-band image."))
-    return(NA)
-    #image1 = raster(filename)
-    #return(raster(image1))
-    }
-  RB = brick(filename)
-  return(RB)
-}
 
 getwd()
-WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
+#WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
 WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
-WSS = stack(WS)
-WSB = brick(WS)
+#WSS = stack(WS)
+#WSB = brick(WS)
+
+# INTO THE FUNCTION
+GetOutliers = function(rast_in, Q)
+{
+  if (nbands(rast_in) > 1)
+  {
+    stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
+    return(NA)
+  }
+  
+  else
+  {
+    quantiles = quantile(rast_in, c(Q,1-Q))
+    Vec = rasterToPoints(rast_in, fun=function(x){x>quantiles[[2]] | x<quantiles[[1]]}, spatial=TRUE)
+    #plot(Vec)
+    return(quantiles)
+  }
+  #plot(Vec)
+}
+GetOutliers(WS,0.001)
+
+
+### PREVIOUS CULCULATIONS (no functions) ###
 
 # Check if input (RasterLayer/RasterStack/RasterBrick) is singe-banded:
   if (nbands(WS) > 1)
@@ -109,63 +113,18 @@ plot(WS_outliers_max)
 plot(Vec)
 plot(WS)
 
-# INTO THE FUNCTION
-#GetOutliers = function(raster_in = file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
-GetOutliers = function(rast_in, q1, q2)
-{
-  if (nbands(rast_in) > 1)
-  {
-    stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
-    return(NA)
-  }
-  if (nbands(rast_in) = 1)
-  {
-    SS = quantile(rast_in, c(q1,q2))
-    return(SS)
-  }
-}
-GetOutliers(WS,0.001,0.999)
-
-
-#GetOutliers = function(filename = file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
-GetOutliers = function(rast_in) #add quantiles
-{
-  for (file in rast_in)
-  {
-    if (!file.exists(file))
-    {
-      error(paste("Input: No file(s) with the name", file))
-      return(NA)
-    }
-  }
-  
-  if (nbands(rast_in) < 2)
-  {
-    error(paste("Input:", file, "is not a single-band image."))
-    return(NA)
-    #image1 = raster(filename)
-    #return(raster(image1))
-  }
-  RB = brick(rast_in)
-  return(RB)
-}
 
 
 
 
-GetOutliers(WS)
 
 
 
-Vec = rasterToPoints(WS, fun=function(x){x>1.0}, spatial=TRUE)
-
-plot(Vec)
 
 
-Vec = na.omit(all.data@data)
 
-Vec.SP = SpatialPointsDataFrame(Vec, proj4string = prj_string_RD, data = Vec@coords)
-str(dataMap.SP) # Now is class SpatialPointsDataFrame
+
+
 
 # reproject
 prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555
