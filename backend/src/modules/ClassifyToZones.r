@@ -25,10 +25,9 @@ library(rgdal)
 #   Method:
 #       K-Means
 #   Object:
-#       Raster brick
-#       Single Band-Image
+#       Single Band-Image Raster Object
 #   Number of zones:
-#       A default number when there is no input
+#       A default number (3) when there is no input
 #   Additional argument: (recommended for saving memory space)
 #       File name, raster object will be written on this file
 #
