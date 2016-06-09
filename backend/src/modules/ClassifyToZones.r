@@ -41,11 +41,6 @@ library(rgdal)
 #   Raster object with management zones with file saved in the output directory 
 #   On voilation: Input raster file 
 
-#### main.r #####
-#setwd("/home/grathee/Documents/RGIC01/backend/src/modules")
-#obj = raster(file.path("..","..","data","2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
-#method = "kMeans"
-
 ClassifyToZones = function(obj, method, zones_count = 3)
 {   
     if (method != "kMeans")
@@ -55,7 +50,7 @@ ClassifyToZones = function(obj, method, zones_count = 3)
     else
     {
         valueTable = getValues(obj)
-        km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 100, nstart = 10)
+        km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
 
         
         rNA = setValues(raster(obj), 0)
