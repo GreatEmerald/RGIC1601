@@ -23,18 +23,25 @@ source("modules/input.r")
 #source("modules/GetOutliers.r")
 source("modules/ClassifyToZones.r")
 
+#### Input variables ####
+
+InputFiles = "../data/2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"
+ZoneRasterFilename = file.path("..", "output", "CumulativeSamplingLocations.grd")
+
 #### Main script ####
 
-InputImageCumulative = Input()
+InputImageCumulative = Input(InputFiles)
 InputImage = Input(c("../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif",
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif",
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif",
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif"), bands=c(1,3,5,7))
-
-CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans", filename=file.path("..", "output", "CumulativeSamplingLocations.grd"), datatype="INT1S")
-
+    
+if (!file.exists(ZoneRasterFilename))
+{
+    CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans", filename=ZoneRasterFilename, datatype="INT1S")
+} else
+    CumulativeManagementZones = raster(ZoneRasterFilename)
+    
 CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones)
-
-#CumulativeSamplingLocations = clhs(CumulativeManagementZones, 20)
 
 #SingleBandImageToOutlierPoints = GetOutliers()
