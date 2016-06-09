@@ -15,49 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #### Required libraries ####
-library(sp)
-library(rgdal)
 
-## load Raster zone map
-Project_dir = getwd()
-filename = "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"
-# test
-filename = "Test_area.tif"
-Field_map_dir = file.path(Project_dir,"backend","data",filename)
-
-
-## Representive sampling location calculate formula
-Field_raster = Input(Field_map_dir)[[1]]
-point <- rasterToPoints(Field_raster)
-hist()
-
-
-
-###size_num = 20
-###iteration_mum = 10000
-
-
-samples = clhs(Field_raster,size = size_num )
-spplot(samples)
-
-
-
-#Get sampling location of one category
-
-
-
-
-
-#Get sampling locationn of multiple categories
-
-
-
-
-
-# export sampling number and coordinate to csv
-
-
-
-
-
+#
+#
+#
+#
+#
+#
+#
+#
 

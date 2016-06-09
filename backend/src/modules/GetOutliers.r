@@ -17,6 +17,7 @@
 #### Required libraries ####
 library(raster)
 library(rgdal)
+library(sp)
 
 ## Function for detecting outliers in a single band rater file, using GDAL
 #
@@ -45,8 +46,8 @@ library(rgdal)
 
 
 getwd()
-#WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
-WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
+#WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
 #WSS = stack(WS)
 #WSB = brick(WS)
 
@@ -56,19 +57,27 @@ GetOutliers = function(rast_in, Q)
   if (nbands(rast_in) > 1)
   {
     stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
-    return(NA)
   }
   
-  else
-  {
-    quantiles = quantile(rast_in, c(Q,1-Q))
-    Vec = rasterToPoints(rast_in, fun=function(x){x>quantiles[[2]] | x<quantiles[[1]]}, spatial=TRUE)
-    #plot(Vec)
-    return(quantiles)
-  }
-  #plot(Vec)
+
+  quantiles = quantile(rast_in, c(Q,1-Q))
+  Vec = rasterToPoints(rast_in, fun=function(x){x>quantiles[[2]] | x<quantiles[[1]]}, spatial=TRUE)
+  #spplot(rast_in, sp.layout=list(Vec))
+  
+  return(list(rast_in, quantiles, Vec))
+  
 }
-GetOutliers(WS,0.001)
+GetOutl = GetOutliers(WS,0.001)
+
+SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
+       xlab = "X", ylab = "Y",
+       ol.regions = rainbow(99, start=.1),
+       sp.layout = c('sp.points', GetOutl[[3]], col='red', pch=16))
+
+SPplotWS
+
+
+
 
 
 ### PREVIOUS CULCULATIONS (no functions) ###
@@ -92,7 +101,7 @@ GetOutliers(WS,0.001)
   }
 
 #plot a histogram
-hist(WSS, maxpixels=1000000, plot=TRUE, freq=TRUE, breaks=200)
+hist(WS, maxpixels=1000000, plot=TRUE, freq=TRUE, breaks=200)
 
 #calculate values to detect outliers
 WSmean = cellStats(WS,mean)
