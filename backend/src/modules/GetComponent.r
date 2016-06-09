@@ -17,20 +17,15 @@
 #### Required libraries ####
 
 library(raster)
-library(rgdal)
+library("RStoolbox")
 
 #### Classify an input raster into management zones ####
 
 # Arguments:
-#   Method:
-#       K-Means
 #   Object:
 #       Raster brick
-#       Single Band-Image
-#   Number of zones:
-#       A default number when there is no input
 #   Additional argument: (recommended for saving memory space)
-#       File name, raster object will be written on this file
+#       ?
 #
 # Maintains:
 #   Environment
@@ -40,4 +35,20 @@ library(rgdal)
 #   stop()
 #
 # Returns:
-#   Raster object with management zones with file saved in the output directory 
+#   Raster single-band layer object; the layer will be the first principle component of the input brick
+
+GetComponent = function(in_brick)
+{
+   in_data = getValues(in_brick)
+   
+   # scale=T save scaling applied to each variable, Center = T, save means that were subtracted, retx=F don't save PCA scores
+   brick.pca = prcomp(na.omit(in_data), center = T, scale = T, retx = T)
+   data.pca = predict(brick.pca, na.omit(in_data))
+   
+   out_raster = raster(in_brick)
+   out_raster = setValues(data.pca[1])
+   
+   return(out_raster)
+}
+
+#GetComponent()
