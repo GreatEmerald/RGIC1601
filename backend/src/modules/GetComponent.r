@@ -25,9 +25,10 @@ library(rgdal)
 #   Method:
 #       K-Means
 #   Object:
-#       Single Band-Image Raster Object
+#       Raster brick
+#       Single Band-Image
 #   Number of zones:
-#       A default number (3) when there is no input
+#       A default number when there is no input
 #   Additional argument: (recommended for saving memory space)
 #       File name, raster object will be written on this file
 #
@@ -40,35 +41,3 @@ library(rgdal)
 #
 # Returns:
 #   Raster object with management zones with file saved in the output directory 
-
-
-ClassifyToZones = function(obj, method, zones_count = 3, ...)
-{   
-    if (method != "kMeans")
-    {
-        stop("Fatal: System can not handle this method\n Try kMeans!")
-    }
-    else
-    {
-        valueTable = getValues(obj)
-        km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
-
-        
-        rNA = setValues(raster(obj), 0)
-        rNA[is.na(obj)] = 1
-        rNA = getValues(rNA)
-        
-        valueTable = as.data.frame(valueTable)
-        valueTable[rNA == 1,] = NA
-        valueTable[rNA == 0,] = km$cluster
-        
-        Zones = raster(obj)
-        Zones = setValues(Zones, valueTable[[1]])
-        Zones = writeRaster(Zones, ...)
-        return(Zones)
-    }
-}
-
-
-#ClassifiedZones = ClassifyToZones(obj, method)
-
