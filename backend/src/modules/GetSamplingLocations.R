@@ -18,10 +18,10 @@
 library(sp)
 library(rgdal)
 ###
+# This function only return the central point coordinate of one raster object
+# as dataframe
+#
 # 
-#
-#
-#
 #
 #
 #
@@ -65,22 +65,22 @@ spsample(Zone_extent, num_sample, type="random" )
 
 
 
-### Return sampling number and coordinates 
-Zone_code = 1
-Point_matrix = c()
-point = c(Zone_code, GetCentralSampleLoc(Field_raster))
-Point_matrix = rbind(Point_matrix,point)
+### Return sampling number and coordinates
+GetSamplingLocations = function(Input = Field_raster,Zone_code = 1) {
 
+Point_matrix = c()
+point = c(Zone_code, GetCentralSampleLoc(Input))
+Point_matrix = rbind(Point_matrix,point)
 
 # transform to spatial points
 prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
-
 points.df = as.data.frame(Point_matrix)
-
 names(points.df) = c("ZoneCode","x","y")
-coordinates(points.df) <- ~x + y
-proj4string(points.df) <- prj_string_WGS84
+# coordinates(points.df) <- ~x + y
+# proj4string(points.df) <- prj_string_WGS84
 
+return(points.df)
+}
 
 
 
