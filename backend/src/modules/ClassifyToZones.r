@@ -19,8 +19,8 @@
 library(raster)
 library(rgdal)
 
-## Classify an input raster into management zones
-#
+#### Classify an input raster into management zones ####
+
 # Arguments:
 #   Method:
 #       K-Means
@@ -29,6 +29,8 @@ library(rgdal)
 #       Single Band-Image
 #   Number of zones:
 #       A default number when there is no input
+#   Additional argument: (recommended for saving memory space)
+#       File name, raster object will be written on this file
 #
 # Maintains:
 #   Environment
@@ -39,9 +41,9 @@ library(rgdal)
 #
 # Returns:
 #   Raster object with management zones with file saved in the output directory 
-#   On voilation: Input raster file 
 
-ClassifyToZones = function(obj, method, zones_count = 3)
+
+ClassifyToZones = function(obj, method, zones_count = 3, ...)
 {   
     if (method != "kMeans")
     {
@@ -63,6 +65,7 @@ ClassifyToZones = function(obj, method, zones_count = 3)
         
         Zones = raster(obj)
         Zones = setValues(Zones, valueTable[[1]])
+        Zones = writeRaster(Zones, ...)
         return(Zones)
     }
 }
