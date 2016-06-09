@@ -20,7 +20,8 @@
 #### Import modules ####
 
 source("modules/input.r")
-source("modules/GetOutliers.r")
+#source("modules/GetOutliers.r")
+source("modules/ClassifyToZones.r")
 
 #### Main script ####
 
@@ -30,4 +31,10 @@ InputImage = Input(c("../data/2016-04-03_bert_boerma_kale_grond_transparent_refl
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif",
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif"), bands=c(1,3,5,7))
 
-SingleBandImageToOutlierPoints = GetOutliers()
+CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans")
+
+CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones, filename=file.path("output", "CumulativeSamplingLocations.grd"), datatype="INT1S")
+
+#CumulativeSamplingLocations = clhs(CumulativeManagementZones, 20)
+
+#SingleBandImageToOutlierPoints = GetOutliers()
