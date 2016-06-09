@@ -17,45 +17,69 @@
 #### Required libraries ####
 library(sp)
 library(rgdal)
+###
+# 
+#
+#
+#
+#
+#
+#
+#
 
-## load Raster zone map
+
+
+
+
+### load Raster zone map
 Project_dir = getwd()
+Project_dir = file.path(Project_dir,"backend")
 filename = "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"
-# test
+# test map
 filename = "Test_area.tif"
-Field_map_dir = file.path(Project_dir,"backend","data",filename)
-
-
-## Representive sampling location calculate formula
+Field_map_dir = file.path(Project_dir,"data",filename)
 Field_raster = Input(Field_map_dir)[[1]]
-point <- rasterToPoints(Field_raster)
-hist()
+spplot(Field_raster)
+source(file.path(Project_dir,"src","modules","input.r"))
+
+
+### Get sampling location of one category
+# Sampling location central of area
+GetCentralSampleLoc <- function(Fieldraster){
+  Zone_extent = extent(Zone_extent)
+  central_x = mean(Zone_extent@xmin,Zone_extent@xmax)
+  central_y = mean(Zone_extent@ymin,Zone_extent@ymax)
+  return(c(central_x,central_y))
+}
+
+# testing
+GetCentralSampleLoc(Field_raster)
+
+
+# Random Sampling location (didn't finish yet)
+num_sample = 20
+spsample(Zone_extent, num_sample, type="random" )
+
+### Get sampling locationn of multiple categories
 
 
 
-###size_num = 20
-###iteration_mum = 10000
+
+### Return sampling number and coordinates 
+Zone_code = 1
+Point_matrix = c()
+point = c(Zone_code, GetCentralSampleLoc(Field_raster))
+Point_matrix = rbind(Point_matrix,point)
 
 
-samples = clhs(Field_raster,size = size_num )
-spplot(samples)
+# transform to spatial points
+prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
 
+points.df = as.data.frame(Point_matrix)
 
-
-#Get sampling location of one category
-
-
-
-
-
-#Get sampling locationn of multiple categories
-
-
-
-
-
-# export sampling number and coordinate to csv
-
+names(points.df) = c("ZoneCode","x","y")
+coordinates(points.df) <- ~x + y
+proj4string(points.df) <- prj_string_WGS84
 
 
 
