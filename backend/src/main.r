@@ -31,9 +31,9 @@ InputImage = Input(c("../data/2016-04-03_bert_boerma_kale_grond_transparent_refl
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif",
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif"), bands=c(1,3,5,7))
 
-CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans")
+CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans", filename=file.path("..", "output", "CumulativeSamplingLocations.grd"), datatype="INT1S")
 
-CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones, filename=file.path("output", "CumulativeSamplingLocations.grd"), datatype="INT1S")
+CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones)
 
 #CumulativeSamplingLocations = clhs(CumulativeManagementZones, 20)
 
