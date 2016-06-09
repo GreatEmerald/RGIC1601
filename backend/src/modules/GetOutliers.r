@@ -18,6 +18,9 @@
 library(raster)
 library(rgdal)
 library(sp)
+library(spatstat)
+library(maptools)
+library(rgeos)
 
 ## Function for detecting outliers in a single band rater file, using GDAL
 #
@@ -46,8 +49,8 @@ library(sp)
 
 
 getwd()
-WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
-#WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+#WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
+WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
 #WSS = stack(WS)
 #WSB = brick(WS)
 
@@ -64,21 +67,81 @@ GetOutliers = function(rast_in, Q)
   Vec = rasterToPoints(rast_in, fun=function(x){x>quantiles[[2]] | x<quantiles[[1]]}, spatial=TRUE)
   #spplot(rast_in, sp.layout=list(Vec))
   
-  return(list(rast_in, quantiles, Vec))
+  sSp = as(Vec, "ppp")  # convert points to pp class
+  Dens = density(sSp, adjust = 0.1)  # create density object
+  Dsg = as(Dens, "SpatialGridDataFrame")  # convert to spatial grid class
+  Dim = as.image.SpatialGridDataFrame(Dsg)  # convert again to an image
+  Dcl = contourLines(Dim, nlevels = 8)  # create contour object - change 8 for more/fewer levels
+  SLDF = ContourLines2SLDF(Dcl)  # convert to SpatialLinesDataFrame
+  Polyclust = gPolygonize(SLDF[5, ])
+  gas = gArea(Polyclust, byid = T)/10000
+  Polyclust = SpatialPolygonsDataFrame(Polyclust, data = data.frame(gas), match.ID = F)
+  centroids = getSpPPolygonsLabptSlots(Polyclust)
+  centroidsDF = as.data.frame(centroids)
+  centroidsSPDF = SpatialPointsDataFrame(centroidsDF, data = data.frame(gas))
   
+  return(list(rast_in, quantiles, Vec, Polyclust, centroidsSPDF))
 }
-GetOutl = GetOutliers(WS,0.001)
+GetOutl = GetOutliers(WS,0.01)
+spplot(GetOutl[[4]])
 
 SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
        xlab = "X", ylab = "Y",
        ol.regions = rainbow(99, start=.1),
-       sp.layout = c('sp.points', GetOutl[[3]], col='red', pch=16))
+       sp.layout = c('sp.points', GetOutl[[5]], col='red', pch=16))
 
 SPplotWS
 
+sSp = as(GetOutl[[3]], "ppp")  # convert points to pp class
+Dens = density(sSp, adjust = 0.1)  # create density object
+class(Dens)  # just for interest: it's got it's of pixel image class
+plot(Dens)  # default plot for density
+
+Dsg = as(Dens, "SpatialGridDataFrame")  # convert to spatial grid class
+SPplotDens = spplot(Dsg, scales = list(draw = TRUE),
+                  xlab = "X", ylab = "Y",
+                  ol.regions = rainbow(99, start=.1) ,
+                  sp.layout = c('sp.points', GetOutl[[3]], col='red', pch=16))
+SPplotDens
+
+contour(density(sSp, adjust = 0.2), nlevels = 4)  # plot as contours - this is where we're heading
+
+Dim <- as.image.SpatialGridDataFrame(Dsg)  # convert again to an image
+Dcl <- contourLines(Dim, nlevels = 8)  # create contour object - change 8 for more/fewer levels
+SLDF <- ContourLines2SLDF(Dcl)  # convert to SpatialLinesDataFrame
+plot(SLDF, col = terrain.colors(8))
+SPplotCont = spplot(SLDF, scales = list(draw = TRUE),
+                    xlab = "X", ylab = "Y",
+                    ol.regions = rainbow(99, start=.1))
+SPplotCont 
+                    
+
+Polyclust <- gPolygonize(SLDF[5, ])
+gas <- gArea(Polyclust, byid = T)/10000
+Polyclust <- SpatialPolygonsDataFrame(Polyclust, data = data.frame(gas), match.ID = F)
+plot(Polyclust)
+
+centroids <- getSpPPolygonsLabptSlots(Polyclust)
+plot(centroids)
+
+centroidsDF = as.data.frame(centroids)
+centroidsSPDF <- SpatialPointsDataFrame(centroidsDF, data = data.frame(gas))
+spplot(centroidsSPDF)
+
+cAg <- aggregate(GetOutl[[3]], by = Polyclust, FUN = length)
+# lb <- gBoundary(lnd)
+plot(Dens, main = "")
+plot(lnd, border = "grey", lwd = 2, add = T)
+plot(SLDF, col = terrain.colors(8), add = T)
+plot(cAg, col = "red", border = "white", add = T)
+graphics::text(coordinates(cAg) + 1000, labels = cAg$CODE)
 
 
 
+aggdata = aggregate(GetOutl[[3]], by=list(coord), FUN=mean, na.rm=TRUE)
+aggdata = aggregate(GetOutl[[3]], by=list(coord), FUN=mean)
+plot(aggdata)
+  
 
 ### PREVIOUS CULCULATIONS (no functions) ###
 
@@ -144,7 +207,7 @@ prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555
 
 prj_string_WGS84_31 <- CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
-WS@crs
+PROJ4WS = WS@crs
 
 Vec@proj4string = prj_string_RD
 Vec@proj4string = prj_string_WGS84_31

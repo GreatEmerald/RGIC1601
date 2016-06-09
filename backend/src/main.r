@@ -1,5 +1,5 @@
 # Main script for the backend of the management zone generation tool
-# Copyright (C) 2016 Dainius Masiliunas, William Schuch
+# Copyright (C) 2016 Dainius Masiliunas, William Schuch, Geetika Rathee
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@
 #### Import modules ####
 
 source("modules/input.r")
-source("modules/GetOutliers.r")
+#source("modules/GetOutliers.r")
+source("modules/ClassifyToZones.r")
 
 #### Main script ####
 
@@ -30,4 +31,10 @@ InputImage = Input(c("../data/2016-04-03_bert_boerma_kale_grond_transparent_refl
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif",
     "../data/2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif"), bands=c(1,3,5,7))
 
-SingleBandImageToOutlierPoints = GetOutliers()
+CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans", filename=file.path("..", "output", "CumulativeSamplingLocations.grd"), datatype="INT1S")
+
+CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones)
+
+#CumulativeSamplingLocations = clhs(CumulativeManagementZones, 20)
+
+#SingleBandImageToOutlierPoints = GetOutliers()
