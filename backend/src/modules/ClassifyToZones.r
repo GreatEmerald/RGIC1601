@@ -56,6 +56,7 @@ ClassifyToZones = function(obj, method, zones_count = 3)
     {
         valueTable = getValues(obj)
         km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 100, nstart = 10)
+
         
         rNA = setValues(raster(obj), 0)
         rNA[is.na(obj)] = 1
@@ -71,4 +72,6 @@ ClassifyToZones = function(obj, method, zones_count = 3)
     }
 }
 
+
 #ClassifiedZones = ClassifyToZones(obj, method)
+
