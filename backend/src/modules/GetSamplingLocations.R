@@ -31,6 +31,13 @@ library(sp)
 #   Zone_code:
 #     1(default)
 #
+# Maintains:
+#   Environment
+#   Input files
+#
+# On violation:
+#   Stops script
+#
 # Returns:
 #   Raster object with management zones with file saved in the output directory 
 
@@ -54,8 +61,8 @@ Field_raster = Input(Field_map_dir)[[1]]
 # Sampling location central of area
 GetCentralSampleLoc <- function(Fieldraster){
   Zone_extent = extent(Zone_extent)
-  central_x = mean(Zone_extent@xmin,Zone_extent@xmax)
-  central_y = mean(Zone_extent@ymin,Zone_extent@ymax)
+  central_x = sample(Zone_extent@xmax-Zone_extent@xmin)
+  central_y = sample(Zone_extent@ymax-Zone_extent@ymin)
   return(c(central_x,central_y))
 }
 
@@ -71,10 +78,11 @@ spsample(Zone_extent, num_sample, type="random" )
 ### Return sampling number and coordinates
 GetSamplingLocations <- function(Input, Method = "centre", Zone_code = 1)
   {
-  if (Method = "centre"){
+  if (Method != "centre"){
     stop("try centre")
     }
-  else{
+    
+    else{
     Point_matrix = c()
     point = c(Zone_code, GetCentralSampleLoc(Input))
     Point_matrix = rbind(Point_matrix,point)
