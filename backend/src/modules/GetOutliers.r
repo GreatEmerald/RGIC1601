@@ -49,8 +49,8 @@ library(rgeos)
 
 
 getwd()
-#WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
-WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
+#WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
 #WSS = stack(WS)
 #WSB = brick(WS)
 
@@ -83,12 +83,15 @@ GetOutliers = function(rast_in, Q)
   return(list(rast_in, quantiles, Vec, Polyclust, centroidsSPDF))
 }
 GetOutl = GetOutliers(WS,0.01)
-spplot(GetOutl[[4]])
+spplot(GetOutl[[3]])
+
+rv = list("sp.polygons", GetOutl[[4]], fill = "red")
 
 SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
        xlab = "X", ylab = "Y",
        ol.regions = rainbow(99, start=.1),
        sp.layout = c('sp.points', GetOutl[[5]], col='red', pch=16))
+       #sp.layout = rv)
 
 SPplotWS
 
