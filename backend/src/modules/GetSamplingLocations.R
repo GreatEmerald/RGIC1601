@@ -16,31 +16,38 @@
 
 #### Required libraries ####
 library(sp)
-library(rgdal)
-###
+
+
+### GetSamplingLocations ###
+#
 # This function only return the central point coordinate of one raster object
-# as dataframe
+# as spatial data point
 #
-# 
+# Arguments:
+#   Input:
+#     raster data
+#   Method: 
+#     "centre"(default)
+#   Zone_code:
+#     1(default)
 #
-#
-#
-#
+# Returns:
+#   Raster object with management zones with file saved in the output directory 
 
 
 
 
 
 ### load Raster zone map
-Project_dir = getwd()
-Project_dir = file.path(Project_dir,"backend")
+Project_dir = "G:/Mater_years/P6_Integrated course/ACT/Coding/RGIC/backend"
+
 filename = "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"
 # test map
+source(file.path(Project_dir,"src","modules","input.r"))
 filename = "Test_area.tif"
 Field_map_dir = file.path(Project_dir,"data",filename)
 Field_raster = Input(Field_map_dir)[[1]]
-spplot(Field_raster)
-source(file.path(Project_dir,"src","modules","input.r"))
+
 
 
 ### Get sampling location of one category
@@ -52,10 +59,6 @@ GetCentralSampleLoc <- function(Fieldraster){
   return(c(central_x,central_y))
 }
 
-# testing
-GetCentralSampleLoc(Field_raster)
-
-
 # Random Sampling location (didn't finish yet)
 num_sample = 20
 spsample(Zone_extent, num_sample, type="random" )
@@ -66,22 +69,27 @@ spsample(Zone_extent, num_sample, type="random" )
 
 
 ### Return sampling number and coordinates
-GetSamplingLocations = function(Input = Field_raster,Zone_code = 1) {
-
-Point_matrix = c()
-point = c(Zone_code, GetCentralSampleLoc(Input))
-Point_matrix = rbind(Point_matrix,point)
-
-# transform to spatial points
-prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
-points.df = as.data.frame(Point_matrix)
-names(points.df) = c("ZoneCode","x","y")
-# coordinates(points.df) <- ~x + y
-# proj4string(points.df) <- prj_string_WGS84
-
-return(points.df)
+GetSamplingLocations <- function(Input, Method = "centre", Zone_code = 1)
+  {
+  if (Method = "centre"){
+    stop("try centre")
+    }
+  else{
+    Point_matrix = c()
+    point = c(Zone_code, GetCentralSampleLoc(Input))
+    Point_matrix = rbind(Point_matrix,point)
+    
+    # transform to spatial points
+    prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+    points.df = as.data.frame(Point_matrix)
+    names(points.df) = c("ZoneCode","x","y")
+    coordinates(points.df) <- ~x + y
+    proj4string(points.df) <- prj_string_WGS84
+    
+    return(points.df)
+    }
 }
 
-
+# GetSamplingLocations(points.df)
 
 
