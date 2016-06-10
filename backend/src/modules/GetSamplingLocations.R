@@ -16,7 +16,8 @@
 
 #### Required libraries ####
 library(sp)
-
+library(rgdal)
+library(raster)
 
 ### GetSamplingLocations ###
 #
@@ -39,14 +40,14 @@ library(sp)
 #   Stops script
 #
 # Returns:
-#   Raster object with management zones with file saved in the output directory 
+#   One point with type of SpatialPointsDataFrame
 
 
 
 
 
 ### load Raster zone map
-Project_dir = "G:/Mater_years/P6_Integrated course/ACT/Coding/RGIC/backend"
+Project_dir = "/home/yi/Documents/RGIC01/backend"
 
 filename = "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"
 # test map
@@ -60,15 +61,24 @@ Field_raster = Input(Field_map_dir)[[1]]
 ### Get sampling location of one category
 # Sampling location central of area
 GetCentralSampleLoc <- function(Fieldraster){
-  Zone_extent = extent(Zone_extent)
-  central_x = sample(Zone_extent@xmax-Zone_extent@xmin)
-  central_y = sample(Zone_extent@ymax-Zone_extent@ymin)
+  Zone_extent = extent(Fieldraster)
+  central_x = sample(Zone_extent@xmax-Zone_extent@xmin,1)
+  central_y = sample(Zone_extent@ymax-Zone_extent@ymin,1)
   return(c(central_x,central_y))
 }
 
 # Random Sampling location (didn't finish yet)
 num_sample = 20
-spsample(Zone_extent, num_sample, type="random" )
+GetRandomSampleLoc <- function(Fieldraster){
+  Zone_extent = extent(Fieldraster)
+  Points_matrix = c()
+  for (i in 1:num_sample){
+  random_x = Zone_extent@xmin + sample(Zone_extent@xmax-Zone_extent@xmin,1)
+  random_y = Zone_extent@ymin + sample(Zone_extent@ymax-Zone_extent@ymin,1)
+  Points_matrix = rbind(Points_matrix,c(random_x,random_y))
+}
+  return(Points_matrix)
+  }
 
 ### Get sampling locationn of multiple categories
 
@@ -76,28 +86,36 @@ spsample(Zone_extent, num_sample, type="random" )
 
 
 ### Return sampling number and coordinates
-GetSamplingLocations <- function(Input, Method = "centre", Zone_code = 1)
-  {
-  if (Method != "centre"){
-    stop("try centre")
-    }
-    
-    else{
+
+GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
+  { 
+  if (Method == "random"){
+    Points = GetRandomSampleLoc(Field_raster)
     Point_matrix = c()
-    point = c(Zone_code, GetCentralSampleLoc(Input))
+    for (i in 1:nrow(points)) {
+    onerow = cbind(Zone_code,points[i,1],points[i,2])
+    Point_matrix = rbind(Point_matrix,onerow)
+    } }
+    
+  if (Method == "centre"){
+    Point_matrix = c()
+    point = c(Zone_code, GetCentralSampleLoc(Raster))
     Point_matrix = rbind(Point_matrix,point)
-    
-    # transform to spatial points
-    prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
-    points.df = as.data.frame(Point_matrix)
-    names(points.df) = c("ZoneCode","x","y")
-    coordinates(points.df) <- ~x + y
-    proj4string(points.df) <- prj_string_WGS84
-    
-    return(points.df)
     }
+    
+  # transform to spatial points
+  prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+  points.df = as.data.frame(Point_matrix)
+  names(points.df) = c("ZoneCode","x","y")
+  coordinates(points.df) <- ~x + y
+  proj4string(points.df) <- prj_string_WGS84
+    
+  return(points.df)
+    
 }
 
-# GetSamplingLocations(points.df)
+GetSamplingLocations(Field_raster, Method = "random")
+points = GetRandomSampleLoc(Field_raster)
+spplot(points.df)
 
 
