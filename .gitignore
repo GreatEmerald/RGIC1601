@@ -3,3 +3,5 @@
 .RData
 *.rkward_autosave
 */data/*
+*.kate-swp
+.directory
