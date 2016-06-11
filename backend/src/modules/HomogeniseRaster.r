@@ -35,7 +35,7 @@ library(sp)
 #   Stops script and gives a message
 #
 # Returns:
-#   A large list SpatialPolygonsDataFrame.
+#   A list of 4, with the Homogenized raster in [[2]].
 #   The amount of Management Zones equals the amount of elements.
 
 #rm(list = ls())  # Clear the workspace!
@@ -51,41 +51,17 @@ HomogeniseRaster = function(rast_in, F)
     stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
   }
   Uni = unique(rast_in)
-  Agg = aggregate(rast_in, fact = F, fun=modal)
+  Agg = aggregate(rast_in, fact = F, fun=modal, na.rm = TRUE)
   Uni_Agg = unique(Agg)
-  
-  #Dcl = contourLines(Uni_Agg, nlevels = 3)
-  #Agg_Con = contourLines(Agg, nlevels = 3)  # plot as contours - this is where we're heading
-  
+
   return(list(rast_in, Agg, Uni, Uni_Agg))
 }
 
-HMZ = HomogeniseRaster(ClassifiedZones, 5)
-HMZ[[4]]
+HomogeniseRaster = HomogeniseRaster(ClassifiedZones, 5)
+HomogeniseRaster[[4]]
 
-spplot(HMZ[[2]])
-
-SPplotAgg = spplot(HMZ[[2]], scales = list(draw = TRUE),
-                    xlab = "X", ylab = "Y",
-                    ol.regions = rainbow(99, start=.1),
-                    sp.layout = c('sp.lines', RtC, col='red', pch=10))
-SPplotAgg
-
-
-#contour(HMZ[[2]]), nlevels = 1)
-RtC = rasterToContour(HMZ[[2]], nlevels = 2)#, levels = c(1,2,3,4) ) #(UV_RtC)) #, maxpixels=100000000)
-#contour(HMZ[[2]], method = "edge", nlevels = 3)
-Polyclust = gPolygonize(RtC, getCutEdges=FALSE)
-PolyArea = gArea(Polyclust, byid = T)
-Polyclust = SpatialPolygonsDataFrame(Polyclust,data = data.frame(PolyArea), match.ID = F)
-
-RtP = rasterToPolygons(HMZ[[2]], dissolve=T)
-spplot(RtC)
-spplot(Polyclust)
-UV_RtC = unique(HMZ[[2]])
-spplot(RtP)
-
-MZ_test = as.SpatialPolygons.PolygonsList(RtC)
+spplot(ClassifiedZones)
+spplot(HomogeniseRaster[[2]])
 
 #Write as geojson
 writeOGR(RtP, 'test_RtP','test_RtCP', driver='GeoJSON')
