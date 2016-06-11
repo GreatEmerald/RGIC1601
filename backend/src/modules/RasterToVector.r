@@ -65,5 +65,11 @@ RasterToVector = function(rast_in)
   return(LWS)
 }
 
-#MZRasterToVector = RasterToVector(ClassifiedZones)
-#spplot(MZRasterToVector[[3]])
+#MZRasterToVector = RasterToVector(HMZ[[2]])
+#spplot(MZRasterToVector[[2]])
+
+spplot(MZRasterToVector[[3]])
+
+#Write as geojson
+writeOGR(MZRasterToVector[[3]], 'test_','MZ3', driver='GeoJSON')
+file.rename("test_", "test_.geojson")
