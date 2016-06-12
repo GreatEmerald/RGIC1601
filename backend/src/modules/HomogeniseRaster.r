@@ -57,12 +57,8 @@ HomogeniseRaster = function(rast_in, F)
   return(list(rast_in, Agg, Uni, Uni_Agg))
 }
 
-HomogeniseRaster = HomogeniseRaster(ClassifiedZones, 5)
-HomogeniseRaster[[4]]
+#HomogeniseRaster = HomogeniseRaster(ClassifiedZones, 5)
+#HomogeniseRaster[[2]]
 
-spplot(ClassifiedZones)
-spplot(HomogeniseRaster[[2]])
-
-#Write as geojson
-writeOGR(RtP, 'test_RtP','test_RtCP', driver='GeoJSON')
-file.rename("test_RtP", "test_RtP.geojson")
+#spplot(ClassifiedZones)
+#spplot(HomogeniseRaster[[2]])
