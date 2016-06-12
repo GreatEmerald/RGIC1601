@@ -67,9 +67,9 @@ GetCentralSampleLoc <- function(Fieldraster){
   return(c(central_x,central_y))
 }
 
-# Random Sampling location (didn't finish yet)
-num_sample = 20
-GetRandomSampleLoc <- function(Fieldraster){
+# Random Sampling location 
+
+GetRandomSampleLoc <- function(Fieldraster,num_sample = 20){
   Zone_extent = extent(Fieldraster)
   Points_matrix = c()
   for (i in 1:num_sample){
@@ -81,7 +81,7 @@ GetRandomSampleLoc <- function(Fieldraster){
   }
 
 ### Get sampling locationn of multiple categories
-
+# Not avaliable yet
 
 
 
@@ -92,8 +92,8 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
   if (Method == "random"){
     Points = GetRandomSampleLoc(Field_raster)
     Point_matrix = c()
-    for (i in 1:nrow(points)) {
-    onerow = cbind(Zone_code,points[i,1],points[i,2])
+    for (i in 1:nrow(Points)) {
+    onerow = cbind(Zone_code,Points[i,1],Points[i,2])
     Point_matrix = rbind(Point_matrix,onerow)
     } }
     
@@ -114,8 +114,9 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
     
 }
 
-GetSamplingLocations(Field_raster, Method = "random")
-points = GetRandomSampleLoc(Field_raster)
-spplot(points.df)
+points.df = GetSamplingLocations(Field_raster, Method = "random")
+
+
+spplot(points.df,zcol = "ZoneCode")
 
 
