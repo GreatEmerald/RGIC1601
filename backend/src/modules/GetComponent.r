@@ -17,7 +17,7 @@
 #### Required libraries ####
 
 library(raster)
-library("RStoolbox")
+library(RStoolbox)
 
 #### Classify an input raster into management zones ####
 
@@ -35,20 +35,43 @@ library("RStoolbox")
 #   stop()
 #
 # Returns:
-#   Raster single-band layer object; the layer will be the first principle component of the input brick
+#   Raster single-band layer object; the 
+#   layer will be the first principle component of the input brick
 
-GetComponent = function(in_brick)
-{
-   in_data = getValues(in_brick)
-   
+#setwd("/home/grathee/Documents/RGIC01/backend/data/")
+#file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
+#file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
+#file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
+#file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
+#ext = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
+
+#file1 = crop(file1, extent(ext))
+#file2 = crop(file2, extent(ext))
+#file3 = crop(file3, extent(ext))
+#file4 = crop(file4, extent(ext))
+
+#in_stack = stack(file1,file2,file3,file4)
+
+#rm(file1,file2,file3,file4,ext)
+
+
+GetComponent = function(in_stack,...)
+{    
+   in_data = getValues(in_stack)
    # scale=T save scaling applied to each variable, Center = T, save means that were subtracted, retx=F don't save PCA scores
-   brick.pca = prcomp(na.omit(in_data), center = T, scale = T, retx = T)
-   data.pca = predict(brick.pca, na.omit(in_data))
+   data.pca = princomp(na.omit(in_data))
+  
+   new_data = predict(data.pca, in_data)
+   new_raster = raster(in_stack[[1]])
+   new_raster = setValues(in_stack[[1]], new_data[,1])
    
-   out_raster = raster(in_brick)
-   out_raster = setValues(data.pca[1])
+   # OR
    
-   return(out_raster)
+   stack.pca = rasterPCA(in_stack, nComp=1,
+   #writeRaster(filenames)
+   )
+   
+   return()
 }
 
 #GetComponent()

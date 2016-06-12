@@ -38,10 +38,6 @@ library(sp)
 #   A large list SpatialPolygonsDataFrame.
 #   The amount of Management Zones equals the amount of elements.
 
-#rm(list = ls())  # Clear the workspace!
-#ls() ## no objects left in the workspace
-#start.time = Sys.time()
-
 
 # INTO THE FUNCTION
 RasterToVector = function(rast_in)
@@ -58,12 +54,13 @@ RasterToVector = function(rast_in)
   
   for (i in UV)
   {
-    SHAPE = rasterToPolygons(rast_in,fun=function(x){x == i},dissolve=TRUE)
+    SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
     LWS[[i]] = SHAPE
   }
  
   return(LWS)
 }
+#MZRasterToVector = RasterToVector(HomogeniseRaster[[2]])
+#spplot(ClassifiedZones)
 
-#MZRasterToVector = RasterToVector(ClassifiedZones)
-#spplot(MZRasterToVector[[3]])
+#spplot(MZRasterToVector[[1]])
