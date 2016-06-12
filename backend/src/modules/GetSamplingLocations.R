@@ -99,8 +99,8 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
     
   if (Method == "centre"){
     Point_matrix = c()
-    point = c(Zone_code, GetCentralSampleLoc(Raster))
-    Point_matrix = rbind(Point_matrix,point)
+    Point = c(Zone_code, GetCentralSampleLoc(Raster))
+    Point_matrix = rbind(Point_matrix,Point)
     }
     
   # transform to spatial points

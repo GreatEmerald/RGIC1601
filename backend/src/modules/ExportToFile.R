@@ -16,12 +16,38 @@
 
 #### Required libraries ####
 
+library(rgdal)
+
+# Argument: 
+#	exportdata: Either SpatialPolygonsDataFrame or SpatialPointsDataFrame
+#	filename: the directory of output
 #
+# Maintains:
+#   Environment
+#   Input files
 #
+# On violation:
+#   Stops script
 #
+# Return:
+#	None
 #
-#
-#
-#
-#
+
+
+## Export vector to kml
+''' 
+input:
+    SpatialPolygonsDataFrame
+output:
+    kml files
+'''
+
+## Export points to GPX
+'''
+input:
+    SpatialPoingsDataFrame
+output:
+    GPX
+'''
+
 
