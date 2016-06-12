@@ -92,8 +92,8 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
   if (Method == "random"){
     Points = GetRandomSampleLoc(Field_raster)
     Point_matrix = c()
-    for (i in 1:nrow(Points)) {
-    onerow = cbind(Zone_code,Points[i,1],Points[i,2])
+    for (id in 1:nrow(Points)) {
+    onerow = cbind(id,Points[id,1],Points[id,2])
     Point_matrix = rbind(Point_matrix,onerow)
     } }
     
@@ -106,10 +106,10 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
   # transform to spatial points
   prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
   points.df = as.data.frame(Point_matrix)
-  names(points.df) = c("ZoneCode","x","y")
+  names(points.df) = c("name","x","y")
   coordinates(points.df) <- ~x + y
   proj4string(points.df) <- prj_string_WGS84
-    
+#  points.df@data$coords = cbind(coordinates(points.df)[,1],coordinates(points.df)[,2])
   return(points.df)
     
 }
@@ -117,6 +117,6 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
 points.df = GetSamplingLocations(Field_raster, Method = "random")
 
 
-spplot(points.df,zcol = "ZoneCode")
+spplot(points.df)
 
 
