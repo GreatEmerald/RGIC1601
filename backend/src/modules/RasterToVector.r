@@ -38,10 +38,6 @@ library(sp)
 #   A large list SpatialPolygonsDataFrame.
 #   The amount of Management Zones equals the amount of elements.
 
-#rm(list = ls())  # Clear the workspace!
-#ls() ## no objects left in the workspace
-#start.time = Sys.time()
-
 
 # INTO THE FUNCTION
 RasterToVector = function(rast_in)
