@@ -58,18 +58,13 @@ RasterToVector = function(rast_in)
   
   for (i in UV)
   {
-    SHAPE = rasterToPolygons(rast_in,fun=function(x){x == i},dissolve=TRUE)
+    SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
     LWS[[i]] = SHAPE
   }
  
   return(LWS)
 }
+#MZRasterToVector = RasterToVector(HomogeniseRaster[[2]])
+#spplot(ClassifiedZones)
 
-#MZRasterToVector = RasterToVector(HMZ[[2]])
-#spplot(MZRasterToVector[[2]])
-
-spplot(MZRasterToVector[[3]])
-
-#Write as geojson
-writeOGR(MZRasterToVector[[3]], 'test_','MZ3', driver='GeoJSON')
-file.rename("test_", "test_.geojson")
+#spplot(MZRasterToVector[[1]])
