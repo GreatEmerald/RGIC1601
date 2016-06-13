@@ -24,7 +24,7 @@ library(sp)
 library(spatstat)
 library(maptools)
 library(rgeos)
-library(igraph)
+#library(igraph)
 
 #rm(list = ls())  # Clear the workspace!
 #ls() ## no objects left in the workspace
@@ -103,8 +103,13 @@ rasterize((x, y, field, fun='last', background=NA,
            mask=FALSE, update=FALSE, updateValue='all', filename="", ...)
 )
 
+Disagg <- disaggregate(HomogeniseRaster[[2]], fact=5, method='')
+spplot(Disagg)
 
+Y <- raster(nrow=10, ncol=10)
+ReSamp = resample(HomogeniseRaster[[2]], Y , method="ngb")
 
+plot(Y)
 #GetOutl = GetOutliers(WS,0.005) # used for 'Singe-band image'
 GetOutl_MZ = GetOutliers(HomogeniseRaster[[2]],0.005) # used for 'Homogeneous MZ raster'
 
@@ -135,10 +140,10 @@ spplot(HomogeniseRaster[[2]])
 
 rv = list("sp.polygons", GetOutl[[4]], fill = "red")
 
-SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
+SPplotWS = spplot(GetOutliers[[1]], scales = list(draw = TRUE),
                   xlab = "X", ylab = "Y",
                   ol.regions = rainbow(99, start=.1),
-                  sp.layout = c('sp.points', GetOutl[[5]], col='red', pch=16))
+                  sp.layout = c('sp.points', GetOutliers[[5]], col='green', pch=16))
 #sp.layout = rv)
 
 SPplotWS
@@ -236,7 +241,13 @@ plot(WS_outliers_max)
 plot(Vec)
 plot(WS)
 
-
+r <- raster(nrow=3, ncol=3)
+r[] <- 1:ncell(r)
+s <- raster(nrow=10, ncol=10)
+s <- resample(r, s, method='bilinear')
+#par(mfrow=c(1,2))
+#plot(r)
+#plot(s)
 
 
 
@@ -251,7 +262,7 @@ plot(WS)
 
 # reproject
 prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555
-										 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000
+                     +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000
                      +ellps=bessel +towgs84=565.2369,50.0087,465.658,
                      -0.406857330322398,0.350732676542563,-1.8703473836068,
                      4.0812 +units=m +no_defs")
@@ -273,7 +284,86 @@ writeOGR(RTC, 'test5','Vec', driver='GeoJSON')
 file.rename("test5", "test5.geojson")
 
 
+r <- MZRasterToVector[[2]]
+# convert raster to polygons
+sp <- rasterToPolygons(r, dissolve = T)
+plot(sp)
+# addition transformation to distinguish well the set of polygons
+polys <- slot(sp@polygons[[1]], "Polygons")
 
+require(Hmisc) # for Bezier curve
+output <- SpatialPolygons(
+  Srl = lapply(1:length(polys),
+               function(x){
+                 p <- polys[[x]]
+                 
+                 #applying bezier curve for smoothing polygon edges
+                 px <- slot(polys[[x]], "coords")[,1]
+                 py <- slot(polys[[x]], "coords")[,2]
+                 bz <- bezier(px, py)
+                 slot(p, "coords") <- as.matrix(cbind(bz$x,bz$y))                
+                 
+                 # create Polygons object
+                 poly <- Polygons(list(p), ID = x)
+                 return(poly)
+               }),
+  proj4string = CRS("+init=epsg:4326")
+)
+
+
+library(akima)
+library(maptools)
+library(zoo)
+gpclibPermit()
+library(raster)
+data(akima)
+
+# define de dimension of grid
+dimgrid <- 50
+
+# Interpolate to regular grid
+ak.li <- interp(akima$x, akima$y, akima$z, xo=seq(min(akima$x),
+                                                  max(akima$x), length = dimgrid),yo=seq(min(akima$y), max(akima$y),
+                                                                                         length = dimgrid),linear = TRUE, duplicate = "mean")
+
+# Show interpolation
+image(ak.li)
+points(akima)
+with(akima, text(x, y, formatC(z,dig=2), adj = -0.1))
+
+r <- raster(ak.li)
+#r <- ClassifiedZones
+plot(r)
+
+pol <- rasterToPolygons(r, fun=function(x){x>40})
+
+# Show the polygons
+plot(pol, add=T, col='yellow')
+
+
+### new code
+digits <- 1
+for (i in 1:length(pol@polygons))
+{
+  for (j in 1:length(pol@polygons[[i]]@Polygons))
+  {
+    pol@polygons[[i]]@Polygons[[j]]@coords <- round(pol@polygons[[i]]@Polygons[[j]]@coords, digits)
+  }
+}
+
+# Attempt to merge similar adjacent into one polygon
+union = unionSpatialPolygons(pol, ID=rep(1, times=length(pol@polygons)))
+
+# Show
+plot(union, add=TRUE, col="white")
+
+# Nombre de vertices
+crds=union@polygons[[1]]@Polygons[[1]]@coords
+tmp=length(crds[,1])
+
+nexCoordX= rollmean(c(crds[tmp,1], crds[,1], crds[1,1]), k=2)
+nexCoordY= rollmean(c(crds[tmp,2], crds[,2], crds[1,2]), k=2)
+lines(nexCoordX, nexCoordY, col="red", lwd=2)
 
 
 ## _ _ _ _
