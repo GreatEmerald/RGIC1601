@@ -17,7 +17,6 @@
 #### Required libraries ####
 
 library(raster)
-library(RStoolbox)
 
 #### Classify an input raster into management zones ####
 
