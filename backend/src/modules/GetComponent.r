@@ -55,14 +55,17 @@ library(raster)
 #rm(file1,file2,file3,file4,ext)
 
 
-GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
+GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
 {    
-   if (mask != NA)
+   if (missing(field_mask))
+   {
+       stop("Warning \n Mask is essential for better results")
+   }
+   else 
    {
        in_stack = mask(in_stack, field_mask)
    }
    
-  
    in_stack =  aggregate(in_stack, fact= agg_factor)
    in_data = getValues(in_stack)
    # scale=T save scaling applied to each variable, Center = T, save means that were subtracted, retx=F don't save PCA scores
