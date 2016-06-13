@@ -62,8 +62,8 @@ Field_raster = Input(Field_map_dir)[[1]]
 # Sampling location central of area
 GetCentralSampleLoc <- function(Fieldraster){
   Zone_extent = extent(Fieldraster)
-  central_x = sample(Zone_extent@xmax-Zone_extent@xmin,1)
-  central_y = sample(Zone_extent@ymax-Zone_extent@ymin,1)
+  central_x = Zone_extent@xmin +mean(Zone_extent@xmax-Zone_extent@xmin,1)
+  central_y = Zone_extent@ymin +mean(Zone_extent@ymax-Zone_extent@ymin,1)
   return(c(central_x,central_y))
 }
 
@@ -87,7 +87,7 @@ GetRandomSampleLoc <- function(Fieldraster,num_sample = 20){
 
 ### Return sampling number and coordinates
 
-GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
+GetSamplingLocations <- function(Field_raster, Method = "centre", Zone_code = 1)
   { 
   if (Method == "random"){
     Points = GetRandomSampleLoc(Field_raster)
@@ -99,7 +99,7 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
     
   if (Method == "centre"){
     Point_matrix = c()
-    Point = c(Zone_code, GetCentralSampleLoc(Raster))
+    Point = c(Zone_code, GetCentralSampleLoc(Field_raster))
     Point_matrix = rbind(Point_matrix,Point)
     }
     
@@ -114,7 +114,7 @@ GetSamplingLocations <- function(Raster, Method = "centre", Zone_code = 1)
     
 }
 
-points.df = GetSamplingLocations(Field_raster, Method = "random")
+points.df = GetSamplingLocations(Field_raster, Method = "centre")
 
 
 spplot(points.df)
