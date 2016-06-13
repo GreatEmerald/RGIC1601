@@ -67,11 +67,11 @@ GetComponent = function(in_stack,...)
    
    # OR
    
-   stack.pca = rasterPCA(in_stack, nComp=1,
+   #stack.pca = rasterPCA(in_stack, nComp=1,
    #writeRaster(filenames)
-   )
+   #)
    
-   return()
+   return(new_raster)
 }
 
 #GetComponent()
