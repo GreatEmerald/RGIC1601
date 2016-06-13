@@ -14,12 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-## Note: This script only brings different modules in modules/ together.
+## Note 1: This script only brings different modules in modules/ together.
 ## No code belonging to one of the modules should go here.
+
+## Note 2: It is expected that your working directory is set to backend/src/
 
 #### Import modules ####
 
 source("modules/input.r")
+source("modules/GetComponent.r")
 #source("modules/GetOutliers.r")
 source("modules/ClassifyToZones.r")
 
@@ -43,5 +46,6 @@ if (!file.exists(ZoneRasterFilename))
     CumulativeManagementZones = raster(ZoneRasterFilename)
     
 CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones)
+
 
 #SingleBandImageToOutlierPoints = GetOutliers()
