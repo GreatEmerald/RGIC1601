@@ -32,10 +32,10 @@ library(sp)
 #   Input files
 #
 # On violation:
-#   Stops script
+#   Stops script and gives a message
 #
 # Returns:
-#   A large list SpatialPolygonsDataFrame.
+#   A list of 4, with the Homogenized raster in [[2]].
 #   The amount of Management Zones equals the amount of elements.
 
 #rm(list = ls())  # Clear the workspace!
@@ -44,11 +44,21 @@ library(sp)
 
 
 # INTO THE FUNCTION
-HomoRaster = function(rast_in)
+HomogeniseRaster = function(rast_in, F)
 {
+  if (nbands(rast_in) > 1)
+  {
+    stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
+  }
+  Uni = unique(rast_in)
+  Agg = aggregate(rast_in, fact = F, fun=modal, na.rm = TRUE)
+  Uni_Agg = unique(Agg)
 
-  return(rast_in)
+  return(list(rast_in, Agg, Uni, Uni_Agg))
 }
 
-HMZ = HomoRaster(ClassifiedZones)
-spplot(HMZ)
+#HomogeniseRaster = HomogeniseRaster(ClassifiedZones, 5)
+#HomogeniseRaster[[2]]
+
+#spplot(ClassifiedZones)
+#spplot(HomogeniseRaster[[2]])
