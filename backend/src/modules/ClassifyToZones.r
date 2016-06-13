@@ -18,6 +18,7 @@
 
 library(raster)
 library(rgdal)
+library(EMCluster)
 
 #### Classify an input raster into management zones ####
 
@@ -41,31 +42,79 @@ library(rgdal)
 # Returns:
 #   Raster object with management zones with file saved in the output directory 
 
+#setwd("/home/grathee/Documents/RGIC01/backend/data/")
+#obj = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
+#method = "Herarchical"
+
+#valueTable = getValues(obj)
+               
+#rNA = setValues(raster(obj), 0)
+#rNA[is.na(obj)] = 1
+#rNA = getValues(rNA)
+
+#obj = na.omit(obj)
+#obj = as.matrix(obj)
+#distance = dist(obj, method = "euclidean")
+
 
 ClassifyToZones = function(obj, method, zones_count = 3, ...)
 {   
-    if (method != "kMeans")
+    if (method != c("KMeans", "Herarchical","EM"))
     {
-        stop("Fatal: System can not handle this method\n Try kMeans!")
+        stop("Fatal: System can not handle this method\n Try KMeans or Herarchical or EM!")
     }
     else
     {
         valueTable = getValues(obj)
-        km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
+                
+	rNA = setValues(raster(obj), 0)
+	rNA[is.na(obj)] = 1
+	rNA = getValues(rNA)
+        
+        if (method = "KMeans")
+        {
+            km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
 
+	    valueTable = as.data.frame(valueTable)
+	    valueTable[rNA == 1,] = NA
+	    valueTable[rNA == 0,] = km$cluster
         
-        rNA = setValues(raster(obj), 0)
-        rNA[is.na(obj)] = 1
-        rNA = getValues(rNA)
+	    Zones = raster(obj)
+	    Zones = setValues(Zones, valueTable[[1]])
+	    Zones = writeRaster(Zones, ...)
+	    
+	    return(Zones)
+        }
+        #Herarchical
+        else if (method = "Herarchical")
+        {
+	    distance = dist(valueTable, method = "manhattan")
+	    Hcluster = hclust(distance, method = "ward")
+
+	    valueTable = as.data.frame(valueTable)
+	    valueTable[rNA == 1,] = NA
+	    valueTable[rNA == 0,] = Hcluster
         
-        valueTable = as.data.frame(valueTable)
-        valueTable[rNA == 1,] = NA
-        valueTable[rNA == 0,] = km$cluster
+	    Zones = raster(obj)
+	    Zones = setValues(Zones, valueTable[[1]])
+	    Zones = writeRaster(Zones, ...)
+	    
+	    return(Zones)
+        }
+        else if (method = "EM")
+        {
+	    ret = init.EM(obj,nclass = 3, min.n.iter=10)
+	    EMcluster = assign.class(obj, ret)
+  
+	    valueTable = as.data.frame(valueTable)
+	    valueTable[rNA == 1,] = NA
+	    valueTable[rNA == 0,] = EMcluster
         
-        Zones = raster(obj)
-        Zones = setValues(Zones, valueTable[[1]])
-        Zones = writeRaster(Zones, ...)
-        return(Zones)
+	    Zones = raster(obj)
+	    Zones = setValues(Zones, valueTable[[1]])
+	    Zones = writeRaster(Zones, ...)
+	    return(Zones)
+        }
     }
 }
 
