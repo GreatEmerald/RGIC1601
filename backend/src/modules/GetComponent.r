@@ -17,15 +17,15 @@
 #### Required libraries ####
 
 library(raster)
-library(RStoolbox)
 
 #### Classify an input raster into management zones ####
 
 # Arguments:
 #   Object:
-#       Raster brick
+#       Raster object; multi layered brick/stack
+#	Mask: raster object
 #   Additional argument: (recommended for saving memory space)
-#       ?
+#       Aggregation Factor
 #
 # Maintains:
 #   Environment
@@ -43,7 +43,7 @@ library(RStoolbox)
 #file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
 #file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
 #file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
-#ext = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
+#field_mask = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
 
 #file1 = crop(file1, extent(ext))
 #file2 = crop(file2, extent(ext))
@@ -55,23 +55,28 @@ library(RStoolbox)
 #rm(file1,file2,file3,file4,ext)
 
 
-GetComponent = function(in_stack,...)
+GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
 {    
+   if (is.na(field_mask))
+   {
+       warning("Mask is essential for better results!")
+   }
+   else 
+   {
+       in_stack = mask(in_stack, field_mask)
+   }
+   
+   in_stack =  aggregate(in_stack, fact= agg_factor)
    in_data = getValues(in_stack)
+   
    # scale=T save scaling applied to each variable, Center = T, save means that were subtracted, retx=F don't save PCA scores
-   data.pca = princomp(na.omit(in_data))
-  
+   data.pca = princomp(na.omit(in_data), scale = F, center = F, retx = F)
    new_data = predict(data.pca, in_data)
    new_raster = raster(in_stack[[1]])
    new_raster = setValues(in_stack[[1]], new_data[,1])
    
-   # OR
-   
-   #stack.pca = rasterPCA(in_stack, nComp=1,
-   #writeRaster(filenames)
-   #)
-   
+
    return(new_raster)
 }
 
-#GetComponent()
+#GetComponent(in_stack, field_mask, 15)
