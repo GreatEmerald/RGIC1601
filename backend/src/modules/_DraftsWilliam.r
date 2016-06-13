@@ -366,6 +366,7 @@ nexCoordY= rollmean(c(crds[tmp,2], crds[,2], crds[1,2]), k=2)
 lines(nexCoordX, nexCoordY, col="red", lwd=2)
 
 
+
 ## _ _ _ _
 ## finishing the script and calculate running time of the script
 #end.time = Sys.time()
