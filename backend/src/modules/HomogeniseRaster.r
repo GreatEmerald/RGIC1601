@@ -57,7 +57,7 @@ HomogeniseRaster = function(rast_in, F)
   return(list(rast_in, Agg, Uni, Uni_Agg))
 }
 
-#HomogeniseRaster = HomogeniseRaster(ClassifiedZones, 5)
+#HomogeniseRaster = HomogeniseRaster(ClassifiedZones, 10)
 #HomogeniseRaster[[2]]
 
 #spplot(ClassifiedZones)
