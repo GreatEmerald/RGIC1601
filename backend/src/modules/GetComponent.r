@@ -57,27 +57,25 @@ library(raster)
 
 GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
 {    
-   if (mask != NA)
+   if (is.na(field_mask))
+   {
+       warning("Mask is essential for better results!")
+   }
+   else 
    {
        in_stack = mask(in_stack, field_mask)
    }
    
-  
    in_stack =  aggregate(in_stack, fact= agg_factor)
    in_data = getValues(in_stack)
+   
    # scale=T save scaling applied to each variable, Center = T, save means that were subtracted, retx=F don't save PCA scores
    data.pca = princomp(na.omit(in_data), scale = F, center = F, retx = F)
-  
    new_data = predict(data.pca, in_data)
    new_raster = raster(in_stack[[1]])
    new_raster = setValues(in_stack[[1]], new_data[,1])
    
-   # OR
-   
-   #stack.pca = rasterPCA(in_stack, nComp=1,
-   #writeRaster(filenames)
-   #)
-   
+
    return(new_raster)
 }
 
