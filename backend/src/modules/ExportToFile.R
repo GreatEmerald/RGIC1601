@@ -47,7 +47,6 @@ ExportPolygon = function(polygon.df, filename, prj_string = CRS("+proj=longlat +
 	polygon84 = spTransform(polygon.df, prj_string)
 
 	layer = basename(file_path_sans_ext(filename))
-
 	if (file_ext(filename)=="kml"){
 		drv = "KML"
 		}
@@ -65,7 +64,7 @@ ExportPolygon = function(polygon.df, filename, prj_string = CRS("+proj=longlat +
 	dir = "/home/yi/Documents/RGIC01/backend/data/mypolygon.sql"
 	polygon.df = polygons.df
 	filename = "mypolygon"
-	ExportPolygon(polygon.df,dir,filename)
+	ExportPolygon(points.df,filename)
 	# test code over'
 
 
