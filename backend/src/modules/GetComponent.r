@@ -32,18 +32,18 @@ library(raster)
 #   Input files
 #
 # On violation:
-#   stop()
+#   warning()
 #
 # Returns:
 #   Raster single-band layer object; the 
 #   layer will be the first principle component of the input brick
 
-#setwd("/home/grathee/Documents/RGIC01/backend/data/")
+#setwd(".." ,"..", "/RGIC01/backend/data/")
 #file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
 #file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
 #file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
 #file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
-#field_mask = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
+#f_mask = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative.tif")
 
 #file1 = crop(file1, extent(ext))
 #file2 = crop(file2, extent(ext))
@@ -57,7 +57,7 @@ library(raster)
 
 GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
 {    
-   if (is.na(field_mask))
+   if (missing(field_mask))
    {
        warning("Mask is essential for better results!")
    }
@@ -79,4 +79,4 @@ GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
    return(new_raster)
 }
 
-#GetComponent(in_stack, field_mask, 15)
+#GetComponent(in_stack, f_mask, 5)

@@ -336,9 +336,14 @@ r <- raster(ak.li)
 plot(r)
 
 pol <- rasterToPolygons(r, fun=function(x){x>40})
+pol <- rasterToPolygons(r, fun=function(x){x<=40 & x>20})
+pol3 <- rasterToPolygons(r, fun=function(x){x<=20})
 
 # Show the polygons
 plot(pol, add=T, col='yellow')
+plot(pol2, add=T, col='grey')
+plot(pol3, add=T, col='lightblue')
+
 
 
 ### new code
@@ -365,6 +370,13 @@ nexCoordX= rollmean(c(crds[tmp,1], crds[,1], crds[1,1]), k=2)
 nexCoordY= rollmean(c(crds[tmp,2], crds[,2], crds[1,2]), k=2)
 lines(nexCoordX, nexCoordY, col="red", lwd=2)
 
+test1 = gPolygonize(lines(nexCoordX, nexCoordY, col="red", lwd=2))
+
+
+load("https://dl.dropboxusercontent.com/u/3180464/tmetad1.rda")
+tmetadg  <- points2grid(tmetad1,tolerance=0.000856898)
+tmetadg2  <- SpatialGrid(tmetadg, proj4string=CRS("+init=epsg:4326"))
+tmetadpol <- as(tmetadg2, "SpatialPolygons")
 
 
 ## _ _ _ _

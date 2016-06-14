@@ -17,7 +17,7 @@
 #### Required libraries ####
 
 library(raster)
-# Might require rgdal too
+library(rgdal)
 
 ## Function for importing spatial files into the backend, using GDAL
 #
@@ -25,7 +25,7 @@ library(raster)
 #   filename:
 #       character string: Raster file to use as input. Must be a format handled by GDAL.
 #       character vector: Raster files to use as input, treated as bands of one file.
-#           Must be a format handled by GDAL.
+#           Must be a format handled by the raster package (which uses GDAL).
 #
 # Maintains:
 #   Environment
@@ -35,21 +35,16 @@ library(raster)
 #   Prints an error with stop()
 #
 # Returns:
-#   A RasterBrick object containing the input raster (may be multiband),
-#   stacked into one if there were multiple input files.
+#   A RasterStack if multiple files are specified, a RasterLayer if one is specified.
 
-Input = function(filename = file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"), ...)
+Input = function(filename, ...)
 {
     for (file in filename)
         if (!file.exists(file))
             stop(paste("Input: No file(s) with the name", file))
     
     if (length(filename) > 1)
-    {
-        RS = stack(filename, ...)
-        return(brick(RS))
-    }
+        return(stack(filename, ...))
     
-    RB = brick(filename, ...)
-    return(RB)
+    return(raster(filename, ...))
 }
