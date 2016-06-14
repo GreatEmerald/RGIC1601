@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.16.0/css/ol.css" type="text/css">
+    <style>
+      .map {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+      background-image: url("http://www.nitocra.nl/wordpress/wp-content/uploads/2015/02/wur-logo.gif");
+      background-repeat: no-repeat;
+      background-position: top right;
+      background-size: 62px;
+    </style>
+    <script src="http://openlayers.org/en/v3.16.0/build/ol.js" type="text/javascript"></script>
+    <title>OpenLayers 3 example</title>
+  </head>
+  <body>
+    <h2>Taking management zones into the field</h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.MapQuest({layer: 'sat'})
+          })
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([5.593462, 52.441694]),
+          zoom: 11
+        })
+      });
+    </script>
+  </body>
+</html>
