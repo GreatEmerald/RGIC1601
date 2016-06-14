@@ -67,46 +67,42 @@ GetCentralSampleLoc <- function(Fieldraster){
   return(c(central_x,central_y))
 }
 
-# Random Sampling location 
-
-GetRandomSampleLoc <- function(Fieldraster,num_sample = 20){
-  Zone_extent = extent(Fieldraster)
-  Points_matrix = c()
-  for (i in 1:num_sample){
-  random_x = Zone_extent@xmin + sample(Zone_extent@xmax-Zone_extent@xmin,1)
-  random_y = Zone_extent@ymin + sample(Zone_extent@ymax-Zone_extent@ymin,1)
-  Points_matrix = rbind(Points_matrix,c(random_x,random_y))
-}
-  return(Points_matrix)
-  }
-
 ### Get sampling locationn of multiple categories
-# Not avaliable yet
 
-
+GetMultipleSamplingLoc = function(obj, num_sample=3, zones_count = 3)
+	{
+	sample_matrix = c()
+	id = (1:(num_sample * zones_count))
+	for (i in 1:zones_count)
+	{
+	Zone = obj
+	Zone[Zone@data@values != i] = NA
+	sample_matrix= rbind(sample_matrix,sampleRandom(Zone, size=num_sample, na.rm=TRUE, ext=NULL,xy = T))
+	}
+	sample_matrix = cbind(sample_matrix,id)
+	return (sample_matrix)
+	}
 
 ### Return sampling number and coordinates
 
-GetSamplingLocations <- function(Field_raster, Method = "centre", Zone_code = 1)
+GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, zones_count = 3)
   { 
+  
   if (Method == "random"){
-    Points = GetRandomSampleLoc(Field_raster)
-    Point_matrix = c()
-    for (id in 1:nrow(Points)) {
-    onerow = cbind(id,Points[id,1],Points[id,2])
-    Point_matrix = rbind(Point_matrix,onerow)
-    } }
-    
+    Point_matrix = GetMultipleSamplingLoc(Field_raster,num_sample,zones_count)
+    }
   if (Method == "centre"){
     Point_matrix = c()
     Point = c(Zone_code, GetCentralSampleLoc(Field_raster))
     Point_matrix = rbind(Point_matrix,Point)
     }
-    
+
+  
+  
   # transform to spatial points
   prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
   points.df = as.data.frame(Point_matrix)
-  names(points.df) = c("name","x","y")
+  names(points.df) = c("x","y","Zone_id","id")
   coordinates(points.df) <- ~x + y
   proj4string(points.df) <- prj_string_WGS84
 #  points.df@data$coords = cbind(coordinates(points.df)[,1],coordinates(points.df)[,2])
@@ -114,9 +110,6 @@ GetSamplingLocations <- function(Field_raster, Method = "centre", Zone_code = 1)
     
 }
 
-points.df = GetSamplingLocations(Field_raster, Method = "centre")
+#points.df = GetSamplingLocations(Zones,"random",num_sample=3, zones_count = 3)
 
-
-spplot(points.df)
-
-
+#spplot(points.df,zcol = "Zone_id")

@@ -63,9 +63,6 @@ ExportPolygon = function(polygon.df, dir, filename, prj_string = CRS("+proj=long
 	# test code over'
 
 
-
-
-	
 ## Export points to GPX
 '''
 input:
@@ -97,14 +94,14 @@ ExportPoints = function(point.df, dir, filename, prj_string = CRS("+proj=longlat
 # test code over'
 
 
-ExporttoFile= function(obj,dir,filename){
+ExportToFile= function(obj,dir,filename){
 	if (class(obj)== "SpatialPolygonsDataFrame")
 		{ExportPolygon(obj,dir,filename)}
 
 	if (class(obj) == "SpatialPointsDataFrame")
 		{ExportPoints(obj,dir,filename)}
 	else
-		{stops : "Object should be 'SpatialPolygonsDataFrame' or 'SpatialPointsDataFrame' "}
+		{stop("Object should be 'SpatialPolygonsDataFrame' or 'SpatialPointsDataFrame'")}
 		}
 
 # ExporttoFile(point.df,dir,filename)
