@@ -1,5 +1,5 @@
 # Input handling module for the backend of the management zone generation tool
-# Copyright (C) 2016 Geetika Rathee
+# Copyright (C) 2016 Geetika Rathee, William Schuch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
 #### Required libraries ####
 
 library(raster)
-library(rgdal)
-library(EMCluster)
 
 #### Classify an input raster into management zones ####
 
@@ -28,7 +26,8 @@ library(EMCluster)
 #   Object:
 #       Single Band-Image Raster Object
 #   Number of zones:
-#       A default number (3) when there is no input
+#       Numeric dataType, A default number (3) when there is no input, 
+#       Function can only handle less than 128 zones
 #   Additional argument: (recommended for saving memory space)
 #       File name, raster object will be written on this file
 #
@@ -40,39 +39,34 @@ library(EMCluster)
 #   stop()
 #
 # Returns:
-#   Raster object with management zones with file saved in the output directory 
+#   Raster object with management zones, additionally raster object can be saved in specified directory 
 
-#setwd("/home/grathee/Documents/RGIC01/backend/data/")
-#obj = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
-#method = "Herarchical"
-
-#valueTable = getValues(obj)
-               
-#rNA = setValues(raster(obj), 0)
-#rNA[is.na(obj)] = 1
-#rNA = getValues(rNA)
-
-#obj = na.omit(obj)
-#obj = as.matrix(obj)
-#distance = dist(obj, method = "euclidean")
 
 
 ClassifyToZones = function(obj, method, zones_count = 3, ...)
 {   
-    if (method != c("KMeans", "Herarchical","EM"))
+    if (method != "KMeans")
     {
-        stop("Fatal: System can not handle this method\n Try KMeans or Herarchical or EM!")
+        stop("Fatal: System can not handle this method\n Try KMeans!")
+    }
+    if (zones_count >= 128)
+    {
+        stop("Too many classes, output will be too complicated for human interpretation/n Try a smaller number")
+    }
+    if (class(zones_count) != "numeric" )
+    {
+        stop("zones_count has to be a Numeric variable")
     }
     else
     {
-        valueTable = getValues(obj)
-                
-	rNA = setValues(raster(obj), 0)
-	rNA[is.na(obj)] = 1
-	rNA = getValues(rNA)
-        
-        if (method = "KMeans")
+
+        if (method == "KMeans")
         {
+            valueTable = getValues(obj)
+                
+	    rNA = setValues(raster(obj), 0)
+	    rNA[is.na(obj)] = 1
+	    rNA = getValues(rNA)
             km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
 
 	    valueTable = as.data.frame(valueTable)
@@ -81,43 +75,20 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
         
 	    Zones = raster(obj)
 	    Zones = setValues(Zones, valueTable[[1]])
-	    Zones = writeRaster(Zones, ...)
 	    
-	    return(Zones)
-        }
-        #Herarchical
-        else if (method = "Herarchical")
-        {
-	    distance = dist(valueTable, method = "manhattan")
-	    Hcluster = hclust(distance, method = "ward")
-
-	    valueTable = as.data.frame(valueTable)
-	    valueTable[rNA == 1,] = NA
-	    valueTable[rNA == 0,] = Hcluster
-        
-	    Zones = raster(obj)
-	    Zones = setValues(Zones, valueTable[[1]])
-	    Zones = writeRaster(Zones, ...)
+	    if (missing(...))
+	    {
+	        return(Zones)
+	    }
+	    else
+	    {
+	        Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
+	        return(Zones)
+	    }
 	    
-	    return(Zones)
         }
-        else if (method = "EM")
-        {
-	    ret = init.EM(obj,nclass = 3, min.n.iter=10)
-	    EMcluster = assign.class(obj, ret)
-  
-	    valueTable = as.data.frame(valueTable)
-	    valueTable[rNA == 1,] = NA
-	    valueTable[rNA == 0,] = EMcluster
-        
-	    Zones = raster(obj)
-	    Zones = setValues(Zones, valueTable[[1]])
-	    Zones = writeRaster(Zones, ...)
-	    return(Zones)
-        }
+       
     }
 }
 
-
-#ClassifiedZones = ClassifyToZones(obj, method)
 
