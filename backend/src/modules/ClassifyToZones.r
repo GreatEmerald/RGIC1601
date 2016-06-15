@@ -1,5 +1,5 @@
 # Input handling module for the backend of the management zone generation tool
-# Copyright (C) 2016 Geetika Rathee
+# Copyright (C) 2016 Geetika Rathee, William Schuch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
     {
         stop("Too many classes, output will be too complicated for human interpretation/n Try a smaller number")
     }
-    if (class(zones_count) != "Numeric" )
+    if (class(zones_count) != "numeric" )
     {
         stop("zones_count has to be a Numeric variable")
     }
@@ -75,14 +75,20 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
         
 	    Zones = raster(obj)
 	    Zones = setValues(Zones, valueTable[[1]])
-	    Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
 	    
-	    return(Zones)
+	    if (missing(...))
+	    {
+	        return(Zones)
+	    }
+	    else
+	    {
+	        Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
+	        return(Zones)
+	    }
+	    
         }
        
     }
 }
 
-
-#ClassifiedZones = ClassifyToZones(obj, "KMeans", 3, "Zones_PC10.grd")
 
