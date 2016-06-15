@@ -25,6 +25,7 @@ source("modules/input.r")
 source("modules/GetComponent.r")
 #source("modules/GetOutliers.r")
 source("modules/ClassifyToZones.r")
+source("modules/ExportToFile.R")
 
 #### Input/Output variables ####
 
@@ -32,21 +33,34 @@ InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")),
-    bands=c(1,3,5,7))
-ZoneRasterOutputFile = file.path("..", "output", "CumulativeSamplingLocations.grd")
+    bands=1)
+
+ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"))
+OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path("..", "output", "outliers.sql"), file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
+SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"), file.path("..", "output", "samples.gpx"), file.path("..", "output", "samples.shp"))
+
+PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
+ZoneRasterIntermediaryFile = file.path("..", "output", "classified.grd")
+HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
 
 #### Main script ####
 
 # Get the first principal component
-FirstComponent = GetComponent(InputImage)
-
-if (!file.exists(ZoneRasterFilename))
+if (!file.exists(PC1IntermediaryFile))
 {
-    CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans", filename=ZoneRasterOutputFile, datatype="INT1S")
+    FirstComponent = GetComponent(InputImage, filename=PC1IntermediaryFile)
 } else
-    CumulativeManagementZones = raster(ZoneRasterOutputFile)
+    FirstComponent = raster(PC1IntermediaryFile)
+
+if (!file.exists(ZoneRasterIntermediaryFile))
+{
+    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile, datatype="INT1S")
+} else
+    ManagementZones = raster(ZoneRasterIntermediaryFile)
     
-CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones)
+SamplingLocations = GetSamplingLocations(CumulativeManagementZones)
 
 
 #SingleBandImageToOutlierPoints = GetOutliers()
+
+ExportToFile(ManagementZones, file.path("..", "output", "PC1.grd"))
