@@ -53,7 +53,7 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
     {
         stop("Too many classes, output will be too complicated for human interpretation/n Try a smaller number")
     }
-    if (class(zones_count) != "Numeric" )
+    if (class(zones_count) != "numeric" )
     {
         stop("zones_count has to be a Numeric variable")
     }
@@ -75,9 +75,17 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
         
 	    Zones = raster(obj)
 	    Zones = setValues(Zones, valueTable[[1]])
-	    Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
 	    
-	    return(Zones)
+	    if (missing(...))
+	    {
+	        return(Zones)
+	    }
+	    else
+	    {
+	        Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
+	        return(Zones)
+	    }
+	    
         }
        
     }
@@ -85,4 +93,5 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
 
 
 #ClassifiedZones = ClassifyToZones(obj, "KMeans", 3, "Zones_PC10.grd")
-
+obj = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
+Zones = ClassifyToZones(obj, "KMeans", 3)
