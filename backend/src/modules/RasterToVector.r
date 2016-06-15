@@ -53,28 +53,42 @@ RasterToVector = function(rast_in)
   # Create a list for the return
   MZs_vector = list(1:length(UV))
   
-  #oldmetadata = metadata(rast_in)
+  oldmetadata = metadata(rast_in)
   #oldmetadata2 = append(oldmetadata, list(newvariable="test1"))
   
-  for (i in UV)
-  {
-    SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
-    MZs_vector[[i]] = SHAPE
-    
-    MZs_vector[[i]]@data["META"] = paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
-  }
+  SHAPE_SS = rasterToPolygons(rast_in, dissolve=TRUE)
   
-  return(MZs_vector)
+  SHAPE_SS@data$Metadata = append(oldmetadata, list("test1"))
+
+  #for (i in UV)
+  #{
+  #  SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
+    #MZs_vector[[i]] = SHAPE
+    
+    #SHAPE_SS[[i]]@data["META"] = paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
+    #SHAPE_SS@data$Metadata[[i]] == paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
+  #  SHAPE2[[i]] = SHAPE
+    #SHAPE2 = append(SHAPE)
+  #}
+  
+  return(SHAPE_SS)
 }
-#MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) #Homogeneous raster
+
+  
+MZRasterToVector = RasterToVector(HomogeniseRaster) #Homogeneous raster
 #MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) # VI
 
-#MZRasterToVector[[1]]@data
+MZs_vectorr = cbind(MZRasterToVector[[1]], MZRasterToVector[[2]], MZRasterToVector[[3]], makeUniqueIDs = TRUE) 
+MZs_vectorrr = rasterToPolygons(MZs_vectorr, fun=function(x){x==3}, dissolve=FALSE)
 
+MZRasterToVector[1]["META"] = paste("Hello!")
+MZRasterToVector@data$Metadata = list("test1")
+
+L = (MZRasterToVector@data[1] == 3)
 
 #spplot(HomogeniseRaster[[2]]) # plot input
-#spplot(MZRasterToVector[[1]]) # plot output (MZ1)
-#spplot(MZRasterToVector[[3]]) # plot output (MZ3)
+#spplot(MZRasterToVector) # plot output (MZ1)
+#spplot(MZRasterToVector[3]) # plot output (MZ3)
 
 
 
