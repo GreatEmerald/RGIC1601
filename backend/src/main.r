@@ -25,6 +25,7 @@ source("modules/input.r")
 source("modules/GetComponent.r")
 #source("modules/GetOutliers.r")
 source("modules/ClassifyToZones.r")
+source("modules/ExportToFile.R")
 
 #### Input/Output variables ####
 
@@ -34,19 +35,26 @@ InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")),
     bands=c(1,3,5,7))
 ZoneRasterOutputFile = file.path("..", "output", "CumulativeSamplingLocations.grd")
+PC1OutputFile = file.path("..", "output", "PC1.grd")
 
 #### Main script ####
 
 # Get the first principal component
-FirstComponent = GetComponent(InputImage)
+if (!file.exists(PC1OutputFile))
+{
+    FirstComponent = GetComponent(InputImage, filename=PC1OutputFile)
+} else
+    FirstComponent = raster(PC1OutputFile)
 
 if (!file.exists(ZoneRasterFilename))
 {
-    CumulativeManagementZones = ClassifyToZones(InputImageCumulative, "kMeans", filename=ZoneRasterOutputFile, datatype="INT1S")
+    ManagementZones = ClassifyToZones(InputImageCumulative, "kMeans", filename=ZoneRasterOutputFile, datatype="INT1S")
 } else
-    CumulativeManagementZones = raster(ZoneRasterOutputFile)
+    ManagementZones = raster(ZoneRasterOutputFile)
     
-CumulativeSamplingLocations = GetSamplingLocations(CumulativeManagementZones)
+SamplingLocations = GetSamplingLocations(CumulativeManagementZones)
 
 
 #SingleBandImageToOutlierPoints = GetOutliers()
+
+ExportToFile(ManagementZones, file.path("..", "output", "PC1.grd"))
