@@ -43,21 +43,6 @@ library(raster)
 #   One point with type of SpatialPointsDataFrame
 
 
-
-
-
-### load Raster zone map
-Project_dir = "/home/yi/Documents/RGIC01/backend"
-
-filename = "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"
-# test map
-source(file.path(Project_dir,"src","modules","input.r"))
-filename = "Test_area.tif"
-Field_map_dir = file.path(Project_dir,"data",filename)
-Field_raster = Input(Field_map_dir)[[1]]
-
-
-
 ### Get sampling location of one category
 # Sampling location central of area
 GetCentralSampleLoc <- function(Fieldraster){
@@ -111,8 +96,9 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 }
 
 # Test
+# source(file.path("/home/yi/Documents/RGIC01/backend","src","modules","input.r"))
 # Zones_dir = "/home/yi/Documents/RGIC01/backend/data/Zone/ClassifiedZones_kMeans_3zones.grd"
 # Zones = Input(Zones_dir)[[1]]
 # points.df = GetSamplingLocations(Zones,"random",num_sample=3, zones_count = 3)
 
-#spplot(points.df,zcol = "Zone_id")
+# spplot(Zones)
