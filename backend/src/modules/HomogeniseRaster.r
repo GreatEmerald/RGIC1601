@@ -1,5 +1,5 @@
 # Input handling module for the backend of the management zone generation tool
-# Copyright (C) 2016 William Schuch
+# Copyright (C) 2016 William Schuch, Geetika Rathee
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,8 +16,6 @@
 
 #### Required libraries ####
 library(raster)
-library(rgdal)
-library(sp)
 
 ## Function for making homogeneous zones out of heterogenous MZ raster.
 #
@@ -44,21 +42,24 @@ library(sp)
 
 
 # INTO THE FUNCTION
-HomogeniseRaster = function(rast_in, F)
+HomogeniseRaster = function(x, window_type, min_ar)
 {
-  if (nbands(rast_in) > 1)
+  if (nbands(x) > 1)
   {
-    stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
+    stop(paste("Input", (data.class(x)), "is not single-banded."))
   }
-  Uni = unique(rast_in)
-  Agg = aggregate(rast_in, fact = F, fun=modal, na.rm = TRUE)
-  Uni_Agg = unique(Agg)
-
-  return(list(rast_in, Agg, Uni, Uni_Agg))
+  if (window_type == "circle")
+  {
+      radius = sqrt(min_ar * 10000 / 3.14)
+      cf = focalWeight(x, radius, type = "circle")
+      new_raster = focal(x, w=cf, fun = modal, na.rm = T)
+      return(new_raster)
+  }
+  
 }
 
-#HomogeniseRaster = HomogeniseRaster(ClassifiedZones, 10)
-#HomogeniseRaster[[2]]
+HomogeniseRaster = HomogeniseRaster(in_raster, "circle", 0.5)
+in_raster = raster("Zones_PC10.grd")
 
 #spplot(ClassifiedZones)
 #spplot(HomogeniseRaster[[2]])
