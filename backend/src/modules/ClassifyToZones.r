@@ -1,5 +1,5 @@
 # Input handling module for the backend of the management zone generation tool
-# Copyright (C) 2016 Geetika Rathee
+# Copyright (C) 2016 Geetika Rathee, William Schuch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -92,6 +92,3 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
 }
 
 
-#ClassifiedZones = ClassifyToZones(obj, "KMeans", 3, "Zones_PC10.grd")
-obj = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif")
-Zones = ClassifyToZones(obj, "KMeans", 3)

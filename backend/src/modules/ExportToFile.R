@@ -17,6 +17,7 @@
 #### Required libraries ####
 library(sp)
 library(rgdal)
+library(tools)
 
 # Argument: 
 #	exportdata: Either SpatialPolygonsDataFrame or SpatialPointsDataFrame
@@ -41,50 +42,56 @@ input:
 output:
     kml files
 '''
-ExportPolygon = function(polygon.df, dir, filename, prj_string = CRS("+proj=longlat +datum=WGS84"))
+ExportPolygon = function(polygon.df, filename, prj_string = CRS("+proj=longlat +datum=WGS84"))
 	{
 	polygon84 = spTransform(polygon.df, prj_string)
 
-	# Delete extra "/" at the end of directory
-	if (substr(dir,nchar(dir),nchar(dir)) == "/")
-		{
-		dir = substr(dir,1,nchar(dir)-1) 
+	layer = basename(file_path_sans_ext(filename))
+	if (file_ext(filename)=="kml"){
+		drv = "KML"
 		}
-		file_path = file.path(dir,paste(filename,".gpx",sep = ""))
+		file_path = file.path(dir,filename)
+
+	if (file_ext(filename)=="sql"){
+		drv = "PGDump"
+		}
+		file_path = file.path(dir,filename)
 		
-	writeOGR(polygon84,dsn = file_path,layer = filename, driver="KML", overwrite_layer=TRUE)
+	writeOGR(polygon84,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE)
 	}
 
 	'# test code bigin
-	dir = "/home/yi/Documents/RGIC01/backend/data/"
+	dir = "/home/yi/Documents/RGIC01/backend/data/mypolygon.sql"
 	polygon.df = polygons.df
 	filename = "mypolygon"
-	ExportPolygon(polygon.df,dir,filename)
+	ExportPolygon(points.df,filename)
 	# test code over'
 
 
 ## Export points to GPX
-'''
-input:
-    SpatialPointsDataFrame
-output:
-    GPX
-	'''
 
-ExportPoints = function(point.df, dir, filename, prj_string = CRS("+proj=longlat + ellps=WGS84"))
-{
+# input:
+#    SpatialPointsDataFrame
+# output:
+# GPX
+
+
+ExportPoints = function(point.df, filename, prj_string = CRS("+proj=longlat + ellps=WGS84"))
+	{
 	# The projection of GPX have to be geographic coordinates instead of projected coordinates.
 	points84 = spTransform(points.df, prj_string)
 
-	# Delete extra "/" at the end of directory
-	if (substr(dir,nchar(dir),nchar(dir)) == "/")
-		{
-		dir = substr(dir,1,nchar(dir)-1) 
-		}
-		file_path = file.path(dir,paste(filename,".gpx",sep = ""))
+	layer = basename(file_path_sans_ext(filename))
+
+
+	if (file_ext(filename)==gpx){
+		drv = "GPX"
+		file_path = file.path(dir,filename)
 		
-	writeOGR(points84,dsn = file_path, layer = filename, driver="GPX", overwrite_layer = TRUE,layer_options="GPX_USE_EXTENSIONS=YES" )
+	writeOGR(points84,dsn = filename, layer = layer, driver=drv, overwrite_layer = TRUE,layer_options="GPX_USE_EXTENSIONS=YES" )
 	}
+	}
+	
 
 	'# test code bigin
 	dir = "/home/yi/Documents/RGIC01/backend/data/"
@@ -94,17 +101,17 @@ ExportPoints = function(point.df, dir, filename, prj_string = CRS("+proj=longlat
 # test code over'
 
 
-ExportToFile= function(obj,dir,filename){
+ExportToFile= function(obj,filename){
 	if (class(obj)== "SpatialPolygonsDataFrame")
-		{ExportPolygon(obj,dir,filename)}
+		{ExportPolygon(obj,filename)}
 
 	if (class(obj) == "SpatialPointsDataFrame")
-		{ExportPoints(obj,dir,filename)}
+		{ExportPoints(obj,filename)}
 	else
 		{stop("Object should be 'SpatialPolygonsDataFrame' or 'SpatialPointsDataFrame'")}
 		}
 
-# ExporttoFile(point.df,dir,filename)
+# ExportToFile(obj,filename)
 
 
 
