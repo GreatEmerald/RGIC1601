@@ -23,7 +23,7 @@
 
 source("modules/input.r")
 source("modules/GetComponent.r")
-#source("modules/GetOutliers.r")
+source("modules/GetOutliers.r")
 source("modules/ClassifyToZones.r")
 source("modules/ExportToFile.R")
 
@@ -58,8 +58,9 @@ if (!file.exists(ZoneRasterIntermediaryFile))
 } else
     ManagementZones = raster(ZoneRasterIntermediaryFile)
     
-SamplingLocations = GetSamplingLocations(CumulativeManagementZones)
+SamplingLocations = GetSamplingLocations(CumulativeManagementZones, 0.0005)
 
+OutlierPoints = GetOutliers(ManagementZones)
 
 #SingleBandImageToOutlierPoints = GetOutliers()
 
