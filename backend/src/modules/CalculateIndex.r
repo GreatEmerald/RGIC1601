@@ -39,31 +39,32 @@ library(raster)
 #   layer will be the first principle component of the input brick
 
 #setwd(".." ,"..", "/RGIC01/backend/data/")
-#file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
-#file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
-#file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
-#file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
-#f_mask = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative.tif")
+file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
+file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
+file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
+file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
 
-#file1 = crop(file1, extent(ext))
-#file2 = crop(file2, extent(ext))
-#file3 = crop(file3, extent(ext))
-#file4 = crop(file4, extent(ext))
+in_stack = stack(file1,file2,file3,file4)
 
-#in_stack = stack(file1,file2,file3,file4)
+NDVI_stack = stack(file2,file4)
 
-#rm(file1,file2,file3,file4,ext)
+rm(file1,file2,file3,file4)
 
+r = NDVI_stack
 
-CalculateIndex = function(in_stack,field_mask = NA, agg_factor = 10, ...)
+CalculateIndex = function(in_stack,in_fieldtype, ...)
 #{    
-#  if (missing(field_mask))
+#  if (in_fieldtype == "vegetation")
 #   {
-#       warning("Mask is essential for better results!")
+##  NDVI function
+    
+    fun = function(raster) {(raster[[1]]-raster[[2]])/(raster[[1]]+raster[[2]])}
+    new_raster = calc(r, fun)
+
 #  }
 #   else 
 #   {
-#       in_stack = mask(in_stack, field_mask)
+##  NDSI function
 #   }
    
 #   in_stack =  aggregate(in_stack, fact= agg_factor)
