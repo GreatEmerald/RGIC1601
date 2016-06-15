@@ -75,13 +75,20 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
         
 	    Zones = raster(obj)
 	    Zones = setValues(Zones, valueTable[[1]])
-	    Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
 	    
-	    return(Zones)
+	    if (missing(...))
+	    {
+	        return(Zones)
+	    }
+	    else
+	    {
+	        Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
+	        return(Zones)
+	    }
+	    
         }
        
     }
 }
 
-#ClassifiedZones = ClassifyToZones(WS, "KMeans", 3, "Zones_PC10_.grd")
 
