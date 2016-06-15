@@ -23,7 +23,8 @@ library(sp)
 #
 # Arguments:
 #   rast_in:
-#       character string: Management Zone Raster. Must be a format handled by GDAL.
+#       character string: Homogenized Management Zone Raster.
+#            Must be a format handled by GDAL.
 #       character vector: RasterLayer to use as input, single-band.
 #           Must be a format handled by GDAL.
 #   
@@ -36,7 +37,7 @@ library(sp)
 #
 # Returns:
 #   A large list SpatialPolygonsDataFrame.
-#   The amount of Management Zones equals the amount of elements.
+#   The amount of Management Zones equals the amount of elements in the list.
 
 
 # INTO THE FUNCTION
@@ -50,17 +51,34 @@ RasterToVector = function(rast_in)
   # Detect unique values / Management Zones
   UV = unique(rast_in)
   # Create a list for the return
-  LWS = list(1:length(UV))
+  MZs_vector = list(1:length(UV))
+  
+  #oldmetadata = metadata(rast_in)
+  #oldmetadata2 = append(oldmetadata, list(newvariable="test1"))
   
   for (i in UV)
   {
     SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
-    LWS[[i]] = SHAPE
+    MZs_vector[[i]] = SHAPE
+    
+    MZs_vector[[i]]@data["META"] = paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
   }
- 
-  return(LWS)
+  
+  return(MZs_vector)
 }
-#MZRasterToVector = RasterToVector(HomogeniseRaster[[2]])
-#spplot(ClassifiedZones)
+#MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) #Homogeneous raster
+#MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) # VI
 
-#spplot(MZRasterToVector[[1]])
+#MZRasterToVector[[1]]@data
+
+
+#spplot(HomogeniseRaster[[2]]) # plot input
+#spplot(MZRasterToVector[[1]]) # plot output (MZ1)
+#spplot(MZRasterToVector[[3]]) # plot output (MZ3)
+
+
+
+oldmetadata = metadata(MZRasterToVector[[1]])
+oldmetadata2 = append(oldmetadata, list(newvariable="test1"))
+newmetadata = append(oldmetadata2, list(newvariable2="test2"))
+metadata(MZRasterToVector[[1]]) = newmetadata
