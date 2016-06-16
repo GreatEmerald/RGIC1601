@@ -64,18 +64,18 @@ RasterToVector = function(rast_in)
   SHAPE_SS = rasterToPolygons(rast_in, dissolve=TRUE)
   
   SHAPE_SS@data$Metadata = append(oldmetadata, list("test1"))
-  SHAPE_SS@data$ZoneNR = append(oldmetadata, MZs)
+  SHAPE_SS@data$ZoneNR = MZs
 
-#  for (i in MZs)
-#  {
+  for (i in MZs)
+  {
   #  SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
     #MZs_vector[[i]] = SHAPE
     
     #SHAPE_SS[[i]]@data["META"] = paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
-#    SHAPE_SS@data$Metadata[[i]] == paste("This is polygon", i, "out of", tail(MZs,1), "management zones (incl border.")
+    SHAPE_SS@data$Metadata[[i+1]] == paste("This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
   #  SHAPE2[[i]] = SHAPE
     #SHAPE2 = append(SHAPE)
-#  }
+  }
   
   return(SHAPE_SS)
 }
@@ -84,6 +84,12 @@ MZRasterToVector = RasterToVector(HomogenisedRaster) #Homogeneous raster
 
 #spplot(HomogeniseRaster) # plot input
 spplot(MZRasterToVector) # plot the output(s)
+
+for (i in MZs)
+{
+  print(paste("This is polygon", i, "out of", tail(MZs,1), "management zones (incl border)."))
+}
+MZRasterToVector@data$Metadata[[0+1]]
 
 
 oldmetadata = metadata(MZRasterToVector[[1]])
