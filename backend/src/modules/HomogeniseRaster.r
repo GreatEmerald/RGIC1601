@@ -59,8 +59,10 @@ HomogeniseRaster = function(x, window_type, min_ar)
 }
 
 #in_raster = raster(file.path("..", ".." , "output", "Zones_PC5.gri"))
-#HomogeniseRaster = HomogeniseRaster(in_raster, "circle", 0.5)
-#in_raster = raster("Zones_PC10.grd")
+#HomogenisedRaster = HomogeniseRaster(in_raster, "circle", 0.05)
 
-#spplot(ClassifiedZones)
-#spplot(HomogeniseRaster)
+# add to the function
+#writeRaster(HomogenisedRaster, dataType = "INT1S", overwrite = T, file.path("..", ".." , "output", "PC5_Class3_HomoCir005"))
+
+#spplot(ClassifiedZones) # Heterogeneous
+#spplot(HomogenisedRaster) # Homogeneous, with border
