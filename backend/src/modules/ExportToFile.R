@@ -35,13 +35,23 @@ library(tools)
 #	None
 #
 
+## (delete exist file)
+
+
 
 ExportToFile = function(spatial.df, filenames, prj_string = "+proj=longlat +datum=WGS84"){
+if (class(filenames) != "character")
+	{stop("filenames should be character")}
+
+
 for (filename in filenames)
 	{
 	csr = CRS(prj_string)
 	vector = spatial.df
 	layer = basename(file_path_sans_ext(filename))
+	if (!file_ext(filename) %in% c("kml","sql","gpx","shp"))
+		{stop("The file extention should be 'kml','sql','gpx','shp'")}
+		
 	if (file_ext(filename)=="kml"){
 		drv = "KML"
 		vector = spTransform(spatial.df, prj_string)
@@ -79,7 +89,7 @@ for (filename in filenames)
 #	obj = vec[[1]]
 #	obj = points.df
 # filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
-# ExportToFile(obj,filename,prj_string = "+proj=longlat +ellps=WGS84")
+# ExportToFile(obj,filename,prj_string)
 # test over
 
 
