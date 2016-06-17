@@ -44,61 +44,34 @@ library(rgeos)
 # INTO THE FUNCTION
 RasterToVector = function(rast_in)
 {
-  if (nbands(rast_in) > 1)
+  if (nbands(rast_in) != 1)
   {
     stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
   }
   
-  # Detect unique values / Management Zones
-  UV = unique(rast_in)
-  
+  rast_in = aggregate(rast_in, fact=5, fun=modal)
+  UV = unique(rast_in) # detect unique values / Management Zones
   MZs = seq(0, (length(UV)-1), by=1)
-  
-  # Create a list for the return
-  #MZs_vector = list(1:length(UV))
-  
+  MZs_vector = list(1:length(UV)) # create a list for the return
+
+  RtP = rasterToPolygons(rast_in, dissolve=TRUE, na.rm=TRUE)
   
   oldmetadata = metadata(rast_in)
-  #oldmetadata2 = append(oldmetadata, list(newvariable="test1"))
+  #RtP@data$OldMetadata = append(oldmetadata, list(newvariable2="test2"))
   
-  SHAPE_SS = rasterToPolygons(rast_in, dissolve=TRUE)
+  for (i in MZs)
+  {
+    if (i<4)
+    {
+      RtP@data$Metadata[[i+1]] = paste(
+        "This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
+    }
+  }
   
-  SHAPE_SS@data$Metadata = append(oldmetadata, list("test1"))
-  SHAPE_SS@data$ZoneNR = MZs
-
-#  for (i in MZs)
-#  {
-  #  SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
-    #MZs_vector[[i]] = SHAPE
-    
-    #SHAPE_SS[[i]]@data["META"] = paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
-#    SHAPE_SS@data$Metadata[[i+1]] == paste("This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
-  #  SHAPE2[[i]] = SHAPE
-    #SHAPE2 = append(SHAPE)
-#  }
-  
-  return(SHAPE_SS)
+  return(RtP)
 }
-# MZRasterToVector = RasterToVector(HomogenisedRaster) #Homogeneous raster
+in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
+MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
+spplot(MZRasterToVector)
+
 # #MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) # VI
-# 
-# in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
-# MZRasterToVector = RasterToVector(in_raster)
-# spplot(in_raster)
-# 
-# RtV = rasterToPolygons(in_raster, dissolve=TRUE)
-# 
-# #spplot(HomogeniseRaster) # plot input
-# spplot(MZRasterToVector) # plot the output(s)
-# 
-# for (i in MZs)
-# {
-#   print(paste("This is polygon", i, "out of", tail(MZs,1), "management zones (incl border)."))
-# }
-# MZRasterToVector@data$Metadata[[0+1]]
-# 
-# 
-# oldmetadata = metadata(MZRasterToVector[[1]])
-# oldmetadata2 = append(oldmetadata, list(newvariable="test1"))
-# newmetadata = append(oldmetadata2, list(newvariable2="test2"))
-# metadata(MZRasterToVector[[1]]) = newmetadata
