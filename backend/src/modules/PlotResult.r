@@ -20,6 +20,9 @@ library(rgdal)
 library(tools)
 
 
-obj = readOGR("/home/yi/Documents/RGIC01/backend/data/onelayer.shp",layer = "onelayer")
+obj = readOGR("/home/yi/Documents/RGIC01/backend/data/onelayer2.kml",layer = "onelayer2")
+str(obj)
+
 PlotResult = function(obj, filename){
-spplot(obj[1],sp = T)
+spplot(obj[[1]])
+[1],scales = list(draw = T))
