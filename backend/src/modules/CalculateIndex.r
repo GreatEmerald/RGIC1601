@@ -38,7 +38,7 @@ library(raster)
 #   Raster single-band layer object; the 
 #   layer will be the first principle component of the input brick
 
-#setwd(".." ,"..", "/RGIC01/backend/data/")
+#setwd(".." ,"..", "/RGIC1601/backend/data/")
 file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
 file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
 file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
@@ -52,19 +52,29 @@ rm(file1,file2,file3,file4)
 
 r = NDVI_stack
 
-CalculateIndex = function(in_stack,in_fieldtype, ...)
+CalculateIndex = function(in_stack,fieldtype, ...)
 #{    
-#  if (in_fieldtype == "vegetation")
+#  if (fieldtype == "vegetation")
 #   {
 ##  NDVI function
     
-    fun = function(raster) {(raster[[1]]-raster[[2]])/(raster[[1]]+raster[[2]])}
-    new_raster = calc(r, fun)
+    fun = function(rst) {(rst[[1]]-rst[[2]])/(rst[[1]]+rst[[2]])}
+    ndvi_raster = calc(r, fun)
 
 #  }
 #   else 
 #   {
-##  NDSI function
+##  albedo function
+
+  
+    fun = function(rst2) 
+    { sum(rst2)/dim(rst2)[3]  }   
+    
+    albedo_raster = calc(in_stack, fun)
+
+    
+
+        
 #   }
    
 #   in_stack =  aggregate(in_stack, fact= agg_factor)
