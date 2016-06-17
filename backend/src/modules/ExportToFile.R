@@ -36,16 +36,14 @@ library(tools)
 #
 
 
-ExportToFile = function(spatial.df, filenames, prj_string)
-{
+ExportToFile = function(spatial.df, filenames, prj_string = CRS("+proj=longlat +datum=WGS84")){
 for (filename in filenames)
 	{
-#	vector84 = spTransform(spatial.df, prj_string)
 	vector84 = spatial.df
-	layer_op = NULL
 	layer = basename(file_path_sans_ext(filename))
 	if (file_ext(filename)=="kml"){
 		drv = "KML"
+		vector84 = spTransform(spatial.df, prj_string)
 		}
 		
 	if (file_ext(filename)=="sql"){
@@ -58,6 +56,7 @@ for (filename in filenames)
 
 	if (file_ext(filename)=="gpx"){
 		drv = "GPX"
+		vector84 = spTransform(spatial.df, prj_string)
 		for (i in 1:(length(vector84)))
 			{
 			if (names(vector84@data[1]) !="id"){
@@ -65,16 +64,20 @@ for (filename in filenames)
 			}
 		names(vector84)[names(vector84) == "id"] = "name"
 		}
+
+# If the projection will specified to other projection
+	if (prj_string != CRS("+proj=longlat +datum=WGS84")){
+		vector84 = spTransform(spatial.df, prj_string)
+		}
 		
 	writeOGR(vector84,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE)
 	}}
 
 
 # test begin
-# polygon84 = points.df
 #	obj = vec[[1]]
 #	obj = points.df
-# filename = "/home/yi/Documents/RGIC01/backend/data/onelayer2.gpx"
+# filename = "/home/yi/Documents/RGIC01/backend/data/onelayer2.kml"
 # ExportToFile(obj,filename)
 # test over
 
