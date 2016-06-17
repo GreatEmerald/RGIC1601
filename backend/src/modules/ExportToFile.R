@@ -21,7 +21,7 @@ library(tools)
 
 # Argument: 
 #	Inputdata: Either SpatialPolygonsDataFrame or SpatialPointsDataFrame
-#	filename: The directory and filename (with extention) of output or a list of filenames
+#	filenames: A list of filenamesThe or one filename including directory and filename extention of out put
 #	Output format: kml,sql,shp,gpx
 #
 # Maintains:
@@ -36,14 +36,15 @@ library(tools)
 #
 
 
-ExportToFile = function(spatial.df, filenames, prj_string = CRS("+proj=longlat +datum=WGS84")){
+ExportToFile = function(spatial.df, filenames, prj_string = "+proj=longlat +datum=WGS84"){
 for (filename in filenames)
 	{
-	vector84 = spatial.df
+	csr = CRS(prj_string)
+	vector = spatial.df
 	layer = basename(file_path_sans_ext(filename))
 	if (file_ext(filename)=="kml"){
 		drv = "KML"
-		vector84 = spTransform(spatial.df, prj_string)
+		vector = spTransform(spatial.df, prj_string)
 		}
 		
 	if (file_ext(filename)=="sql"){
@@ -56,29 +57,29 @@ for (filename in filenames)
 
 	if (file_ext(filename)=="gpx"){
 		drv = "GPX"
-		vector84 = spTransform(spatial.df, prj_string)
-		for (i in 1:(length(vector84)))
+		vector = spTransform(spatial.df, prj_string)
+		for (i in 1:(length(vector)))
 			{
-			if (names(vector84@data[1]) !="id"){
-			vector84@data[i] = NULL}
+			if (names(vector@data[1]) !="id"){
+			vector@data[i] = NULL}
 			}
-		names(vector84)[names(vector84) == "id"] = "name"
+		names(vector)[names(vector) == "id"] = "name"
 		}
 
 # If the projection will specified to other projection
-	if (prj_string != CRS("+proj=longlat +datum=WGS84")){
-		vector84 = spTransform(spatial.df, prj_string)
+	if (prj_string != "+proj=longlat +datum=WGS84"){
+		vector = spTransform(spatial.df, csr)
 		}
 		
-	writeOGR(vector84,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE)
+	writeOGR(vector,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE)
 	}}
 
 
 # test begin
 #	obj = vec[[1]]
 #	obj = points.df
-# filename = "/home/yi/Documents/RGIC01/backend/data/onelayer2.kml"
-# ExportToFile(obj,filename)
+# filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
+# ExportToFile(obj,filename,prj_string = "+proj=longlat +ellps=WGS84")
 # test over
 
 
