@@ -57,10 +57,12 @@ if (!file.exists(ZoneRasterIntermediaryFile))
     ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile, datatype="INT1S")
 } else
     ManagementZones = raster(ZoneRasterIntermediaryFile)
-    
-SamplingLocations = GetSamplingLocations(CumulativeManagementZones, 0.0005)
 
-OutlierPoints = GetOutliers(ManagementZones)
+#Homogenise raster    
+    
+SamplingLocations = GetSamplingLocations(CumulativeManagementZones)
+
+OutlierPoints = GetOutliers(ManagementZones, 0.0005)
 
 #SingleBandImageToOutlierPoints = GetOutliers()
 
