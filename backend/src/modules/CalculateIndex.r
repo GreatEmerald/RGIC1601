@@ -38,14 +38,14 @@ library(raster)
 #   albedo raster if fieldtype = "soil"
 
 #setwd(".." ,"..", "/RGIC1601/backend/data/")
-#file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
-#file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
-#file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
-#file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
+file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
+file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
+file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
+file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
 
-#in_stack = stack(file1,file2,file3,file4)
+in_stack = stack(file1,file2,file3,file4)
 
-#rm(file1,file2,file3,file4)
+rm(file1,file2,file3,file4)
 
 
 CalculateIndex = function(in_stack,fieldtype, ...)
@@ -58,19 +58,20 @@ CalculateIndex = function(in_stack,fieldtype, ...)
 
       if (length(red_index) < 1)
       { 
-        stop("could not find red band in the raster stack")
+        stop("could not find red band in raster stack")
       }
         
       if (length(nir_index) < 1)
       {  
-        stop("could not find nir band in the raster stack")
+        stop("could not find nir band in raster stack")
       }
       
       NDVI_stack = stack(in_stack[[red_index]], in_stack[[nir_index]])
       
         fun = function(rst) {(rst[[1]]-rst[[2]])/(rst[[1]]+rst[[2]])}
         new_raster = calc(NDVI_stack, fun)
-        return(new_raster)
+        return
+        metadata(new_raster) = list(Indextype="NDVI")
     } 
   
 ##    albedo function        
@@ -78,10 +79,11 @@ CalculateIndex = function(in_stack,fieldtype, ...)
     {
         new_raster = sum(in_stack)/dim(in_stack)[3]
         return(new_raster)
+        metadata(new_raster) = list(Indextype="albedo")
     } 
   
-    stop("please note whether the image is of either soil or vegetation")
+    stop("please note whether the fieldtype is either 'soil' or 'vegetation'")
 
 }
     
-#CalculateIndex(in_stack, "vegetation")
+CalculateIndex(in_stack, "vegetation")
