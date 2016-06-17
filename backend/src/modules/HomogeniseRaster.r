@@ -36,13 +36,8 @@ library(raster)
 #   A list of 4, with the Homogenized raster in [[2]].
 #   The amount of Management Zones equals the amount of elements.
 
-#rm(list = ls())  # Clear the workspace!
-#ls() ## no objects left in the workspace
-#start.time = Sys.time()
-
-
 # INTO THE FUNCTION
-HomogeniseRaster = function(x, window_type, min_ar)
+HomogeniseRaster = function(x, window_type, min_ar, ...)
 {
   if (nbands(x) > 1)
   {
@@ -51,18 +46,26 @@ HomogeniseRaster = function(x, window_type, min_ar)
   if (window_type == "circle")
   {
       radius = sqrt(min_ar * 10000 / 3.14)
-      cf = focalWeight(x, radius, type = "circle")
-      new_raster = focal(x, w=cf, fun = modal, na.rm = T)
-      return(new_raster)
+      cf = focalWeight(x, radius/2, type = window_type)
+      new_raster = focal(x, w = cf, fun = modal, na.rm = T)
+      zones = c(unique(new_raster))
+      
+      for(i in 1:length(zones))
+      {
+          new_raster[new_raster == zones[i]] = i-1
+      }
+      
+      if (missing(...))
+      {
+          return(new_raster)
+      }
+      else
+      {
+          new_raster = writeRaster(new_raster, dataType = "INT1S", overwrite = T, ...)
+          return(new_raster)
+      }
+      
   }
   
 }
 
-#in_raster = raster(file.path("..", ".." , "output", "Zones_PC5.gri"))
-#HomogenisedRaster = HomogeniseRaster(in_raster, "circle", 0.05)
-
-# add to the function
-#writeRaster(HomogenisedRaster, dataType = "INT1S", overwrite = T, file.path("..", ".." , "output", "PC5_Class3_HomoCir005"))
-
-#spplot(ClassifiedZones) # Heterogeneous
-#spplot(HomogenisedRaster) # Homogeneous, with border
