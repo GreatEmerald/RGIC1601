@@ -47,6 +47,10 @@ OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path(".."
 SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"),
     file.path("..", "output", "samples.gpx"), file.path("..", "output", "samples.shp"))
 
+# The number of pixels to merge for PCA and extracting vegetation indices.
+# Low factors take a lot of time and memory but is more precise
+AggregationFactor = 10
+    
 PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
 ZoneRasterIntermediaryFile = file.path("..", "output", "classified.grd")
 HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
@@ -56,7 +60,7 @@ HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
 # Get the first principal component
 if (!file.exists(PC1IntermediaryFile))
 {
-    FirstComponent = GetComponent(InputImage, filename=PC1IntermediaryFile)
+    FirstComponent = GetComponent(InputImage, AggregationFactor, filename=PC1IntermediaryFile)
 } else
     FirstComponent = raster(PC1IntermediaryFile)
 
@@ -72,11 +76,11 @@ if (!file.exists(HomogenisedIntermediaryFile))
 } else
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
-ColourIndex = CalculateIndex(InputImage, ImageType)
-ManagementZoneVector = RasterToVector(HomogeneousMZ)
+ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor)
+ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
-OutlierPoints = GetOutliers(HomogeneousMZ, 0.0005)
+OutlierPoints = GetOutliers(FirstComponent, 0.005)
 ExportToFile(OutlierPoints, OutlierOutputFiles)
 SamplingLocations = GetSamplingLocations(ManagementZones)
 ExportToFile(SamplingLocations, SampleOutputFiles)
