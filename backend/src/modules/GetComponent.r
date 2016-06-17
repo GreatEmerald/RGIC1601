@@ -38,28 +38,16 @@ library(raster)
 #   Raster single-band layer object; the 
 #   layer will be the first principle component of the input brick
 
-#setwd(".." ,"..", "/RGIC01/backend/data/")
-#file1 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif")
-#file2 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif")
-#file3 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif")
-#file4 = raster("2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")
-#f_mask = raster("2016-04-03_bert_boerma_kale_grond_index_cumulative.tif")
-
-#file1 = crop(file1, extent(ext))
-#file2 = crop(file2, extent(ext))
-#file3 = crop(file3, extent(ext))
-#file4 = crop(file4, extent(ext))
-
-#in_stack = stack(file1,file2,file3,file4)
-
-#rm(file1,file2,file3,file4,ext)
-
 
 GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
 {    
    if (missing(field_mask))
    {
        warning("Mask is essential for better results!")
+   }
+   else if (field_mask != NA | (identical(projection(in_stack), projection(field_mask)) == True))
+   {
+       stop("It is necessary that stack and mask have same projections!")
    }
    else 
    {
@@ -71,12 +59,21 @@ GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
    
    # scale=T save scaling applied to each variable, Center = T, save means that were subtracted, retx=F don't save PCA scores
    data.pca = princomp(na.omit(in_data), scale = F, center = F, retx = F)
-   new_data = predict(data.pca, in_data)
-   new_raster = raster(in_stack[[1]])
-   new_raster = setValues(in_stack[[1]], new_data[,1])
+   pc_data = predict(data.pca, in_data)
+   PC1 = raster(in_stack[[1]])
+   PC1 = setValues(in_stack[[1]], pc_data[,1])
    
-
-   return(new_raster)
+   if (missing(...))
+   {
+       return(PC1)
+   }
+   else 
+   {
+       PC1 = writeRaster(PC1, overwrite = T, ...)
+       return(PC1)
+   }
+   
 }
 
-#GetComponent(in_stack, f_mask, 5)
+
+
