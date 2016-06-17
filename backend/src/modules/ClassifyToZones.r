@@ -43,11 +43,11 @@ library(raster)
 
 
 
-ClassifyToZones = function(obj, method, zones_count = 3, ...)
+ClassifyToZones = function(objPC, method, zones_count = 3, ...)
 {   
-    if (method != "KMeans")
+    if (bandnr(objPC) > 1)
     {
-        stop("Fatal: System can not handle this method\n Try KMeans!")
+        stop("Function accepts on only one band raster object")
     }
     if (zones_count >= 128)
     {
@@ -55,39 +55,42 @@ ClassifyToZones = function(obj, method, zones_count = 3, ...)
     }
     if (class(zones_count) != "numeric" )
     {
-        stop("zones_count has to be a Numeric variable")
+        stop("zones_count has to be a numeric variable")
+    }
+    if (method != "KMeans")
+    {
+        stop("Fatal: System can not handle this method\n Try KMeans!")
     }
     else
     {
-
         if (method == "KMeans")
         {
-            valueTable = getValues(obj)
+            valueTable = getValues(objPC)
                 
-	    rNA = setValues(raster(obj), 0)
-	    rNA[is.na(obj)] = 1
+	    rNA = setValues(raster(objPC), 0)                     # create empty raster to store lost info of the input object during KMeans
+	    rNA[is.na(objPC)] = 1
 	    rNA = getValues(rNA)
+            
             km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
 
 	    valueTable = as.data.frame(valueTable)
 	    valueTable[rNA == 1,] = NA
 	    valueTable[rNA == 0,] = km$cluster
         
-	    Zones = raster(obj)
-	    Zones = setValues(Zones, valueTable[[1]])
+	    zones = raster(objPC)
+	    zones = setValues(zones, valueTable[[1]])
+	    metadata(zones) = append(matadata(objPC), list(clusterMethod = "KMeans", Zones = zones_count))
 	    
 	    if (missing(...))
 	    {
-	        return(Zones)
+	        return(zones)
 	    }
 	    else
 	    {
-	        Zones = writeRaster(Zones, dataType = "INT1S", overwrite = T, ...)
-	        return(Zones)
+	        zones = writeRaster(zones, dataType = "INT1S", overwrite = T, ...)
+	        return(zones)
 	    }
-	    
         }
-       
     }
 }
 
