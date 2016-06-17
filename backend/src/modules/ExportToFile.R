@@ -21,7 +21,8 @@ library(tools)
 
 # Argument: 
 #	Inputdata: Either SpatialPolygonsDataFrame or SpatialPointsDataFrame
-#	filename: the directory and filename (with extention) of output
+#	filename: The directory and filename (with extention) of output or a list of filenames
+#	Output format: kml,sql,shp,gpx
 #
 # Maintains:
 #   Environment
@@ -35,23 +36,18 @@ library(tools)
 #
 
 
-## Export vector to kml
-''' 
-input:
-    SpatialPolygonsDataFrame
-output:
-    kml files
-'''
-ExportToFile = function(spatial.df, filename, prj_string = CRS("+proj=longlat +datum=WGS84"))
+ExportToFile = function(spatial.df, filenames, prj_string)
+{
+for (filename in filenames)
 	{
-	vector84 = spTransform(spatial.df, prj_string)
+#	vector84 = spTransform(spatial.df, prj_string)
+	vector84 = spatial.df
 	layer_op = NULL
 	layer = basename(file_path_sans_ext(filename))
 	if (file_ext(filename)=="kml"){
 		drv = "KML"
 		}
 		
-
 	if (file_ext(filename)=="sql"){
 		drv = "PGDump"
 		}
@@ -67,18 +63,19 @@ ExportToFile = function(spatial.df, filename, prj_string = CRS("+proj=longlat +d
 			if (names(vector84@data[1]) !="id"){
 			vector84@data[i] = NULL}
 			}
-	names(vector84)[names(vector84) == "id"] = "name"
+		names(vector84)[names(vector84) == "id"] = "name"
 		}
 		
 	writeOGR(vector84,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE)
-	}
+	}}
 
 
 #test
 #polygon84 = points.df
-#obj = points.df
-#filename = "/home/yi/Documents/RGIC01/backend/data/waypoints3.gpx"
-#ExportToFile(obj,filename)
+	obj = vec[[1]]
+	obj = points.df
+filename = "/home/yi/Documents/RGIC01/backend/data/onelayer2.gpx"
+ExportToFile(obj,filename)
 
 
 
