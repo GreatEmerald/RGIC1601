@@ -45,15 +45,18 @@ GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
    {
        warning("Mask is essential for better results!")
    }
-   else if (field_mask != NA | (identical(projection(in_stack), projection(field_mask)) == True))
+   else  
    {
-       stop("It is necessary that stack and mask have same projections!")
+       if(identical(projection(in_stack), projection(field_mask)) == F)
+       {
+           stop("It is necessary that stack and mask have same projections!")
+       }
+       else
+       {
+           in_stack = mask(in_stack, field_mask)
+       }
    }
-   else 
-   {
-       in_stack = mask(in_stack, field_mask)
-   }
-   
+     
    in_stack =  aggregate(in_stack, fact= agg_factor)
    in_data = getValues(in_stack)
    
