@@ -73,7 +73,7 @@ if (!file.exists(HomogenisedIntermediaryFile))
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
 ColourIndex = CalculateIndex(InputImage, ImageType)
-ManagementZoneVector = RasterToVector(HomogeneousMZ, InputImage)
+ManagementZoneVector = RasterToVector(HomogeneousMZ)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
 OutlierPoints = GetOutliers(HomogeneousMZ, 0.0005)
