@@ -18,28 +18,30 @@
 
 library(raster)
 
-#### Classify an input raster into management zones ####
+#### Performs PCA on the input stack or brick object to produce 1-B raster with most info ####
 
 # Arguments:
 #   Object:
 #       Raster object; multi layered brick/stack
-#	Mask: raster object
-#   Additional argument: (recommended for saving memory space)
+#	Mask: raster object or a spatial object
+#   Additional argument: (higher values is recommended for saving memory space and faster processing)
 #       Aggregation Factor
+#       file name for writing the raster object to disk
 #
 # Maintains:
 #   Environment
 #   Input files
 #
 # On violation:
-#   warning()
+#   warning() when mask is missing
+#   stop() when mask do not match projection of the input stack
 #
 # Returns:
-#   Raster single-band layer object; the 
+#   Raster single-band (1-B) object; the 
 #   layer will be the first principle component of the input brick
 
 
-GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
+GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
 {    
    if (missing(field_mask))
    {
@@ -57,14 +59,15 @@ GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
        }
    }
      
-   in_stack =  aggregate(in_stack, fact= agg_factor)
+   in_stack =  aggregate(in_stack, fact = agg_factor)                      
    in_data = getValues(in_stack)
    
-   # scale=T save scaling applied to each variable, Center = T, save means that were subtracted, retx=F don't save PCA scores
-   data.pca = princomp(na.omit(in_data), scale = F, center = F, retx = F)
-   pc_data = predict(data.pca, in_data)
+   # scale=T, save scaling applied to each variable, center = T, save means that were subtracted and retx = T, save PCA scores
+   data.pca = princomp(na.omit(in_data), scale = T, center = T, retx = T)             # performs PCA, contains info on eigen vec etc.
+   pc_data = predict(data.pca, in_data)                                               # writes principle components
    PC1 = raster(in_stack[[1]])
    PC1 = setValues(in_stack[[1]], pc_data[,1])
+   metadata(PC1) = list(Method = "PCA", Aggregation = agg_factor)
    
    if (missing(...))
    {
@@ -75,7 +78,6 @@ GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
        PC1 = writeRaster(PC1, overwrite = T, ...)
        return(PC1)
    }
-   
 }
 
 
