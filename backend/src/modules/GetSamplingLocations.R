@@ -100,5 +100,4 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 # Zones_dir = "/home/yi/Documents/RGIC01/backend/data/Zone/ClassifiedZones_kMeans_3zones.grd"
 # Zones = Input(Zones_dir)[[1]]
 # points.df = GetSamplingLocations(Zones,"random",num_sample=3, zones_count = 3)
-
-# spplot(Zones)
+# Test over
