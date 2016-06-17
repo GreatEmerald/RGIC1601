@@ -79,7 +79,7 @@ ClassifyToZones = function(objPC, method, zones_count = 3, ...)
         
 	    zones = raster(objPC)
 	    zones = setValues(zones, valueTable[[1]])
-	    metadata(zones) = append(matadata(objPC), list(clusterMethod = "KMeans", Zones = zones_count))
+	    metadata(zones) = append(metadata(objPC), list(clusterMethod = "KMeans", Zones = zones_count))
 	    
 	    if (missing(...))
 	    {
