@@ -35,9 +35,10 @@ getwd()
 #setwd("./modules")
 WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
 WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+Zones_PC5 = raster(file.path("..", ".." , "output", "Zones_PC5.gri"))
+#Zones_PC5_Filterd = raster(file.path("..", ".." , "output", "Zones_PC5.gri..."))
 #WSS = stack(WS)
 #WSB = brick(WS)
-
 
 # RasterToVector
 
@@ -140,11 +141,11 @@ spplot(HomogeniseRaster[[2]])
 
 rv = list("sp.polygons", GetOutl[[4]], fill = "red")
 
-SPplotWS = spplot(GetOutliers[[1]], scales = list(draw = TRUE),
+SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
                   xlab = "X", ylab = "Y",
-                  ol.regions = rainbow(99, start=.1),
-                  sp.layout = c('sp.points', GetOutliers[[5]], col='green', pch=16))
-#sp.layout = rv)
+                  #ol.regions = rainbow(99, start=.1),
+                  sp.layout = rv)
+                  #sp.layout = c('sp.points', GetOutl[[]], col='green', pch=16)
 
 SPplotWS
 
@@ -251,7 +252,8 @@ s <- resample(r, s, method='bilinear')
 
 
 
-
+Simp_MZ2 = gSimplify(MZRasterToVector[[2]], tol = 2)
+spplot(Simp_MZ2)
 
 
 
@@ -268,6 +270,9 @@ prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555
                      4.0812 +units=m +no_defs")
 
 prj_string_WGS84_31 <- CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+
+Proj4js.defs["EPSG:32631"] = "+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+
 
 PROJ4WS = WS@crs
 
@@ -319,7 +324,7 @@ library(raster)
 data(akima)
 
 # define de dimension of grid
-dimgrid <- 50
+dimgrid <- 1000
 
 # Interpolate to regular grid
 ak.li <- interp(akima$x, akima$y, akima$z, xo=seq(min(akima$x),
@@ -331,13 +336,18 @@ image(ak.li)
 points(akima)
 with(akima, text(x, y, formatC(z,dig=2), adj = -0.1))
 
-r <- raster(ak.li)
-#r <- ClassifiedZones
+#r <- raster(ak.li)
+r <- ClassifiedZones
 plot(r)
 
-pol <- rasterToPolygons(r, fun=function(x){x>40})
-pol <- rasterToPolygons(r, fun=function(x){x<=40 & x>20})
-pol3 <- rasterToPolygons(r, fun=function(x){x<=20})
+pol <- rasterToPolygons(Zones_PC5, fun=function(x){x==3}, dissolve=FALSE)
+#pol2 <- rasterToPolygons(r, fun=function(x){x<=40 & x>20})
+#pol3 <- rasterToPolygons(r, fun=function(x){x<=20})
+
+pol = HomogeniseRaster[[2]]
+
+plot(pol, col="red")
+spplot(pol)
 
 # Show the polygons
 plot(pol, add=T, col='yellow')
@@ -346,13 +356,13 @@ plot(pol3, add=T, col='lightblue')
 
 
 
-### new code
-digits <- 1
+### MAKE A FLUENT POLYGON FROM RASTER
+digits = 1
 for (i in 1:length(pol@polygons))
 {
   for (j in 1:length(pol@polygons[[i]]@Polygons))
   {
-    pol@polygons[[i]]@Polygons[[j]]@coords <- round(pol@polygons[[i]]@Polygons[[j]]@coords, digits)
+    pol@polygons[[i]]@Polygons[[j]]@coords = round(pol@polygons[[i]]@Polygons[[j]]@coords, digits)
   }
 }
 
@@ -363,21 +373,24 @@ union = unionSpatialPolygons(pol, ID=rep(1, times=length(pol@polygons)))
 plot(union, add=TRUE, col="white")
 
 # Nombre de vertices
-crds=union@polygons[[1]]@Polygons[[1]]@coords
+Lenght_Pol = length(union@polygons[[1]]@Polygons)
+
+for (i in 1:Lenght_Pol)
+{
+  crds=union@polygons[[1]]@Polygons[[i]]@coords
+  print (i)
+}
+crds=union@polygons[[1]]@Polygons[[2]]@coords
 tmp=length(crds[,1])
 
 nexCoordX= rollmean(c(crds[tmp,1], crds[,1], crds[1,1]), k=2)
 nexCoordY= rollmean(c(crds[tmp,2], crds[,2], crds[1,2]), k=2)
 lines(nexCoordX, nexCoordY, col="red", lwd=2)
 
-test1 = gPolygonize(lines(nexCoordX, nexCoordY, col="red", lwd=2))
-
-
-load("https://dl.dropboxusercontent.com/u/3180464/tmetad1.rda")
-tmetadg  <- points2grid(tmetad1,tolerance=0.000856898)
-tmetadg2  <- SpatialGrid(tmetadg, proj4string=CRS("+init=epsg:4326"))
-tmetadpol <- as(tmetadg2, "SpatialPolygons")
-
+Sr1 = Polygon(cbind(nexCoordX,nexCoordY))
+plot(SpP)
+Srs1 = Polygons(list(Sr1), "s1")
+SpP = SpatialPolygons(list(Srs1))
 
 ## _ _ _ _
 ## finishing the script and calculate running time of the script

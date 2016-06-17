@@ -75,20 +75,124 @@ GetOutliers = function(rast_in, Q)
   
     return(list(rast_in, quantiles, Vec, Polyclust, centroidsSPDF, Dsg))
   }
-  if (length(UV) <= 20) # used for 'Homogeneous MZ raster'
-  {
-    Vec_MZ2 = RasterToVector(rast_in[[2]])
-    gas = gArea(Vec_MZ2, byid = T)/10000
-    Polyclust = SpatialPolygonsDataFrame(Vec_MZ2, data = data.frame(gas), match.ID = F)
-    
-    #centroids = getSpPPolygonsLabptSlots(Polyclust)
-    #centroidsDF = as.data.frame(centroids)
-    #centroidsSPDF = SpatialPointsDataFrame(centroidsDF, data = data.frame(gas))
-    
-    #Dcl = contourLines(rast_in, nlevels = 1)  # create contour object - change 8 for more/fewer levels
-    
-    return(list(rast_in, Vec_MZ2, gas, Polyclust, centroidsSPDF))
-  }
+  # if (length(UV) <= 20) # used for 'Heterogeneous MZ raster'
+  # {
+  #   Vec_MZ2 = RasterToVector(rast_in[[2]])
+  #   gas = gArea(Vec_MZ2, byid = T)/10000
+  #   Polyclust = SpatialPolygonsDataFrame(Vec_MZ2, data = data.frame(gas), match.ID = F)
+  #   
+  #   #centroids = getSpPPolygonsLabptSlots(Polyclust)
+  #   #centroidsDF = as.data.frame(centroids)
+  #   #centroidsSPDF = SpatialPointsDataFrame(centroidsDF, data = data.frame(gas))
+  #   
+  #   #Dcl = contourLines(rast_in, nlevels = 1)  # create contour object - change 8 for more/fewer levels
+  #   
+  #   return(list(rast_in, Vec_MZ2, gas, Polyclust, centroidsSPDF))
+  # }
 }
-#GetOutl = GetOutliers(WS,0.005) # used for 'Singe-band image'
-#GetOutl_MZ = GetOutliers(HomogeniseRaster[[2]],0.005) # used for 'Homogeneous MZ raster'
+# GetOutl = GetOutliers(WS,0.0005) # used for 'Singe-band image'
+# GetOutl_MZ = GetOutliers(Zones_PC5[[2]],0.005) # used for 'Homogeneous MZ raster'
+# spplot(GetOutl[[4]])
+# 
+# spplot(Zones_PC5[[1]])
+# unique(Zones_PC5)
+# 
+# subset(Zones_PC5, )
+# SS_2 = subset(Zones_PC5, 2)
+# 
+# 
+# # Detect unique values / Management Zones
+# UV = unique(HomogeniseRaster[[2]])
+# # Create a list for the return
+# LWS = list(1:length(UV))
+# 
+# for (i in UV)
+# {
+#   RAST = raster(Zones_PC5)
+#   LWS[[i]] = RAST
+# }
+# 
+# 
+# spplot(SS_2)
+# 
+# Clumpie = clump(Zones_PC5, direction=8, gaps=FALSE)
+# freq(Clumpie)
+# spplot(Clumpie)
+# 
+# r <- raster(ncols=12, nrows=12)
+# r = Zones_PC5
+# 
+# r[] <- round(runif(ncell(r))*1 )
+# rc <- clump(r) 
+# freq(rc)
+# spplot(r)
+# 
+# # get frequency table    
+# f<-freq(Clumpie)
+# # save frequency table as data frame
+# f<-as.data.frame(f)
+# 
+# # which rows of the data.frame are only represented by clumps under 9pixels?
+# str(which(f$count <= 9))
+# # which values do these correspond to?
+# str(f$value[which(f$count <= 9)])
+# # put these into a vector of clump ID's to be removed
+# excludeID <- f$value[which(f$count <= 9)]
+# 
+# # make a new raster to be sieved
+# formaskSieve <- rc
+# # assign NA to all clumps whose IDs are found in excludeID
+# formaskSieve[rc %in% excludeID] <- NA
+# 
+# spplot(formaskSieve)
+# 
+# 
+# # extend raster, otherwise left and right edges are 'touching'
+# r <- extend(Zones_PC5, c(1,1))
+# 
+# # get al unique class values in the raster
+# clVal <- unique(r)
+# 
+# # remove '0' (background)
+# clVal <- clVal[!clVal==0]
+# 
+# # create a 1-value raster, to be filled in with NA's
+# r.NA <- setValues(raster(r), 1)
+# 
+# # set background values to NA
+# r.NA[r==0]<- NA
+# 
+# # loop over all unique class values
+# for (i in clVal) {
+#   
+#   # create & fill in class raster
+#   r.class <- setValues(raster(r), NA)
+#   r.class[r == i]<- 1
+#   
+#   # clump class raster
+#   clp <- clump(r.class)
+#   
+#   # calculate frequency of each clump/patch
+#   cl.freq <- as.data.frame(freq(clp))
+#   
+#   # store clump ID's with frequency 1
+#   rmID <- cl.freq$value[which(cl.freq$count == 1)]
+#   
+#   # assign NA to all clumps whose ID's have frequency 1
+#   r.NA[clp %in% rmID] <- NA
+# } 
+# 
+# # multiply original raster by the NA raster
+# r <- r * r.NA
+# 
+# # crop the originally extended raster ((row 2-6 and column 2-6))
+# r <- crop(r, extent(r, 2, 6, 2, 6 ))
+# 
+# getValues(r)
+# 
+# #  [1] NA  1 NA NA NA
+# #       1  1  1 NA NA  
+# #       1 NA  1 NA NA  
+# #       2  1 NA  1 NA  
+# #       2  2 NA NA NA
+# 

@@ -18,6 +18,7 @@
 library(raster)
 library(rgdal)
 library(sp)
+library(rgeos)
 
 ## Function for detecting unique values in a raster and converts these to polygons.
 #
@@ -50,32 +51,45 @@ RasterToVector = function(rast_in)
   
   # Detect unique values / Management Zones
   UV = unique(rast_in)
-  # Create a list for the return
-  MZs_vector = list(1:length(UV))
   
-  #oldmetadata = metadata(rast_in)
+  MZs = seq(0, (length(UV)-1), by=1)
+  
+  # Create a list for the return
+  #MZs_vector = list(1:length(UV))
+  
+  
+  oldmetadata = metadata(rast_in)
   #oldmetadata2 = append(oldmetadata, list(newvariable="test1"))
   
-  for (i in UV)
+  SHAPE_SS = rasterToPolygons(rast_in, dissolve=TRUE)
+  
+  SHAPE_SS@data$Metadata = append(oldmetadata, list("test1"))
+  SHAPE_SS@data$ZoneNR = MZs
+
+  for (i in MZs)
   {
-    SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
-    MZs_vector[[i]] = SHAPE
+  #  SHAPE = rasterToPolygons(rast_in, fun=function(x){x == i}, dissolve=TRUE)
+    #MZs_vector[[i]] = SHAPE
     
-    MZs_vector[[i]]@data["META"] = paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
+    #SHAPE_SS[[i]]@data["META"] = paste("This is polygon", i, "out of", tail(UV,1), "management zones.")
+    SHAPE_SS@data$Metadata[[i+1]] == paste("This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
+  #  SHAPE2[[i]] = SHAPE
+    #SHAPE2 = append(SHAPE)
   }
   
-  return(MZs_vector)
+  return(SHAPE_SS)
 }
-#MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) #Homogeneous raster
+MZRasterToVector = RasterToVector(HomogenisedRaster) #Homogeneous raster
 #MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) # VI
 
-#MZRasterToVector[[1]]@data
+#spplot(HomogeniseRaster) # plot input
+spplot(MZRasterToVector) # plot the output(s)
 
-
-#spplot(HomogeniseRaster[[2]]) # plot input
-#spplot(MZRasterToVector[[1]]) # plot output (MZ1)
-#spplot(MZRasterToVector[[3]]) # plot output (MZ3)
-
+for (i in MZs)
+{
+  print(paste("This is polygon", i, "out of", tail(MZs,1), "management zones (incl border)."))
+}
+MZRasterToVector@data$Metadata[[0+1]]
 
 
 oldmetadata = metadata(MZRasterToVector[[1]])
