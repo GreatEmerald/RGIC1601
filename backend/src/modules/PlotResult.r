@@ -20,9 +20,32 @@ library(rgdal)
 library(tools)
 
 
-obj = readOGR("/home/yi/Documents/RGIC01/backend/data/onelayer2.kml",layer = "onelayer2")
-str(obj)
 
-PlotResult = function(obj, filename){
-spplot(obj[[1]])
-[1],scales = list(draw = T))
+
+
+PlotResult = function(obj, filename,Zones_count = 3,...)
+	{
+obj$id <- factor(c(1:length(obj$id)), levels = c(1:Zones_count), labels = c(1:Zones_count))
+	if (file_ext(filename) == "jpg")
+		{
+		jpeg(filename)
+		}
+	if (file_ext(filename) == "png")
+		{
+		png(filename)
+		}
+	if (file_ext(filename) == "pdf")
+		{png(filename)
+		}
+		
+	print(spplot(obj,scales = list(draw = T)))
+	
+	dev.off()
+}
+
+'''
+obj = readOGR("/home/yi/Documents/RGIC01/backend/data/test_vector.shp",layer = "test_vector")
+filename = "/home/yi/Documents/RGIC01/backend/data/myplot.png"
+str(obj)
+PlotResult(obj,filename)
+'''

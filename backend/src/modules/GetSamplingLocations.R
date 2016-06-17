@@ -83,16 +83,22 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
     }
 
   
-  
   # transform to spatial points
   prj_string_WGS84 = CRS("+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
   points.df = as.data.frame(Point_matrix)
   names(points.df) = c("x","y","Zone_id","id")
   coordinates(points.df) <- ~x + y
   proj4string(points.df) <- prj_string_WGS84
-#  points.df@data$coords = cbind(coordinates(points.df)[,1],coordinates(points.df)[,2])
+  # points.df@data$coords = cbind(coordinates(points.df)[,1],coordinates(points.df)[,2])
+
+
+  # Add metedata
+  points.df$sample_num = num_sample
+  points.df$method = Method
+  
+  # A SpatialPointsDataFrame as return
   return(points.df)
-    
+  
 }
 
 # Test

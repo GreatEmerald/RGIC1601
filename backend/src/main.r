@@ -38,11 +38,19 @@ InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")),
     bands=1)
+# Define whether the above image is a "soil" or "vegetation" map, so one would not need to guess
+ImageType = "soil"
 
 ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"))
-OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path("..", "output", "outliers.sql"), file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
-SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"), file.path("..", "output", "samples.gpx"), file.path("..", "output", "samples.shp"))
+OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path("..", "output", "outliers.sql"),
+    file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
+SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"),
+    file.path("..", "output", "samples.gpx"), file.path("..", "output", "samples.shp"))
 
+# The number of pixels to merge for PCA and extracting vegetation indices.
+# Low factors take a lot of time and memory but is more precise
+AggregationFactor = 10
+    
 PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
 ZoneRasterIntermediaryFile = file.path("..", "output", "classified.grd")
 HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
@@ -52,7 +60,7 @@ HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
 # Get the first principal component
 if (!file.exists(PC1IntermediaryFile))
 {
-    FirstComponent = GetComponent(InputImage, filename=PC1IntermediaryFile)
+    FirstComponent = GetComponent(InputImage, AggregationFactor, filename=PC1IntermediaryFile)
 } else
     FirstComponent = raster(PC1IntermediaryFile)
 
@@ -64,14 +72,15 @@ if (!file.exists(ZoneRasterIntermediaryFile))
 
 if (!file.exists(HomogenisedIntermediaryFile))
 {
-    HomogenisedRaster = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile, datatype="INT1S")
+    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile, datatype="INT1S")
 } else
-    HomogenisedRaster = raster(HomogenisedIntermediaryFile)
+    HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
-ColourIndex = CalculateIndex(InputImage)
-ManagementZoneVector = RasterToVector(HomogenisedRaster, InputImage)
+ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor)
+ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
-OutlierPoints = GetOutliers(HomogenisedRaster, 0.0005)
+OutlierPoints = GetOutliers(FirstComponent, 0.005)
+ExportToFile(OutlierPoints, OutlierOutputFiles)
 SamplingLocations = GetSamplingLocations(ManagementZones)
-
+ExportToFile(SamplingLocations, SampleOutputFiles)

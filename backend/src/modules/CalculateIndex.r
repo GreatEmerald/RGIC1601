@@ -48,8 +48,10 @@ library(raster)
 #rm(file1,file2,file3,file4)
 
 
-CalculateIndex = function(in_stack,fieldtype, ...)
+CalculateIndex = function(in_stack,fieldtype, agg_factor = 10, ...)
 { 
+  in_stack =  aggregate(in_stack, fact = agg_factor) 
+  
 ##    NDVI function
     if (fieldtype == "vegetation")
     {
@@ -58,30 +60,37 @@ CalculateIndex = function(in_stack,fieldtype, ...)
 
       if (length(red_index) < 1)
       { 
-        stop("could not find red band in the raster stack")
+        stop("Could not find red band in raster stack.")
       }
         
       if (length(nir_index) < 1)
       {  
-        stop("could not find nir band in the raster stack")
+        stop("Could not find nir band in raster stack.")
       }
       
       NDVI_stack = stack(in_stack[[red_index]], in_stack[[nir_index]])
       
         fun = function(rst) {(rst[[1]]-rst[[2]])/(rst[[1]]+rst[[2]])}
         new_raster = calc(NDVI_stack, fun)
-        return(new_raster)
+        return
+        metadata(new_raster) = list(Indextype="NDVI")
     } 
   
 ##    albedo function        
     if (fieldtype == "soil") 
+    
     {
         new_raster = sum(in_stack)/dim(in_stack)[3]
         return(new_raster)
+        metadata(new_raster) = list(Indextype="albedo")
+        
+        
     } 
   
-    stop("please note whether the image is of either soil or vegetation")
-
+    stop("Please note whether the fieldtype is either 'soil' or 'vegetation'.")
 }
-    
-#CalculateIndex(in_stack, "vegetation")
+
+#CalculatedIndex = CalculateIndex(in_stack, "soil")
+
+#raster_out = file.path("..","output","index_testfield")
+#writeRaster(CalculatedIndex, dataType = "FLT3S", overwrite = T, raster_out)
