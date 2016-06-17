@@ -70,12 +70,13 @@ for (filename in filenames)
 	}}
 
 
-#test
-#polygon84 = points.df
-	obj = vec[[1]]
-	obj = points.df
-filename = "/home/yi/Documents/RGIC01/backend/data/onelayer2.gpx"
-ExportToFile(obj,filename)
+# test begin
+# polygon84 = points.df
+#	obj = vec[[1]]
+#	obj = points.df
+# filename = "/home/yi/Documents/RGIC01/backend/data/onelayer2.gpx"
+# ExportToFile(obj,filename)
+# test over
 
 
 
