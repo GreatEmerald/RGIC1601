@@ -70,8 +70,8 @@ RasterToVector = function(rast_in)
   
   return(RtP)
 }
-in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
-MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
-spplot(MZRasterToVector)
+#in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
+#MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
+#spplot(MZRasterToVector)
 
 # #MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) # VI
