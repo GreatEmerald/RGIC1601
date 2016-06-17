@@ -23,8 +23,12 @@
 
 source("modules/input.r")
 source("modules/GetComponent.r")
-source("modules/GetOutliers.r")
 source("modules/ClassifyToZones.r")
+source("modules/HomogeniseRaster.r")
+source("modules/CalculateIndex.r")
+source("modules/RasterToVector.r")
+source("modules/GetOutliers.r")
+source("modules/GetSamplingLocations.R")
 source("modules/ExportToFile.R")
 
 #### Input/Output variables ####
@@ -58,12 +62,16 @@ if (!file.exists(ZoneRasterIntermediaryFile))
 } else
     ManagementZones = raster(ZoneRasterIntermediaryFile)
 
-#Homogenise raster    
-    
-SamplingLocations = GetSamplingLocations(CumulativeManagementZones)
+if (!file.exists(HomogenisedIntermediaryFile))
+{
+    HomogenisedRaster = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile, datatype="INT1S")
+} else
+    HomogenisedRaster = raster(HomogenisedIntermediaryFile)
 
-OutlierPoints = GetOutliers(ManagementZones, 0.0005)
+ColourIndex = CalculateIndex(InputImage)
+ManagementZoneVector = RasterToVector(HomogenisedRaster, InputImage)
+ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
-#SingleBandImageToOutlierPoints = GetOutliers()
+OutlierPoints = GetOutliers(HomogenisedRaster, 0.0005)
+SamplingLocations = GetSamplingLocations(ManagementZones)
 
-ExportToFile(ManagementZones, file.path("..", "output", "PC1.grd"))
