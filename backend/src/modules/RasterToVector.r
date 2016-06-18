@@ -23,12 +23,14 @@ library(rgeos)
 ## Function for detecting unique values in a raster and converts these to polygons.
 #
 # Arguments:
-#   rast_in:
+#   MZrast_in:
 #       character string: Homogenized Management Zone Raster.
 #            Must be a format handled by GDAL.
 #       character vector: RasterLayer to use as input, single-band.
 #           Must be a format handled by GDAL.
-#   
+#   VIrast_in:   
+#       character string: OPTIONAL Vegetation index raster
+#
 # Maintains:
 #   Environment
 #   Input files
@@ -39,39 +41,63 @@ library(rgeos)
 # Returns:
 #   A large list SpatialPolygonsDataFrame.
 #   The amount of Management Zones equals the amount of elements in the list.
+#   
 
 
 # INTO THE FUNCTION
-RasterToVector = function(rast_in)
+RasterToVector = function(MZrast_in, VIrast_in)
 {
-  if (nbands(rast_in) != 1)
+  if (class(MZrast_in) != "RasterLayer")
   {
-    stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
+    stop(paste("Input", (data.class(MZrast_in)), "is not a raster."))
   }
   
-  rast_in = aggregate(rast_in, fact=5, fun=modal)
-  UV = unique(rast_in) # detect unique values / Management Zones
+  if (nbands(MZrast_in) != 1)
+  {
+    stop(paste("Input", (data.class(MZrast_in)), "is not single-banded."))
+  }
+
+  MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
+  UV = unique(MZrast_in) # detect unique values / Management Zones
   MZs = seq(0, (length(UV)-1), by=1)
   MZs_vector = list(1:length(UV)) # create a list for the return
-
-  RtP = rasterToPolygons(rast_in, dissolve=TRUE, na.rm=TRUE)
-  
-  oldmetadata = metadata(rast_in)
+  RtP = rasterToPolygons(MZrast_in, dissolve=TRUE, na.rm=TRUE)
+  oldmetadata = metadata(MZrast_in)
+    
   #RtP@data$OldMetadata = append(oldmetadata, list(newvariable2="test2"))
-  
+    
   for (i in MZs)
   {
-    if (i<4)
+    if (i<4) #AANPASSEN
     {
       RtP@data$Metadata[[i+1]] = paste(
         "This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
     }
   }
+    
+
   
-  return(RtP)
+  if (exists("VIrast_in"))
+  {
+    
+    if (nbands(VIrast_in) != 1)
+    {
+      stop(paste("Input", (data.class(VIrast_in)), "is not single-banded."))
+    }
+    print ("VI!")
+    
+    r <- VIrast_in
+    sdata <- RtP
+    
+    r.vals <- extract(r, sdata)
+    r.mean <- lapply(r.vals, FUN=mean)
+    sdata@data$VImeans =  r.mean
+    spplot(sdata)
+  
+  }
+  return(sdata)
 }
 #in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
-#MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
+#in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
+#MZRasterToVector = RasterToVector(in_raster, in_VI) #Homogeneous raster
 #spplot(MZRasterToVector)
-
-# #MZRasterToVector = RasterToVector(HomogeniseRaster[[2]]) # VI
