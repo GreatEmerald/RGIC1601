@@ -81,11 +81,10 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     }
   }
 
-  if (is.na(VIrast_in))
-  {
-    print(paste("Optional VI input is missing"))
-    return(RtP)
-  }
+  # if (is.na(VIrast_in))
+  # {
+  # 
+  # }
   
   if (data.class(VIrast_in) == "RasterLayer")
   {
@@ -103,6 +102,11 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     sdata@data$VImeans =  r.mean
     return(sdata)
   }
+    else
+    {
+      print(paste("Optional VI input is missing"))
+      return(RtP)
+    }
   
   
 }
