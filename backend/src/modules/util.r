@@ -49,5 +49,6 @@ gdal_polygonizeR = function(x, outshape=NULL, attname='DN', gdalformat = 'GML', 
   full.c = sprintf("%1$s %2$s -f '%3$s' %4$s %5$s", py.c, rast.nm, gdalformat, outshape, attname)
   system(full.c)
   shp = readOGR(outshape, layer = attname, verbose=!quiet)
+  projection(shp) = projection(x)
   return(shp)
 }
