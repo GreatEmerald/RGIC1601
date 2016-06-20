@@ -21,7 +21,7 @@ library(sp)
 library(rgeos)
 
 #### Import module(s) ####
-source("util.r")
+source("modules/util.r")
 
 ## Function for detecting unique values in a raster and converts these to polygons.
 #
