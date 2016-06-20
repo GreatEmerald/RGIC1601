@@ -73,7 +73,7 @@ CalculateIndex = function(in_stack,fieldtype, agg_factor = 10, ...)
         fun = function(rst) {(rst[[1]]-rst[[2]])/(rst[[1]]+rst[[2]])}
         new_raster = calc(NDVI_stack, fun)
         return
-        metadata(new_raster) = list(Indextype="NDVI")
+        metadata(new_raster) = list(index_type="NDVI")
     } 
   
 ##    albedo function        
@@ -82,7 +82,7 @@ CalculateIndex = function(in_stack,fieldtype, agg_factor = 10, ...)
     {
         new_raster = sum(in_stack)/dim(in_stack)[3]
         return(new_raster)
-        metadata(new_raster) = list(Indextype="albedo")
+        metadata(new_raster) = list(index_type="albedo")
         
         
     } 
