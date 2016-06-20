@@ -67,7 +67,7 @@ GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
    pc_data = predict(data.pca, in_data)                                      # writes principle components
    PC1 = raster(in_stack[[1]])
    PC1 = setValues(in_stack[[1]], pc_data[,1])
-   metadata(PC1) = list(dataReductionMethod = "PCA", Aggregation = agg_factor)
+   metadata(PC1) = list(data_reduction_method = "PCA", aggregation_factor = agg_factor)
    
    if (missing(...))
    {
