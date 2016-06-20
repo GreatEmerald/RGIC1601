@@ -98,7 +98,7 @@ for (filename in filenames)
 #	obj = vec[[1]]
 #	obj = points.df
 # filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
-# ExportToFile(obj,filename,prj_string)
+# ExportToFile(obj,filename)
 # test over
 
 
