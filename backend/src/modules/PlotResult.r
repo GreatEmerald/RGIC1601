@@ -18,14 +18,33 @@
 library(sp)
 library(rgdal)
 library(tools)
+library(latticeExtra)
+
+#
+# Arguments:
+#   obj(SpatialPolygonsDataFrame)
+#	samples(SpatialPointsDataFrame)
 
 
 
+#   
+# Maintains:
+#   Environment
+#   Input files
+#
+# On violation:
+#   Stops script and gives a message
+#
+# Returns:
+#   A list of 4, with the Homogenized raster in [[2]].
+#   The amount of Management Zones equals the amount of elements.
 
 
-PlotResult = function(obj, filename,Zones_count = 3,...)
+PlotResult = function(obj, samples= NULL, outliers = NULL, filename, Zones_count = 3,...)
 	{
-obj$id <- factor(c(1:length(obj$id)), levels = c(1:Zones_count), labels = c(1:Zones_count))
+#	obj$id = factor(c(1:Zones_count), levels = c(1:Zones_count), labels = paste("Zone",c(1:Zones_count)))
+	
+	# check the expected export format
 	if (file_ext(filename) == "jpg")
 		{
 		jpeg(filename)
@@ -38,14 +57,27 @@ obj$id <- factor(c(1:length(obj$id)), levels = c(1:Zones_count), labels = c(1:Zo
 		{png(filename)
 		}
 		
-	print(spplot(obj,scales = list(draw = T)))
-	
+		
+	# check the expected results
+		
+	print(spplot(obj,scales = list(draw = T),col.regions = heat.colors(100))
+	+ layer(sp.points(samples, pch = 17)))
 	dev.off()
 }
 
+
+
 '''
+
+	spplot(obj,scales = list(draw = T),col.regions = heat.colors(100))
+	+ layer(sp.points(samples, pch = 17))
+	
+	
+	
 obj = readOGR("/home/yi/Documents/RGIC01/backend/data/test_vector.shp",layer = "test_vector")
-filename = "/home/yi/Documents/RGIC01/backend/data/myplot.png"
+filename = "/home/yi/Documents/RGIC01/backend/data/myplot3.png"
 str(obj)
-PlotResult(obj,filename)
+obj = Zones
+samples = points.df
+PlotResult(obj,samples,filename= filename)
 '''
