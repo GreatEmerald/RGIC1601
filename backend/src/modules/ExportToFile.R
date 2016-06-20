@@ -78,15 +78,7 @@ for (filename in filenames)
 		
 		for (i in 1:(length(vector)))
 			{
-			if (names(v# test begin
-#	obj = vec[[1]]
-#	obj = points.df
-# filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
-# ExportToFile(obj,filename)
-# test over
-
-
-	vector@data[1]) !="id"){
+			if (names(vector@data[1]) !="id"){
 			vector@data[i] = NULL}
 			}
 		names(vector)[names(vector) == "id"] = "name"
