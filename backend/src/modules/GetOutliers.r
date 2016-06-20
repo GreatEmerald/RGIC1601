@@ -97,7 +97,7 @@ GetOutliers = function(rast_in, Q)
     Polyclust_upper = SpatialPolygonsDataFrame(Polyclust_upper, data = data.frame(gas_upper), match.ID = F)
     Polyclust_lower = SpatialPolygonsDataFrame(Polyclust_lower, data = data.frame(gas_lower), match.ID = F)
     
-    rm(gas_upper, gas_lower, Polyclust_upper, Polyclust_lower,SLDF_upper,SLDF_lower,Dcl_upper,
+    rm(gas_upper, gas_lower, SLDF_upper,SLDF_lower,Dcl_upper,
        Dcl_lower, Dim_upper, Dim_lower, Dsg_upper, Dsg_lower, Dens_upper, Dens_lower, sSp_lower, sSp_upper)
     
     centroids_upper = getSpPPolygonsLabptSlots(Polyclust_upper)
