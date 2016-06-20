@@ -79,7 +79,7 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     }
   }
 
-  print(VIrast_in)
+  #print(VIrast_in)
   
   #if (any(is.na(VIrast_in)))
   #{
