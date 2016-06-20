@@ -84,7 +84,7 @@ if (!file.exists(HomogenisedIntermediaryFile))
 } else
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
-ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor)
+ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor*2)
 ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
