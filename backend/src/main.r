@@ -32,8 +32,9 @@ source("modules/GetSamplingLocations.R")
 source("modules/ExportToFile.R")
 source("modules/PlotResult.r")
 
-#### Input/Output variables ####
+#### Input/Output variables - this should be filled out! ####
 
+# The input image (all should be bands of the same image)
 InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif"),
@@ -42,6 +43,10 @@ InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_
 # Define whether the above image is a "soil" or "vegetation" map, so one would not need to guess
 ImageType = "soil"
 
+# A mask file that defines the boundary of the field precisely (polygons, but could also be a raster with 1 = field)
+MaskFile = Input(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+
+# Output filenames
 ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"))
 OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path("..", "output", "outliers.sql"),
     file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
@@ -52,17 +57,18 @@ PlotOutputFile = file.path("..", "output", "plot.png")
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
 AggregationFactor = 10
-    
+
+# Intermediary file names. These do not matter much unless you are low on space
 PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
 ZoneRasterIntermediaryFile = file.path("..", "output", "classified.grd")
 HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
 
-#### Main script ####
+#### Main script - changes are not necessary but possible ####
 
 # Get the first principal component
 if (!file.exists(PC1IntermediaryFile))
 {
-    FirstComponent = GetComponent(InputImage, AggregationFactor, filename=PC1IntermediaryFile)
+    FirstComponent = GetComponent(InputImage, MaskFile, agg_factor=AggregationFactor, filename=PC1IntermediaryFile)
 } else
     FirstComponent = raster(PC1IntermediaryFile)
 
