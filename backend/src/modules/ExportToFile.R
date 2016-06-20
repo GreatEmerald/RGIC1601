@@ -85,7 +85,7 @@ for (filename in filenames)
 		}
 
 # If the projection will specified to other projection
-	if (prj_string != "+proj=longlat +datum=WGS84"){
+	if (prj_string != "+proj=longlat +datum=WGS84"){vector@data
 		vector = spTransform(spatial.df, csr)
 		}
 	if (file.exists(filename)) 
@@ -95,8 +95,8 @@ for (filename in filenames)
 
 
 # test begin
-#	obj = vec[[1]]
-#	obj = points.df
+# 	obj = vec[[1]]
+# 	obj = points.df
 # filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
 # ExportToFile(obj,filename)
 # test over
