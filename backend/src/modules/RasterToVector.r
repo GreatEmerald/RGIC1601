@@ -60,7 +60,7 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     stop(paste("Input", (data.class(MZrast_in)), "is not single-banded."))
   }
 
-  MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
+  #MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
   UV = unique(MZrast_in) # detect unique values / Management Zones
   MZs = seq(0, (length(UV)-1), by=1)
   MZs_vector = list(1:length(UV)) # create a list for the return
@@ -80,16 +80,9 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
         "This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
     }
   }
-
-  # if (is.na(VIrast_in))
-  # {
-  # 
-  # }
   
   if (data.class(VIrast_in) == "RasterLayer")
   {
-    print(paste("Optional input is a", data.class(VIrast_in)))
-    
     if (nbands(VIrast_in) != 1)
     {
       stop(paste("Input", (data.class(VIrast_in)), "is not single-banded."))
@@ -104,11 +97,9 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
   }
     else
     {
-      print(paste("Optional VI input is missing"))
+      # probably add some checks here
       return(RtP)
     }
-  
-  
 }
 #in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
 #in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
