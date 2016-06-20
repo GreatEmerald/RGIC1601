@@ -62,7 +62,7 @@ GetOutliers = function(rast_in, Q)
   }
   UV = unique(rast_in)
   
-  if (length(UV) < 128) # used for 'Singe-band image'
+  if (length(UV) > 128) # used for 'Singe-band image'
   {
     quantiles = quantile(rast_in, c(Q,1-Q))
     PROJ = rast_in@crs@projargs
@@ -110,10 +110,14 @@ GetOutliers = function(rast_in, Q)
     centroidDF  = rbind(centroidsDF_lower, centroidsDF_upper)
     centroidDF["outlier_detection_method"] = "Quantile Method"
     xy = centroidDF[,c(1,2)]
-    spdf <- SpatialPointsDataFrame(coords = xy, data = centroidDF, bbox = NULL,
+    centroidDF <- SpatialPointsDataFrame(coords = xy, data = centroidDF, bbox = NULL,
                                    proj4string = CRS(PROJ))
-    return(spdf)
-  }
+    return(centroidDF)
+    }
+    else
+    {
+        stop("Check input file!")
+    }
 }
 
 #outliers = GetOutliers(rast_in, Q)
