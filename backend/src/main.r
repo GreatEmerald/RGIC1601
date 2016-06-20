@@ -40,14 +40,14 @@ InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")),
     bands=1)
-# Define whether the above image is a "soil" or "vegetation" map, so one would not need to guess
+# Define whether the above image is a "soil" or "vegetation" map for calculating colours, or blank to skip (faster)
 ImageType = "soil"
 
 # A mask file that defines the boundary of the field precisely (polygons, but could also be a raster with 1 = field)
 MaskFile = Input(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
 
 # Output filenames
-ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"))
+ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"), file.path("..", "output", "zones.shp"))
 OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path("..", "output", "outliers.sql"),
     file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
 SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"),
@@ -84,8 +84,12 @@ if (!file.exists(HomogenisedIntermediaryFile))
 } else
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
-ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor*2)
-ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
+if (ImageType == "vegetation" || ImageType == "soil")
+{
+    ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor*2)
+    ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
+} else
+    ManagementZoneVector = RasterToVector(HomogeneousMZ)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
 OutlierPoints = GetOutliers(FirstComponent, 0.005)
