@@ -135,6 +135,6 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
 }
 #in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
 #in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
-MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
-MZRasterToVector = RasterToVector(in_raster, in_VI) #Homogeneous raster
+#MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
+#MZRasterToVector = RasterToVector(in_raster, in_VI) #Homogeneous raster
 #spplot(MZRasterToVector)
