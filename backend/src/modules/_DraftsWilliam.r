@@ -138,17 +138,6 @@ Dcl = contourLines(HomogeniseRaster[[2]], nlevels = 3)
 
 spplot(HomogeniseRaster[[2]])
 
-
-rv = list("sp.polygons", GetOutl[[4]], fill = "red")
-
-SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
-                  xlab = "X", ylab = "Y",
-                  #ol.regions = rainbow(99, start=.1),
-                  sp.layout = rv)
-                  #sp.layout = c('sp.points', GetOutl[[]], col='green', pch=16)
-
-SPplotWS
-
 sSp = as(GetOutl[[3]], "ppp")  # convert points to pp class
 Dens = density(sSp, adjust = 0.1)  # create density object
 class(Dens)  # just for interest: it's got it's of pixel image class
@@ -391,6 +380,10 @@ Sr1 = Polygon(cbind(nexCoordX,nexCoordY))
 plot(SpP)
 Srs1 = Polygons(list(Sr1), "s1")
 SpP = SpatialPolygons(list(Srs1))
+
+OUT = file.path("..", ".." , "output", "TEST_MZs2.shp")
+ExportToFile(MZRasterToVectorVI,OUT)
+
 
 ## _ _ _ _
 ## finishing the script and calculate running time of the script
