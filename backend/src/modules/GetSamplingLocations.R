@@ -28,9 +28,9 @@ library(raster)
 #   Input:
 #     raster data
 #   Method: 
-#     "centre"(default)
+#     "random"(default)
 #   Zone_code:
-#     1(default)
+#     3(default)
 #
 # Maintains:
 #   Environment
@@ -93,17 +93,18 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 
 
   # Add metedata
-  points.df$sample_num = num_sample
-  points.df$method = Method
+  points.df$number_of_samples = num_sample
+  points.df$sampling_method = Method
   
   # A SpatialPointsDataFrame as return
   return(points.df)
   
 }
 
-''' Test
- source("/home/yi/Documents/RGIC01/backend/src/modules/input.r"))
- Zones_dir = "/home/yi/Documents/RGIC01/backend/data/Zone/ClassifiedZones_kMeans_3zones.grd"
- Zones = Input(Zones_dir)[[1]]
- points.df = GetSamplingLocations(Zones,"random",num_sample=3, zones_count = 3)
- Test over'''
+# Test
+# source("/home/yi/Documents/RGIC01/backend/src/modules/input.r"))
+# Zones_dir = "/home/yi/Documents/RGIC01/backend/data/Zone/ClassifiedZones_kMeans_3zones.grd"
+# Zones = Input(Zones_dir)[[1]]
+# points.df = GetSamplingLocations(Zones,"random",num_sample=3, zones_count = 3)
+# Test over
+# 

@@ -66,18 +66,15 @@ PlotResult = function(obj, samples= NULL, outliers = NULL, filename, Zones_count
 }
 
 
-
-'''
-
-	spplot(obj,scales = list(draw = T),col.regions = heat.colors(100))
-	+ layer(sp.points(samples, pch = 17))
-	
-	
-	
-obj = readOGR("/home/yi/Documents/RGIC01/backend/data/test_vector.shp",layer = "test_vector")
-filename = "/home/yi/Documents/RGIC01/backend/data/myplot3.png"
-str(obj)
-obj = Zones
-samples = points.df
-PlotResult(obj,samples,filename= filename)
-'''
+# 
+# 	spplot(obj,scales = list(draw = T),col.regions = heat.colors(100))
+# 	+ layer(sp.points(samples, pch = 17))
+# 	
+# 	
+# 	
+# obj = readOGR("/home/yi/Documents/RGIC01/backend/data/test_vector.shp",layer = "test_vector")
+# filename = "/home/yi/Documents/RGIC01/backend/data/myplot3.png"
+# str(obj)
+# obj = Zones
+# samples = points.df
+# PlotResult(obj,samples,filename= filename)

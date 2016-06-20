@@ -38,7 +38,7 @@ library(raster)
 #   a homogenised raster with integer value as zone number value
 
 
-HomogeniseRaster = function(zoneRaster, window_type, min_ar, ...)
+HomogeniseRaster = function(zoneRaster, window_type = "circle", min_ar, ...)
 {
   if (nbands(zoneRaster) > 1)
   {
@@ -63,8 +63,8 @@ HomogeniseRaster = function(zoneRaster, window_type, min_ar, ...)
           new_raster[new_raster == zones[i]] = i-1
       }
       
-      metadata(new_raster) = append(metadata(zoneRaster), list(filterType = "modal", 
-				      windowType = window_type))
+      metadata(new_raster) = append(metadata(zoneRaster), list(filter_type = "modal", 
+				      window_type = window_type))
       # size of each zone
       
       

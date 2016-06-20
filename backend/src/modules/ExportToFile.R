@@ -46,6 +46,7 @@ if (class(filenames) != "character")
 
 for (filename in filenames)
 	{
+	
 	csr = CRS(prj_string)
 	vector = spatial.df
 	layer = basename(file_path_sans_ext(filename))
@@ -62,34 +63,41 @@ for (filename in filenames)
 		}
 
 	if (file_ext(filename)=="shp"){
+		if (file.exists(filename)) 
+			{file.remove(paste(file_path_sans_ext(filename),".dbf",sep = ""))
+			file.remove(paste(file_path_sans_ext(filename),".prj",sep = ""))
+			file.remove(paste(file_path_sans_ext(filename),".shx",sep = ""))
+			
+			}
 		drv = "ESRI Shapefile"
 		}
 
 	if (file_ext(filename)=="gpx"){
 		drv = "GPX"
 		vector = spTransform(spatial.df, prj_string)
-		for (i in 1:(length(vector)))
+		for (i in 1:(ncol(vector)))
 			{
-			if (names(vector@data[1]) !="id"){
+			if (names(vector@data[i]) !="id"){
 			vector@data[i] = NULL}
 			}
 		names(vector)[names(vector) == "id"] = "name"
 		}
 
 # If the projection will specified to other projection
-	if (prj_string != "+proj=longlat +datum=WGS84"){
+	if (prj_string != "+proj=longlat +datum=WGS84"){vector@data
 		vector = spTransform(spatial.df, csr)
 		}
-		
+	if (file.exists(filename)) 
+			{file.remove(filename)}
 	writeOGR(vector,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE)
 	}}
 
 
 # test begin
-#	obj = vec[[1]]
-#	obj = points.df
+# 	obj = vec[[1]]
+# 	obj = points.df
 # filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
-# ExportToFile(obj,filename,prj_string)
+# ExportToFile(obj,filename)
 # test over
 
 

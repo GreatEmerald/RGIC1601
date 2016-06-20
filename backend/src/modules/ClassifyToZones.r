@@ -1,5 +1,5 @@
 # Input handling module for the backend of the management zone generation tool
-# Copyright (C) 2016 Geetika Rathee, William Schuch
+# Copyright (C) 2016 Geetika Rathee
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ ClassifyToZones = function(objPC, method, zones_count = 3, ...)
         
 	    zones = raster(objPC)
 	    zones = setValues(zones, valueTable[[1]])
-	    metadata(zones) = append(metadata(objPC), list(clusterMethod = "KMeans", Zones = zones_count))
+	    metadata(zones) = append(metadata(objPC), list(cluster_method = "KMeans"))
 	    
 	    if (missing(...))
 	    {
