@@ -108,8 +108,14 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     }
   }
 
+  #if (is.na(VIrast_in))
+  #{
+    
+  #}
+    
+    
   checkVI = (!any(is.na(getValues(VIrast_in))))
-  #print(checkVI)
+  print(checkVI)
   
   if (checkVI == TRUE)
   #if (exists("VIrast_in"))
