@@ -78,14 +78,22 @@ for (filename in filenames)
 		
 		for (i in 1:(length(vector)))
 			{
-			if (names(vector@data[1]) !="id"){
+			if (names(v# test begin
+#	obj = vec[[1]]
+#	obj = points.df
+# filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
+# ExportToFile(obj,filename)
+# test over
+
+
+	vector@data[1]) !="id"){
 			vector@data[i] = NULL}
 			}
 		names(vector)[names(vector) == "id"] = "name"
 		}
 
 # If the projection will specified to other projection
-	if (prj_string != "+proj=longlat +datum=WGS84"){
+	if (prj_string != "+proj=longlat +datum=WGS84"){vector@data
 		vector = spTransform(spatial.df, csr)
 		}
 	if (file.exists(filename)) 
@@ -95,8 +103,8 @@ for (filename in filenames)
 
 
 # test begin
-#	obj = vec[[1]]
-#	obj = points.df
+# 	obj = vec[[1]]
+# 	obj = points.df
 # filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
 # ExportToFile(obj,filename)
 # test over
