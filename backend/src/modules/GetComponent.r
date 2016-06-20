@@ -37,9 +37,8 @@ library(raster)
 #   stop() when mask do not match projection of the input stack
 #
 # Returns:
-#   Raster single-band (1-B) object; the 
+#   Raster single-band (1B) object; the 
 #   layer will be the first principle component of the input brick
-
 
 GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
 {    
@@ -55,6 +54,7 @@ GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
        }
        else
        {
+           in_stack = setExtent(in_stack, field_mask, snap = T)
            in_stack = mask(in_stack, field_mask)
        }
    }
@@ -63,8 +63,8 @@ GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
    in_data = getValues(in_stack)
    
    # scale=T, save scaling applied to each variable, center = T, save means that were subtracted and retx = T, save PCA scores
-   data.pca = princomp(na.omit(in_data), scale = T, center = T, retx = T)             # performs PCA, contains info on eigen vec etc.
-   pc_data = predict(data.pca, in_data)                                               # writes principle components
+   data.pca = princomp(na.omit(in_data), scale = T, center = T, retx = T)    # performs PCA, contains info on eigen vec etc.
+   pc_data = predict(data.pca, in_data)                                      # writes principle components
    PC1 = raster(in_stack[[1]])
    PC1 = setValues(in_stack[[1]], pc_data[,1])
    metadata(PC1) = list(dataReductionMethod = "PCA", Aggregation = agg_factor)
@@ -79,6 +79,3 @@ GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
        return(PC1)
    }
 }
-
-
-

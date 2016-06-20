@@ -30,6 +30,7 @@ source("modules/RasterToVector.r")
 source("modules/GetOutliers.r")
 source("modules/GetSamplingLocations.R")
 source("modules/ExportToFile.R")
+source("modules/PlotResult.r")
 
 #### Input/Output variables ####
 
@@ -46,6 +47,7 @@ OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path(".."
     file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
 SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"),
     file.path("..", "output", "samples.gpx"), file.path("..", "output", "samples.shp"))
+PlotOutputFile = file.path("..", "output", "plot.png")
 
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
@@ -84,3 +86,5 @@ OutlierPoints = GetOutliers(FirstComponent, 0.005)
 ExportToFile(OutlierPoints, OutlierOutputFiles)
 SamplingLocations = GetSamplingLocations(ManagementZones)
 ExportToFile(SamplingLocations, SampleOutputFiles)
+
+PlotResult(ManagementZoneVector, OutlierPoints, SamplingLocations, PlotOutputFile)
