@@ -42,33 +42,37 @@ library(raster)
 
 GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
 {    
-   if (missing(field_mask))
+   if(length(names(in_stack)) < 2)
+   {
+       stop("The input should have atleast two bands")
+   }
+   if (is.character(projection(field_mask)))
+   {
+     if(identical(projection(in_stack), projection(field_mask)) == F)
+     {
+       stop("It is necessary that stack and mask have same projections!")
+     }
+     else
+     {
+       in_stack = setExtent(in_stack, field_mask, snap = T)
+       in_stack = mask(in_stack, field_mask)
+     }
+   }
+   else
    {
        warning("Mask is essential for better results!")
    }
-   else  
-   {
-       if(identical(projection(in_stack), projection(field_mask)) == F)
-       {
-           stop("It is necessary that stack and mask have same projections!")
-       }
-       else
-       {
-           in_stack = setExtent(in_stack, field_mask, snap = T)
-           in_stack = mask(in_stack, field_mask)
-       }
-   }
-     
+   
    in_stack =  aggregate(in_stack, fact = agg_factor)                      
    in_data = getValues(in_stack)
-   
-   # scale=T, save scaling applied to each variable, center = T, save means that were subtracted and retx = T, save PCA scores
+
+# scale=T, save scaling applied to each variable, center = T, save means that were subtracted and retx = T, save PCA scores
    data.pca = princomp(na.omit(in_data), scale = T, center = T, retx = T)    # performs PCA, contains info on eigen vec etc.
    pc_data = predict(data.pca, in_data)                                      # writes principle components
    PC1 = raster(in_stack[[1]])
    PC1 = setValues(in_stack[[1]], pc_data[,1])
    metadata(PC1) = list(data_reduction_method = "PCA", aggregation_factor = agg_factor)
-   
+
    if (missing(...))
    {
        return(PC1)
