@@ -20,6 +20,9 @@ library(rgdal)
 library(sp)
 library(rgeos)
 
+#### Import module(s) ####
+source("util.r")
+
 ## Function for detecting unique values in a raster and converts these to polygons.
 #
 # Arguments:
@@ -43,40 +46,6 @@ library(rgeos)
 #   The amount of Management Zones equals the amount of elements in the list.
 #   
 
-gdal_polygonizeR = function(x, outshape=NULL, attname='DN', gdalformat = 'GML', quiet=TRUE)
-{
-  py.c <- Sys.which('gdal_polygonize.py')
-  
-  if (py.c == "")
-  {
-    warning("gdal_polygonizeR: Can't find gdal_polygonize.py on your system; resorting to SLOW rasterToPolygons implementation!")
-    require(raster)
-    return(rasterToPolygons(x, na.rm=TRUE, dissolve=TRUE))
-  }
-  
-  if (!is.null(outshape))
-  {
-    f.exists = file.exists(outshape)
-    if (any(f.exists))
-      stop(paste('File already exists:', outshape), call.=FALSE)
-  } else
-    outshape = tempfile()
-  if (is(x, 'Raster'))
-  {
-    require(raster)
-    f = tempfile(fileext='.tif')
-    writeRaster(x, f)
-    rast.nm = normalizePath(f)
-  } else if (is.character(x))
-  {
-    rast.nm <- normalizePath(x)
-  } else
-    stop('x must be either a file path (as a character string), or a Raster object.')
-  full.c = sprintf("%1$s %2$s -f '%3$s' %4$s %5$s", py.c, rast.nm, gdalformat, outshape, attname)
-  system(full.c)
-  shp = readOGR(outshape, layer = attname, verbose=!quiet)
-  return(shp)
-}
 
 RasterToVector = function(MZrast_in, VIrast_in=NA)
 {
@@ -90,11 +59,13 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     stop(paste("Input", (data.class(MZrast_in)), "is not single-banded."))
   }
 
-  MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
+  MZrast_in = aggregate(MZrast_in, fact=20, fun=modal)
   UV = unique(MZrast_in) # detect unique values / Management Zones
   MZs = seq(0, (length(UV)-1), by=1)
   MZs_vector = list(1:length(UV)) # create a list for the return
+  
   RtP = rasterToPolygons(MZrast_in, dissolve=TRUE, na.rm=TRUE)
+  
   oldmetadata = metadata(MZrast_in)
     
   #RtP@data$OldMetadata = append(oldmetadata, list(newvariable2="test2"))
@@ -108,33 +79,55 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     }
   }
 
-  #if (is.na(VIrast_in))
-  #{
-    
-  #}
-    
-    
-  checkVI = (!any(is.na(getValues(VIrast_in))))
-  print(checkVI)
+  #print(VIrast_in)
   
-  if (checkVI == TRUE)
-  #if (exists("VIrast_in"))
-  {
-    if (nbands(VIrast_in) != 1)
+  #if (any(is.na(VIrast_in)))
+  #{
+  #  print(VIrast_in)
+  #  return(RtP)
+  #}
+  #else
+  #{
+    #checkVI = (!any(is.na(getValues(VIrast_in))))
+    #print(VIrast_in)
+    
+  if (nbands(VIrast_in) != 1)
     {
       stop(paste("Input", (data.class(VIrast_in)), "is not single-banded."))
     }
-    r = VIrast_in
-    sdata = RtP
-    r.vals = extract(r, sdata)
-    r.mean = unlist(lapply(r.vals, FUN=mean, na.rm = TRUE))
-    #r.mean = suppressWarnings(lapply(r.vals, FUN=mean))
-    sdata@data$VImeans =  r.mean
-  }
+  r = VIrast_in
+  sdata = RtP
+  r.vals = extract(r, sdata)
+  r.mean = unlist(lapply(r.vals, FUN=mean, na.rm = TRUE))
+  #r.mean = suppressWarnings(lapply(r.vals, FUN=mean))
+  sdata@data$VImeans =  r.mean
+  
+  
+  # if (!is.na(VIrast_in))
+  # {
+  #   checkVI = (!any(is.na(getValues(VIrast_in))))
+  # }
+
+  
+  #if ( (!any(is.na(getValues(VIrast_in)))) == TRUE)
+  
+  # if (checkVI == TRUE)
+  # {
+  #   if (nbands(VIrast_in) != 1)
+  #   {
+  #     stop(paste("Input", (data.class(VIrast_in)), "is not single-banded."))
+  #   }
+  #   r = VIrast_in
+  #   sdata = RtP
+  #   r.vals = extract(r, sdata)
+  #   r.mean = unlist(lapply(r.vals, FUN=mean, na.rm = TRUE))
+  #   #r.mean = suppressWarnings(lapply(r.vals, FUN=mean))
+  #   sdata@data$VImeans =  r.mean
+  # }
   return(sdata)
 }
 #in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
 #in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
 #MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
-#MZRasterToVector = RasterToVector(in_raster, in_VI) #Homogeneous raster
+#MZRasterToVectorVI = RasterToVector(in_raster, in_VI) #Homogeneous raster
 #spplot(MZRasterToVector)

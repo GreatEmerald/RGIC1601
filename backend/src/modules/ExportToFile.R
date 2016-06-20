@@ -75,10 +75,9 @@ for (filename in filenames)
 	if (file_ext(filename)=="gpx"){
 		drv = "GPX"
 		vector = spTransform(spatial.df, prj_string)
-		
-		for (i in 1:(length(vector)))
+		for (i in 1:(ncol(vector)))
 			{
-			if (names(vector@data[1]) !="id"){
+			if (names(vector@data[i]) !="id"){
 			vector@data[i] = NULL}
 			}
 		names(vector)[names(vector) == "id"] = "name"
