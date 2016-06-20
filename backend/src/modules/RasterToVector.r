@@ -21,6 +21,7 @@ library(sp)
 library(rgeos)
 
 #### Import module(s) ####
+# These are runned from main.r, so mind the directory.
 source("modules/util.r")
 
 ## Function for detecting unique values in a raster and converts these to polygons.
@@ -80,52 +81,30 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     }
   }
 
-  #print(VIrast_in)
+  if (is.na(VIrast_in))
+  {
+    print(paste("Optional VI input is missing"))
+    return(RtP)
+  }
   
-  #if (any(is.na(VIrast_in)))
-  #{
-  #  print(VIrast_in)
-  #  return(RtP)
-  #}
-  #else
-  #{
-    #checkVI = (!any(is.na(getValues(VIrast_in))))
-    #print(VIrast_in)
+  if (data.class(VIrast_in) == "RasterLayer")
+  {
+    print(paste("Optional input is a", data.class(VIrast_in)))
     
-  if (nbands(VIrast_in) != 1)
+    if (nbands(VIrast_in) != 1)
     {
       stop(paste("Input", (data.class(VIrast_in)), "is not single-banded."))
     }
-  r = VIrast_in
-  sdata = RtP
-  r.vals = extract(r, sdata)
-  r.mean = unlist(lapply(r.vals, FUN=mean, na.rm = TRUE))
-  #r.mean = suppressWarnings(lapply(r.vals, FUN=mean))
-  sdata@data$VImeans =  r.mean
+    r = VIrast_in
+    sdata = RtP
+    r.vals = extract(r, sdata)
+    r.mean = unlist(lapply(r.vals, FUN=mean, na.rm = TRUE))
+    #r.mean = suppressWarnings(lapply(r.vals, FUN=mean))
+    sdata@data$VImeans =  r.mean
+    return(sdata)
+  }
   
   
-  # if (!is.na(VIrast_in))
-  # {
-  #   checkVI = (!any(is.na(getValues(VIrast_in))))
-  # }
-
-  
-  #if ( (!any(is.na(getValues(VIrast_in)))) == TRUE)
-  
-  # if (checkVI == TRUE)
-  # {
-  #   if (nbands(VIrast_in) != 1)
-  #   {
-  #     stop(paste("Input", (data.class(VIrast_in)), "is not single-banded."))
-  #   }
-  #   r = VIrast_in
-  #   sdata = RtP
-  #   r.vals = extract(r, sdata)
-  #   r.mean = unlist(lapply(r.vals, FUN=mean, na.rm = TRUE))
-  #   #r.mean = suppressWarnings(lapply(r.vals, FUN=mean))
-  #   sdata@data$VImeans =  r.mean
-  # }
-  return(sdata)
 }
 #in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
 #in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
