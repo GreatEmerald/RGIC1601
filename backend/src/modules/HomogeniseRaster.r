@@ -58,7 +58,7 @@ HomogeniseRaster = function(zoneRaster, window, min_ar, ...)
       }
       else
       {
-          stop("Invalid window input!/n This arg should be one of circle, Gauss or rectangle)
+          stop("Invalid window input!/n This arg should be one of circle, Gauss or rectangle")
       }
       
       fw = focalWeight(zoneRaster, w_size, type = window)
