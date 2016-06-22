@@ -1,5 +1,6 @@
 # Input handling module for the backend of the management zone generation tool
 # Copyright (C) 2016 Yi Xiong
+# Copyright (C) 2016 Dainius Masiliunas
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -55,7 +56,7 @@ for (filename in filenames)
 		
 	if (file_ext(filename)=="kml"){
 		drv = "KML"
-		vector = spTransform(spatial.df, prj_string)
+		vector = spTransform(spatial.df, csr)
 		}
 		
 	if (file_ext(filename)=="sql"){
@@ -73,15 +74,20 @@ for (filename in filenames)
 		}
 
 	if (file_ext(filename)=="gpx"){
+
 		drv = "GPX"
-		vector = spTransform(spatial.df, prj_string)
-		for (i in 1:(ncol(vector)))
+		vector = spTransform(spatial.df, csr)
+		for (i in (ncol(vector):1))
 			{
-			if (names(vector@data[i]) !="id"){
-			vector@data[i] = NULL}
-			}
-		names(vector)[names(vector) == "id"] = "name"
+			if (names(vector@data[i]) !="id")
+			{
+			vector@data[i] = NULL
+			} else
+                    names(vector@data[i]) = "name"
+			} 
 		}
+		if (!any(names(vector)=="name"))
+                    vector@data[["name"]] = rownames(vector@data)
 
 # If the projection will specified to other projection
 	if (prj_string != "+proj=longlat +datum=WGS84"){vector@data
@@ -96,8 +102,9 @@ for (filename in filenames)
 # test begin
 # 	obj = vec[[1]]
 # 	obj = points.df
-# filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
-# ExportToFile(obj,filename)
+#filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
+#ExportToFile(SamplingLocations,SampleOutputFiles)
+#spatial.df = SamplingLocations
 # test over
 
 

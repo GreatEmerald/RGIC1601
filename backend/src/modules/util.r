@@ -17,7 +17,7 @@
 # Source: http://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/
 # Based on: Lyndon Estes code, http://r-sig-geo.2731867.n2.nabble.com/Memory-management-with-rasterToPolygons-raster-and-rgeos-td7153049.html
 
-gdal_polygonizeR = function(x, outshape=NULL, attname='DN', gdalformat = 'GML', quiet=TRUE)
+gdal_polygonizeR = function(x, outshape=NULL, attname='zone_number', gdalformat = 'GML', quiet=TRUE)
 {
     py.c <- Sys.which('gdal_polygonize.py')
 
@@ -25,7 +25,7 @@ gdal_polygonizeR = function(x, outshape=NULL, attname='DN', gdalformat = 'GML', 
     {
         warning("gdal_polygonizeR: Can't find gdal_polygonize.py on your system; resorting to SLOW rasterToPolygons implementation!")
         require(raster)
-        return(rasterToPolygons(x, na.rm=TRUE, dissolve=TRUE))
+        return(rasterToPolygons(x, na.rm=TRUE))
     }
     
     if (!is.null(outshape))
@@ -49,5 +49,6 @@ gdal_polygonizeR = function(x, outshape=NULL, attname='DN', gdalformat = 'GML', 
   full.c = sprintf("%1$s %2$s -f '%3$s' %4$s %5$s", py.c, rast.nm, gdalformat, outshape, attname)
   system(full.c)
   shp = readOGR(outshape, layer = attname, verbose=!quiet)
+  projection(shp) = projection(x)
   return(shp)
 }

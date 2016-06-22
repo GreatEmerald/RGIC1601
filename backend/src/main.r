@@ -32,17 +32,22 @@ source("modules/GetSamplingLocations.R")
 source("modules/ExportToFile.R")
 source("modules/PlotResult.r")
 
-#### Input/Output variables ####
+#### Input/Output variables - this should be filled out! ####
 
+# The input image (all should be bands of the same image)
 InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_nir.tif")),
     bands=1)
-# Define whether the above image is a "soil" or "vegetation" map, so one would not need to guess
+# Define whether the above image is a "soil" or "vegetation" map for calculating colours, or blank to skip (faster)
 ImageType = "soil"
 
-ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"))
+# A mask file that defines the boundary of the field precisely (polygons, but could also be a raster with 1 = field)
+MaskFile = Input(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+
+# Output filenames
+ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"), file.path("..", "output", "zones.shp"))
 OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path("..", "output", "outliers.sql"),
     file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
 SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"),
@@ -52,34 +57,39 @@ PlotOutputFile = file.path("..", "output", "plot.png")
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
 AggregationFactor = 10
-    
+
+# Intermediary file names. These do not matter much unless you are low on space
 PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
 ZoneRasterIntermediaryFile = file.path("..", "output", "classified.grd")
 HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
 
-#### Main script ####
+#### Main script - changes are not necessary but possible ####
 
 # Get the first principal component
 if (!file.exists(PC1IntermediaryFile))
 {
-    FirstComponent = GetComponent(InputImage, AggregationFactor, filename=PC1IntermediaryFile)
+    FirstComponent = GetComponent(InputImage, MaskFile, agg_factor=AggregationFactor, filename=PC1IntermediaryFile)
 } else
     FirstComponent = raster(PC1IntermediaryFile)
 
 if (!file.exists(ZoneRasterIntermediaryFile))
 {
-    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile, datatype="INT1S")
+    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile)
 } else
     ManagementZones = raster(ZoneRasterIntermediaryFile)
 
 if (!file.exists(HomogenisedIntermediaryFile))
 {
-    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile, datatype="INT1S")
+    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile)
 } else
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
-ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor)
-ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
+if (ImageType == "vegetation" || ImageType == "soil")
+{
+    ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor*2)
+    ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
+} else
+    ManagementZoneVector = RasterToVector(HomogeneousMZ)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
 OutlierPoints = GetOutliers(FirstComponent, 0.005)
@@ -87,4 +97,4 @@ ExportToFile(OutlierPoints, OutlierOutputFiles)
 SamplingLocations = GetSamplingLocations(ManagementZones)
 ExportToFile(SamplingLocations, SampleOutputFiles)
 
-PlotResult(ManagementZoneVector, OutlierPoints, SamplingLocations, PlotOutputFile)
+PlotResult(ManagementZoneVector, SamplingLocations, OutlierPoints, PlotOutputFile)
