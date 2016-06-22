@@ -25,7 +25,7 @@ gdal_polygonizeR = function(x, outshape=NULL, attname='zone_number', gdalformat 
     {
         warning("gdal_polygonizeR: Can't find gdal_polygonize.py on your system; resorting to SLOW rasterToPolygons implementation!")
         require(raster)
-        return(rasterToPolygons(x, na.rm=TRUE, dissolve=TRUE))
+        return(rasterToPolygons(x, na.rm=TRUE))
     }
     
     if (!is.null(outshape))
