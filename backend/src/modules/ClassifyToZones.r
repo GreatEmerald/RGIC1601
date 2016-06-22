@@ -91,7 +91,6 @@ ClassifyToZones = function(objPC, method = "KMeans", zones_count = 3, ...)
 	        zones = writeRaster(zones, dataType = "INT1S", overwrite = T, ...)
 	        return(zones)
 	    }
-        }
     }
 }
 

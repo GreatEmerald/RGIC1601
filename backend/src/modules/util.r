@@ -71,3 +71,16 @@ OutputFile = function(type, postfix="", directory=file.path("..", "output"))
         Filename = paste0(Date, "_", Filename)
     return(file.path(directory, Filename))
 }
+
+# Get the EPSG number of the object (must be coercable into a prj4 string)
+GetEPSG = function(obj)
+{
+    RefList = make_EPSG()
+    for (i in 1:nrow(RefList))
+    {
+        if (compareCRS(as.character(RefList[i,"prj4"]), obj))
+            return(as.integer(RefList[i,"code"]))
+    }
+    warning("Matching EPSG not found!")
+    return(-1)
+}
