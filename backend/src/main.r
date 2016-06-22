@@ -31,6 +31,7 @@ source("modules/GetOutliers.r")
 source("modules/GetSamplingLocations.R")
 source("modules/ExportToFile.R")
 source("modules/PlotResult.r")
+source("modules/util.r")
 
 #### Input/Output variables - this should be filled out! ####
 
@@ -43,16 +44,20 @@ InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_
 # Define whether the above image is a "soil" or "vegetation" map for calculating colours, or blank to skip (faster)
 ImageType = "soil"
 
-# A mask file that defines the boundary of the field precisely (polygons, but could also be a raster with 1 = field)
+# A mask file that defines the boundary of the field precisely (polygons, but could also be a raster with not null = field)
 MaskFile = Input(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
 
-# Output filenames
-ZoneOutputFiles = c(file.path("..", "output", "zones.kml"), file.path("..", "output", "zones.sql"), file.path("..", "output", "zones.shp"))
-OutlierOutputFiles = c(file.path("..", "output", "outliers.kml"), file.path("..", "output", "outliers.sql"),
-    file.path("..", "output", "outliers.gpx"), file.path("..", "output", "outliers.shp"))
-SampleOutputFiles = c(file.path("..", "output", "samples.kml"), file.path("..", "output", "samples.sql"),
-    file.path("..", "output", "samples.gpx"), file.path("..", "output", "samples.shp"))
-PlotOutputFile = file.path("..", "output", "plot.png")
+# Date and name for generating nice filenames
+Date="2016-04-03"
+Name="bert_boerma_kale_grond"
+
+# Output filenames. All of the listed files will be generated (with above date and name, in ../output by default)
+ZoneOutputFiles = c(OutputFile("kml", "zones"), OutputFile("sql", "zones"), OutputFile("shp", "zones"))
+OutlierOutputFiles = c(OutputFile("kml", "outliers"), OutputFile("sql", "outliers"),
+    OutputFile("gpx", "outliers"), OutputFile("shp", "outliers"))
+SampleOutputFiles = c(OutputFile("kml", "samples"), OutputFile("sql", "samples"),
+    OutputFile("gpx", "samples"), OutputFile("shp", "samples"))
+PlotOutputFile = OutputFile("png", "plot")
 
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
