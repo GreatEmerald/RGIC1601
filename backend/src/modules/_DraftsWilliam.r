@@ -68,6 +68,8 @@ SP <- rasterToPolygons(clump(HomogeniseRaster[[2]]>1), dissolve=TRUE)
 spplot(SP)
 
 
+outliers = GetOutliers(WS, 0.05)
+
 
 Clumpie = clump(RtC)
 
