@@ -68,7 +68,7 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
   #RtP = rasterToPolygons(MZrast_in, dissolve=TRUE, na.rm=TRUE)
   RtP = gdal_polygonizeR(MZrast_in)
   RtP@data$zone_number = RtP@data$layer
-  
+  RtP@data$layer = NULL
   oldmetadata = metadata(MZrast_in)
     
   #RtP@data$OldMetadata = append(oldmetadata, list(newvariable2="test2"))
@@ -79,7 +79,7 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     if (i < length(MZs))
     {
       RtP@data$Metadata[[i+1]] = paste(oldmetadata,
-        "+ This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
+        "+", i, "out of", tail(MZs,1), "management zones (incl border).")
     }
   }
   
@@ -106,6 +106,6 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
 #in_raster = raster(file.path("..", ".." , "output", "PC5_Class3_HomoCir005.gri"))
 #in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
 #MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
-#MZRasterToVectorVI = RasterToVector(in_raster, in_VI) #Homogeneous raster
-#spplot(MZRasterToVectorVI)
+MZRasterToVectorVI = RasterToVector(in_raster, in_VI) #Homogeneous raster
+spplot(MZRasterToVectorVI)
 
