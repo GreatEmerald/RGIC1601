@@ -22,6 +22,7 @@ library(spatstat)
 library(maptools)
 library(rgeos)
 library(igraph)
+library(geosphere)
 
 #### Function for detecting outliers in a single band rater file, using GDAL ####
 
@@ -46,7 +47,7 @@ library(igraph)
 
 
 # INTO THE FUNCTION
-GetOutliers = function(rast_in, Q)
+GetOutliers = function(rast_in, Q, L)
 {
   if (nbands(rast_in) > 1)
   {
@@ -82,31 +83,62 @@ GetOutliers = function(rast_in, Q)
     Dim_upper = as.image.SpatialGridDataFrame(Dsg_upper)  # convert again to an image
     Dim_lower = as.image.SpatialGridDataFrame(Dsg_lower) 
 
-    Dcl_upper = contourLines(Dim_upper, nlevels = 8)  # create contour object - change 8 for more/fewer levels
-    Dcl_lower = contourLines(Dim_lower, nlevels = 8)
+    Dcl_upper = contourLines(Dim_upper, nlevels = L)  # create contour object - change 8 for more/fewer levels
+    Dcl_lower = contourLines(Dim_lower, nlevels = L)
 
-    SLDF_upper = ContourLines2SLDF(Dcl_upper)  # convert to SpatialLinesDataFrame
-    SLDF_lower = ContourLines2SLDF(Dcl_lower)  
+    SLDF_upper = ContourLines2SLDF(Dcl_upper, proj4string = CRS(PROJ))  # convert to SpatialLinesDataFrame
+    SLDF_lower = ContourLines2SLDF(Dcl_lower, proj4string = CRS(PROJ))  
     
-    Polyclust_upper = gPolygonize(SLDF_upper[5, ])
-    Polyclust_lower = gPolygonize(SLDF_lower[5, ])
-    
-    gas_upper = gArea(Polyclust_upper, byid = T)/10000
-    gas_lower = gArea(Polyclust_lower, byid = T)/10000
+    Polyclust_upper = gPolygonize(SLDF_upper[-1, ])
+    Polyclust_lower = gPolygonize(SLDF_lower[-1, ])
 
-    Polyclust_upper = SpatialPolygonsDataFrame(Polyclust_upper, data = data.frame(gas_upper), match.ID = F)
-    Polyclust_lower = SpatialPolygonsDataFrame(Polyclust_lower, data = data.frame(gas_lower), match.ID = F)
+    for (z in seq(3, length(SLDF_upper), by=1))
+    {
+      Polyclust_upper = try(gPolygonize(SLDF_upper[z, ]))
+      gas_upper = try(gArea(Polyclust_upper, byid = T)/10000)
+      Polyclust_upper = try(SpatialPolygonsDataFrame(Polyclust_upper, data = data.frame(gas_upper), match.ID = F))
+      
+      if (data.class(gas_upper) == "numeric")
+      {
+        break
+      }
+    }
+    
+    for (z in seq(3, length(SLDF_lower), by=1))
+    {
+      Polyclust_lower = try(gPolygonize(SLDF_lower[z, ]))
+      gas_lower = try(gArea(Polyclust_lower, byid = T)/10000)
+      Polyclust_lower = try(SpatialPolygonsDataFrame(Polyclust_lower, data = data.frame(gas_lower), match.ID = F))
+      
+      if (data.class(gas_lower) == "numeric")
+      {
+        break
+      }
+    }
+    
+    #Polyclust_upper = gPolygonize(SLDF_upper[5, ])
+    #Polyclust_lower = gPolygonize(SLDF_lower[5, ])
+    
+    #gas_upper = gArea(Polyclust_upper, byid = T)/10000
+    #gas_lower = gArea(Polyclust_lower, byid = T)/10000
+
+    #Polyclust_upper = SpatialPolygonsDataFrame(Polyclust_upper, data = data.frame(gas_upper), match.ID = F)
+    #Polyclust_lower = SpatialPolygonsDataFrame(Polyclust_lower, data = data.frame(gas_lower), match.ID = F)
     
     rm(gas_upper, gas_lower, SLDF_upper,SLDF_lower,Dcl_upper,
        Dcl_lower, Dim_upper, Dim_lower, Dsg_upper, Dsg_lower, Dens_upper, Dens_lower, sSp_lower, sSp_upper)
     
-    centroids_upper = getSpPPolygonsLabptSlots(Polyclust_upper)
-    centroids_lower = getSpPPolygonsLabptSlots(Polyclust_lower)
+    #centroids_upper = getSpPPolygonsLabptSlots(Polyclust_upper)
+    #centroids_lower = getSpPPolygonsLabptSlots(Polyclust_lower)
+    centroids_upper = centroid(Polyclust_upper) # no warning with "Use coordinates method"
+    centroids_lower = centroid(Polyclust_lower)
 
     centroidsDF_upper = as.data.frame(centroids_upper)
     centroidsDF_lower = as.data.frame(centroids_lower)
     centroidsDF_lower["quantile"] = Q * 100
     centroidsDF_upper["quantile"] = (1 - Q) * 100
+    centroidsDF_lower["extreme"] = "lower"
+    centroidsDF_upper["extreme"] = "higher"
     centroidDF  = rbind(centroidsDF_lower, centroidsDF_upper)
     centroidDF["outlier_detection_method"] = "Quantile Method"
     xy = centroidDF[,c(1,2)]
@@ -120,4 +152,4 @@ GetOutliers = function(rast_in, Q)
     }
 }
 
-#outliers = GetOutliers(rast_in, Q)
+#outliers = GetOutliers(rast_in, Q, L)
