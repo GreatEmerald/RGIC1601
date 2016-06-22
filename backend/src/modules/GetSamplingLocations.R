@@ -28,9 +28,9 @@ library(raster)
 #   Input:
 #     raster data
 #   Method: 
-#     "random"(default)
+#     "centre"(default)
 #   Zone_code:
-#     3(default)
+#     1(default)
 #
 # Maintains:
 #   Environment
@@ -43,7 +43,7 @@ library(raster)
 #   One point with type of SpatialPointsDataFrame
 
 
-### Get sampling location of one category
+
 # Sampling location central of area
 GetCentralSampleLoc <- function(Fieldraster){
   Zone_extent = extent(Fieldraster)
@@ -52,16 +52,16 @@ GetCentralSampleLoc <- function(Fieldraster){
   return(c(central_x,central_y))
 }
 
-### Get sampling locationn of multiple categories
+# Get random sampling locationn of multiple categories
 
 GetMultipleSamplingLoc = function(obj, num_sample=3, zones_count = 3)
 	{
 	sample_matrix = c()
 	id = (1:(num_sample * zones_count))
 	for (i in 1:zones_count)
-	{
+	{	
 	Zone = obj
-	Zone[Zone@data@values != i] = NA
+	Zone[Zone !=i] = NA
 	sample_matrix= rbind(sample_matrix,sampleRandom(Zone, size=num_sample, na.rm=TRUE, ext=NULL,xy = T))
 	}
 	sample_matrix = cbind(sample_matrix,id)
@@ -93,8 +93,8 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 
 
   # Add metedata
-  points.df$number_of_samples = num_sample
-  points.df$sampling_method = Method
+  points.df$sample_num = num_sample
+  points.df$method = Method
   
   # A SpatialPointsDataFrame as return
   return(points.df)
@@ -102,9 +102,10 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 }
 
 # Test
-# source("/home/yi/Documents/RGIC01/backend/src/modules/input.r"))
-# Zones_dir = "/home/yi/Documents/RGIC01/backend/data/Zone/ClassifiedZones_kMeans_3zones.grd"
-# Zones = Input(Zones_dir)[[1]]
-# points.df = GetSamplingLocations(Zones,"random",num_sample=3, zones_count = 3)
-# Test over
-# 
+#  source("/home/yi/Documents/RGIC01/backend/src/modules/input.r"))
+#  Zones_dir = "/home/yi/Documents/RGIC01/backend/data/Zone/homogenised.grd"
+#  Zones = Input(Zones_dir)[[1]]
+#  points.df = GetSamplingLocations(Zones)
+#  spplot(Zones, sp.layout = list(points.df[2],col.regions = heat.colors(100)))
+#  Values(Zone)
+#  Test over

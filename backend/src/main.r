@@ -35,7 +35,7 @@ source("modules/util.r")
 
 #### Input/Output variables - this should be filled out! ####
 
-# The input image (all should be bands of the same image)
+# The input image (all should be bands of the same image); bands say which band to keep from the images
 InputImage = Input(c(file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_green.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red.tif"),
     file.path("..", "data", "2016-04-03_bert_boerma_kale_grond_transparent_reflectance_red edge.tif"),
