@@ -50,6 +50,7 @@ for (filename in filenames)
 	
 	csr = CRS(prj_string)
 	vector = spatial.df
+	layer_op = NULL
 	layer = basename(file_path_sans_ext(filename))
 	if (!file_ext(filename) %in% c("kml","sql","gpx","shp"))
 		{stop("The file extention should be 'kml','sql','gpx','shp'")}
@@ -61,6 +62,8 @@ for (filename in filenames)
 		
 	if (file_ext(filename)=="sql"){
 		drv = "PGDump"
+		
+		layer_op = paste0("SRID=", GetEPSG(vector))
 		}
 
 	if (file_ext(filename)=="shp"){
@@ -68,8 +71,8 @@ for (filename in filenames)
 			{file.remove(paste(file_path_sans_ext(filename),".dbf",sep = ""))
 			file.remove(paste(file_path_sans_ext(filename),".prj",sep = ""))
 			file.remove(paste(file_path_sans_ext(filename),".shx",sep = ""))
-			
 			}
+		
 		drv = "ESRI Shapefile"
 		}
 
@@ -85,9 +88,9 @@ for (filename in filenames)
 			} else
                     names(vector@data[i]) = "name"
 			} 
-		}
+		
 		if (!any(names(vector)=="name"))
-                    vector@data[["name"]] = rownames(vector@data)
+                    vector@data[["name"]] = rownames(vector@data)}
 
 # If the projection will specified to other projection
 	if (prj_string != "+proj=longlat +datum=WGS84"){vector@data
@@ -95,16 +98,18 @@ for (filename in filenames)
 		}
 	if (file.exists(filename)) 
 			{file.remove(filename)}
-	writeOGR(vector,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE)
+	writeOGR(vector,dsn = filename ,layer = layer, driver=drv, overwrite_layer=TRUE,
+layer_options = layer_op)
 	}}
 
 
 # test begin
 # 	obj = vec[[1]]
 # 	obj = points.df
-#filename = "/home/yi/Documents/RGIC01/backend/data/ttttt.shp"
-#ExportToFile(SamplingLocations,SampleOutputFiles)
+filename = "../output/2016-04-03_bert_boerma_kale_grond_samples.shp"
+ExportToFile(points.df,SampleOutputFiles)
 #spatial.df = SamplingLocations
+ExportToFile(points.df, filename)
 # test over
 
 
