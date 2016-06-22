@@ -1,0 +1,16 @@
+SET standard_conforming_strings = OFF;
+DROP TABLE "public"."outliers" CASCADE;
+DELETE FROM geometry_columns WHERE f_table_name = 'outliers' AND f_table_schema = 'public';
+BEGIN;
+CREATE TABLE "public"."outliers" ( ogc_fid SERIAL, CONSTRAINT "outliers_pk" PRIMARY KEY (ogc_fid) );
+SELECT AddGeometryColumn('public','outliers','wkb_geometry',-1,'POINT',2);
+CREATE INDEX "outliers_wkb_geometry_geom_idx" ON "public"."outliers" USING GIST ("wkb_geometry");
+ALTER TABLE "public"."outliers" ADD COLUMN "v1" FLOAT8;
+ALTER TABLE "public"."outliers" ADD COLUMN "v2" FLOAT8;
+ALTER TABLE "public"."outliers" ADD COLUMN "quantile" FLOAT8;
+ALTER TABLE "public"."outliers" ADD COLUMN "outlier_detection_method" VARCHAR;
+ALTER TABLE "public"."outliers" ADD COLUMN "name" VARCHAR;
+INSERT INTO "public"."outliers" ("wkb_geometry" , "ogc_fid" , "v1", "v2", "quantile", "outlier_detection_method", "name") VALUES ('01010000005907DAD955A62441DAD625EF8E2D5641', 1 , 676650.925491552, 5813819.73668453, 0.5, 'Quantile Method', '1');
+INSERT INTO "public"."outliers" ("wkb_geometry" , "ogc_fid" , "v1", "v2", "quantile", "outlier_detection_method", "name") VALUES ('0101000000CAE1DDAF15A724417BAE1C7E952D5641', 2 , 676746.8434897, 5813845.97050058, 0.5, 'Quantile Method', '2');
+INSERT INTO "public"."outliers" ("wkb_geometry" , "ogc_fid" , "v1", "v2", "quantile", "outlier_detection_method", "name") VALUES ('01010000002112AECF59A22441717B1E55E42C5641', 3 , 676140.90562493, 5813137.32998549, 99.5, 'Quantile Method', '3');
+COMMIT;

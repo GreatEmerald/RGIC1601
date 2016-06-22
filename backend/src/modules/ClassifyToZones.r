@@ -43,7 +43,7 @@ library(raster)
 
 
 
-ClassifyToZones = function(objPC, method, zones_count = 3, ...)
+ClassifyToZones = function(objPC, method = "KMeans", zones_count = 3, ...)
 {   
     if (bandnr(objPC) > 1)
     {
@@ -51,7 +51,8 @@ ClassifyToZones = function(objPC, method, zones_count = 3, ...)
     }
     if (zones_count >= 128)
     {
-        stop("Too many classes, output will be too complicated for human interpretation/n Try a smaller number")
+        stop("Too many classes, output will be too complicated for human interpretation/n 
+                 Try a smaller number")
     }
     if (class(zones_count) != "numeric" )
     {
@@ -63,15 +64,14 @@ ClassifyToZones = function(objPC, method, zones_count = 3, ...)
     }
     else
     {
-        if (method == "KMeans")
-        {
-            valueTable = getValues(objPC)
+
+      valueTable = getValues(objPC)
                 
 	    rNA = setValues(raster(objPC), 0)                     # create empty raster to store lost info of the input object during KMeans
 	    rNA[is.na(objPC)] = 1
 	    rNA = getValues(rNA)
             
-            km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
+      km = kmeans(na.omit(valueTable), centers = zones_count, iter.max = 50, nstart = 10)
 
 	    valueTable = as.data.frame(valueTable)
 	    valueTable[rNA == 1,] = NA
@@ -87,10 +87,10 @@ ClassifyToZones = function(objPC, method, zones_count = 3, ...)
 	    }
 	    else
 	    {
+	        NAvalue(zones) <- NaN
 	        zones = writeRaster(zones, dataType = "INT1S", overwrite = T, ...)
 	        return(zones)
 	    }
-        }
     }
 }
 

@@ -60,24 +60,24 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     stop(paste("Input", (data.class(MZrast_in)), "is not single-banded."))
   }
 
-  #MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
+  MZrast_in = aggregate(MZrast_in, fact=2, fun=modal)
   UV = unique(MZrast_in) # detect unique values / Management Zones
   MZs = seq(0, (length(UV)-1), by=1)
   MZs_vector = list(1:length(UV)) # create a list for the return
   
-  #RtP = rasterToPolygons(MZrast_in, dissolve=TRUE, na.rm=TRUE)
-  RtP = gdal_polygonizeR(MZrast_in)
+  RtP = gdal_polygonizeR(MZrast_in) # uses function from util.r
+  RtP@data$zone_number = RtP@data$layer
+  RtP@data$layer = NULL
+  RtP = aggregate(RtP, by = "zone_number")
   
   oldmetadata = metadata(MZrast_in)
-    
-  #RtP@data$OldMetadata = append(oldmetadata, list(newvariable2="test2"))
     
   for (i in MZs)
   {
     if (i < length(MZs))
     {
-      RtP@data$Metadata[[i+1]] = paste(
-        "This is polygon", i, "out of", tail(MZs,1), "management zones (incl border).")
+      RtP@data$Metadata[[i+1]] = paste(oldmetadata,
+        "+", i, "out of", tail(MZs,1), "management zones (incl border).")
     }
   }
   
@@ -105,4 +105,5 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
 #in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
 #MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
 #MZRasterToVectorVI = RasterToVector(in_raster, in_VI) #Homogeneous raster
-#spplot(MZRasterToVector)
+#spplot(MZRasterToVectorVI)
+
