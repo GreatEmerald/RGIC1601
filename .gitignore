@@ -2,6 +2,6 @@
 .Rhistory
 .RData
 *.rkward_autosave
-*/data/*
+backend/data/*
 *.kate-swp
 .directory
