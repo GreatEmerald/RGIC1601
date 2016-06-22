@@ -17,7 +17,7 @@
 # Source: http://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/
 # Based on: Lyndon Estes code, http://r-sig-geo.2731867.n2.nabble.com/Memory-management-with-rasterToPolygons-raster-and-rgeos-td7153049.html
 
-gdal_polygonizeR = function(x, outshape=NULL, attname='DN', gdalformat = 'GML', quiet=TRUE)
+gdal_polygonizeR = function(x, outshape=NULL, attname='zone_number', gdalformat = 'GML', quiet=TRUE)
 {
     py.c <- Sys.which('gdal_polygonize.py')
 
