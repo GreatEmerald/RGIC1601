@@ -60,7 +60,7 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     stop(paste("Input", (data.class(MZrast_in)), "is not single-banded."))
   }
 
-  #MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
+  MZrast_in = aggregate(MZrast_in, fact=2, fun=modal)
   UV = unique(MZrast_in) # detect unique values / Management Zones
   MZs = seq(0, (length(UV)-1), by=1)
   MZs_vector = list(1:length(UV)) # create a list for the return
@@ -106,3 +106,4 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
 #MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
 #MZRasterToVectorVI = RasterToVector(in_raster, in_VI) #Homogeneous raster
 #spplot(MZRasterToVector)
+
