@@ -75,10 +75,15 @@ OutputFile = function(type, postfix="", directory=file.path("..", "output"))
 # Get the EPSG number of the object (must be coercable into a prj4 string)
 GetEPSG = function(obj)
 {
+    Proj = projection(obj)
+    # Hack to remove the extra prj4 parts that raster adds upon import
+    Proj = sub(" \\+ellps=WGS84 \\+towgs84=0,0,0", "", Proj)
     RefList = make_EPSG()
     for (i in 1:nrow(RefList))
     {
-        if (compareCRS(as.character(RefList[i,"prj4"]), obj))
+        # The below would be better, but right now it returns false positives...
+        #if (compareCRS(as.character(RefList[i,"prj4"]), obj))
+        if (!is.na(RefList[i,"prj4"]) && RefList[i,"prj4"] == Proj)
             return(as.integer(RefList[i,"code"]))
     }
     warning("Matching EPSG not found!")
