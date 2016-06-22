@@ -74,13 +74,13 @@ if (!file.exists(PC1IntermediaryFile))
 
 if (!file.exists(ZoneRasterIntermediaryFile))
 {
-    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile, datatype="INT1S")
+    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile)
 } else
     ManagementZones = raster(ZoneRasterIntermediaryFile)
 
 if (!file.exists(HomogenisedIntermediaryFile))
 {
-    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile, datatype="INT1S")
+    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile)
 } else
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
@@ -97,4 +97,4 @@ ExportToFile(OutlierPoints, OutlierOutputFiles)
 SamplingLocations = GetSamplingLocations(ManagementZones)
 ExportToFile(SamplingLocations, SampleOutputFiles)
 
-PlotResult(ManagementZoneVector, OutlierPoints, SamplingLocations, PlotOutputFile)
+PlotResult(ManagementZoneVector, SamplingLocations, OutlierPoints, PlotOutputFile)
