@@ -17,7 +17,7 @@
 # Source: http://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/
 # Based on: Lyndon Estes code, http://r-sig-geo.2731867.n2.nabble.com/Memory-management-with-rasterToPolygons-raster-and-rgeos-td7153049.html
 
-gdal_polygonizeR = function(x, outshape=NULL, attname='layer', gdalformat = 'GML', quiet=TRUE)
+gdal_polygonizeR = function(x, outshape=NULL, attname='tmp', gdalformat = 'GML', fieldname='layer', quiet=TRUE)
 {
     py.c <- Sys.which('gdal_polygonize.py')
 
@@ -46,7 +46,7 @@ gdal_polygonizeR = function(x, outshape=NULL, attname='layer', gdalformat = 'GML
         rast.nm <- normalizePath(x)
     } else
         stop('x must be either a file path (as a character string), or a Raster object.')
-  full.c = sprintf("%1$s %2$s -f '%3$s' %4$s %5$s", py.c, rast.nm, gdalformat, outshape, attname)
+  full.c = sprintf("%1$s %2$s -f '%3$s' %4$s %5$s %6$s", py.c, rast.nm, gdalformat, outshape, attname, fieldname)
   system(full.c)
   shp = readOGR(outshape, layer = attname, verbose=!quiet)
   projection(shp) = projection(x)
