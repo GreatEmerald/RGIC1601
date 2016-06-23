@@ -1,5 +1,6 @@
 # Input handling module for the backend of the management zone generation tool
 # Copyright (C) 2016 Merijn Slagter
+# Copyright (C) 2016 Dainius Masiliunas
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,7 +51,8 @@ library(raster)
 
 CalculateIndex = function(in_stack,fieldtype, agg_factor = 10, ...)
 { 
-  in_stack =  aggregate(in_stack, fact = agg_factor) 
+    if (agg_factor > 1)
+        in_stack =  aggregate(in_stack, fact = agg_factor)
   
 ##    NDVI function
     if (fieldtype == "vegetation")
