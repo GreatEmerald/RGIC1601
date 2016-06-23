@@ -62,9 +62,11 @@ HomogeniseRaster = function(zoneRaster, window, min_ar, ...)
       }
       
       fw = focalWeight(zoneRaster, w_size, type = window)
-      new_raster = focal(zoneRaster, w = fw, fun = modal, pad = T)
+      new_raster = focal(zoneRaster, w = fw, fun = modal, na.rm = T)
+      new_raster = mask(new_raster, zoneRaster)
       # the focal function uses modal function, which substitues the value of central cell 
       # with the value, whcih is in majority in the moving window
+      
       zones = c(unique(new_raster))
       
       for(i in 1:length(zones))

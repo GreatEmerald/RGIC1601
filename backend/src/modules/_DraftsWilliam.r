@@ -40,6 +40,40 @@ Zones_PC5 = raster(file.path("..", ".." , "output", "Zones_PC5.gri"))
 #WSS = stack(WS)
 #WSB = brick(WS)
 
+
+# GetOutliers
+
+rast_in = WS
+Q = 0.005
+L = 8
+
+GetOutl = GetOutliers(WS,0.005,8) # used for 'Singe-band image'
+plot(GetOutl)
+
+rv_pnt_up = list("sp.points", GetOutl[[2]], col = "red")
+rv_pnt_lo = list("sp.points", GetOutl[[3]], col = "green")
+
+rv_lin_up = list("sp.lines", GetOutl[[4]], col = "red")
+rv_lin_lo = list("sp.lines", GetOutl[[5]], col = "green")
+
+rv_pol_up = list("sp.polygons", GetOutl[[6]], fill = "white")
+rv_pol_lo = list("sp.polygons", GetOutl[[7]], fill = "white")
+
+rv_cent_up = list("sp.points", GetOutl[[8]], col = "yellow")
+rv_cent_lo = list("sp.points", GetOutl[[9]], col = "white")
+
+SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
+                   xlab = "X", ylab = "Y",
+                   ol.regions = rainbow(99, start=.1),
+                   sp.layout = list(rv_lin_up,rv_lin_lo))
+SPplotWS
+
+spplot(GetOutl[[6]])
+
+
+
+
+
 # RasterToVector
 
 #MZRasterToVector = RasterToVector(HomogeniseRaster[[2]])
