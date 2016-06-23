@@ -1,5 +1,6 @@
 # Input handling module for the backend of the management zone generation tool
-# Copyright (C) 2016 William Schuch, Geetika Rathee
+# Copyright (C) 2016 William Schuch
+# Copyright (C) 2016 Geetika Rathee
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +33,9 @@ library(geosphere)
 #       character vector: RasterLayer to use as input, single-band.
 #           Must be a format handled by GDAL.
 #   Q:
-#       character string: Quantile for outlier. 
+#       character string: Quantile for outlier. Default is set to 0.05
+#   L:
+#       Number of levels for the contourLine function. Default is set to 8
 #
 # Maintains:
 #   (Environment)
@@ -47,7 +50,7 @@ library(geosphere)
 
 
 # INTO THE FUNCTION
-GetOutliers = function(rast_in, Q, L)
+GetOutliers = function(rast_in, Q = 0.005, L = 8)
 {
   if (nbands(rast_in) > 1)
   {
@@ -63,7 +66,7 @@ GetOutliers = function(rast_in, Q, L)
   }
   UV = unique(rast_in)
   
-  if (length(UV) > 128) # used for 'Singe-band image'
+  if (length(UV) > 128) # used to check for INTS datatype input
   {
     quantiles = quantile(rast_in, c(Q,1-Q))
     PROJ = rast_in@crs@projargs
@@ -88,9 +91,6 @@ GetOutliers = function(rast_in, Q, L)
 
     SLDF_upper = ContourLines2SLDF(Dcl_upper, proj4string = CRS(PROJ))  # convert to SpatialLinesDataFrame
     SLDF_lower = ContourLines2SLDF(Dcl_lower, proj4string = CRS(PROJ))  
-    
-    Polyclust_upper = gPolygonize(SLDF_upper[-1, ])
-    Polyclust_lower = gPolygonize(SLDF_lower[-1, ])
 
     for (z in seq(3, length(SLDF_upper), by=1))
     {
@@ -116,20 +116,9 @@ GetOutliers = function(rast_in, Q, L)
       }
     }
     
-    #Polyclust_upper = gPolygonize(SLDF_upper[5, ])
-    #Polyclust_lower = gPolygonize(SLDF_lower[5, ])
-    
-    #gas_upper = gArea(Polyclust_upper, byid = T)/10000
-    #gas_lower = gArea(Polyclust_lower, byid = T)/10000
-
-    #Polyclust_upper = SpatialPolygonsDataFrame(Polyclust_upper, data = data.frame(gas_upper), match.ID = F)
-    #Polyclust_lower = SpatialPolygonsDataFrame(Polyclust_lower, data = data.frame(gas_lower), match.ID = F)
-    
     rm(gas_upper, gas_lower, SLDF_upper,SLDF_lower,Dcl_upper,
        Dcl_lower, Dim_upper, Dim_lower, Dsg_upper, Dsg_lower, Dens_upper, Dens_lower, sSp_lower, sSp_upper)
     
-    #centroids_upper = getSpPPolygonsLabptSlots(Polyclust_upper)
-    #centroids_lower = getSpPPolygonsLabptSlots(Polyclust_lower)
     centroids_upper = centroid(Polyclust_upper) # no warning with "Use coordinates method"
     centroids_lower = centroid(Polyclust_lower)
 
