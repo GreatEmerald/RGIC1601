@@ -21,16 +21,19 @@ library(raster)
 
 ### GetSamplingLocations ###
 #
-# This function only return the central point coordinate of one raster object
-# as spatial data point
+# This function return the central point coordinate of one raster object
+# as spatial data point, or get certain amount sampling location each 
+# management zone
 #
 # Arguments:
-#   Input:
+#   Input(raster object):
 #     raster data
-#   Method: 
-#     "centre"(default)
-#   Zone_code:
-#     1(default)
+#   Method(character): 
+#     "random"(default)
+#   num_sample(numeric):
+#     3(default) the number of samples per management zone
+#	Zone_count(numeric):
+#     Input from ClassifyToZones
 #
 # Maintains:
 #   Environment
@@ -54,7 +57,7 @@ GetCentralSampleLoc <- function(Fieldraster){
 
 # Get random sampling locationn of multiple categories
 
-GetMultipleSamplingLoc = function(obj, num_sample=3, zones_count = 3)
+GetMultipleSamplingLoc = function(obj, num_sample=3, zones_count)
 	{
 	sample_matrix = c()
 	id = (1:(num_sample * zones_count))
@@ -70,7 +73,7 @@ GetMultipleSamplingLoc = function(obj, num_sample=3, zones_count = 3)
 
 ### Return sampling number and coordinates
 
-GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, zones_count = 3)
+GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, zones_count)
   { 
   
   if (Method == "random"){
@@ -105,7 +108,7 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 #  source("/home/yi/Documents/RGIC/backend/src/modules/input.r")
 #  Zones_dir = "/home/yi/Documents/RGIC/backend/data/Zone/homogenised.grd"
 #  Zones = Input(Zones_dir)[[1]]
-#  points.df = GetSamplingLocations(Zones)
+#  points.df = GetSamplingLocations(Zones,zones_count = 3)
 #  spplot(Zones, sp.layout = list(points.df[2],col.regions = heat.colors(100)))
 #  Values(Zone)
 #  Test over
