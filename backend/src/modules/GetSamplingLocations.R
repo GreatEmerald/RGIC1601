@@ -102,8 +102,8 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 }
 
 # Test
-#  source("/home/yi/Documents/RGIC01/backend/src/modules/input.r"))
-#  Zones_dir = "/home/yi/Documents/RGIC01/backend/data/Zone/homogenised.grd"
+#  source("/home/yi/Documents/RGIC/backend/src/modules/input.r")
+#  Zones_dir = "/home/yi/Documents/RGIC/backend/data/Zone/homogenised.grd"
 #  Zones = Input(Zones_dir)[[1]]
 #  points.df = GetSamplingLocations(Zones)
 #  spplot(Zones, sp.layout = list(points.df[2],col.regions = heat.colors(100)))
