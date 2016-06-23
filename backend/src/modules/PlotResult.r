@@ -25,12 +25,13 @@ library(latticeExtra)
 #   obj(SpatialPolygonsDataFrame): 
 #		The basic map need to be ploted
 #	samples(SpatialPointsDataFrame): 
-#		The sampling points need to be ploted, Can be set as Null
+#		The sampling points need to be ploted, Can be Null
 #	outliers(SpatialPointsDataFrame): 
-#		The outliers points need to be ploted, can be set as Null
-#	Zone_count(numeric): 
-#		User input from The function Classified to Zone
-#   
+#		The outliers points need to be ploted, can be Null
+#	filename(character):
+#		The export file directory, 
+#
+#
 # Maintains:
 #   Environment
 #   Input files
@@ -50,7 +51,7 @@ PlotResult = function(obj, samples= NULL, outliers = NULL, filename,...)
 	if (class(samples) != "NULL")
 	{sample = list (samples , pch = 3, col = "darkgreen",cex = 1.7)}
 	if (class(samples) != "NULL")
-	{outlier = list(outliers, pch = 3, col = "black",cex = 1)}
+	{outlier = list(outliers, pch = 13, col = "black",cex = 1)}
 	
 	
 	# check the expected export format
