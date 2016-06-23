@@ -1,5 +1,6 @@
 # Input handling module for the backend of the management zone generation tool
-# Copyright (C) 2016 William Schuch, Geetika Rathee
+# Copyright (C) 2016 William Schuch
+# Copyright (C) 2016 Geetika Rathee
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
