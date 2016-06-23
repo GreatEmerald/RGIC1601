@@ -22,12 +22,16 @@ library(latticeExtra)
 
 #
 # Arguments:
-#   obj(SpatialPolygonsDataFrame)
-#	samples(SpatialPointsDataFrame)
-
-
-
-#   
+#   obj(SpatialPolygonsDataFrame): 
+#		The basic map need to be ploted
+#	samples(SpatialPointsDataFrame): 
+#		The sampling points need to be ploted, Can be Null
+#	outliers(SpatialPointsDataFrame): 
+#		The outliers points need to be ploted, can be Null
+#	filename(character):
+#		The export file directory, 
+#
+#
 # Maintains:
 #   Environment
 #   Input files
@@ -40,9 +44,15 @@ library(latticeExtra)
 #   The amount of Management Zones equals the amount of elements.
 
 
-PlotResult = function(obj, samples= NULL, outliers = NULL, filename, Zones_count = 3,...)
+PlotResult = function(obj, samples= NULL, outliers = NULL, filename,...)
 	{
-#	obj$id = factor(c(1:Zones_count), levels = c(1:Zones_count), labels = paste("Zone",c(1:Zones_count)))
+	
+	obj$DN = factor(c(min(obj$DN):max(obj$DN)), levels = c(min(obj$DN):max(obj$DN)), labels = paste("Zone",c(min(obj$DN):max(obj$DN))))
+	if (class(samples) != "NULL")
+	{sample = list (samples , pch = 3, col = "darkgreen",cex = 1.7)}
+	if (class(samples) != "NULL")
+	{outlier = list(outliers, pch = 13, col = "black",cex = 1)}
+	
 	
 	# check the expected export format
 	if (file_ext(filename) == "jpg")
@@ -60,21 +70,20 @@ PlotResult = function(obj, samples= NULL, outliers = NULL, filename, Zones_count
 		
 	# check the expected results
 		
-	print(spplot(obj,scales = list(draw = T),col.regions = heat.colors(100))
-	+ layer(sp.points(samples, pch = 17)))
+	print(spplot(obj[2],scales = list(draw = T),col.regions = heat.colors(100),sp.layout = list(sample)))
+
 	dev.off()
 }
 
 
-# 
-# 	spplot(obj,scales = list(draw = T),col.regions = heat.colors(100))
-# 	+ layer(sp.points(samples, pch = 17))
-# 	
-# 	
-# 	
-# obj = readOGR("/home/yi/Documents/RGIC01/backend/data/test_vector.shp",layer = "test_vector")
-# filename = "/home/yi/Documents/RGIC01/backend/data/myplot3.png"
+ 	
+# obj = readOGR("//home/yi/Documents/RGIC/backend/data/Zone-vector/zones.shp",layer = "zones")
+# filename = "/home/yi/Documents/RGIC/backend/output/myplot3.jpg"
 # str(obj)
 # obj = Zones
 # samples = points.df
-# PlotResult(obj,samples,filename= filename)
+# PlotResult(obj,samples = samples,filename= filename)
+
+#filename = "/home/yi/Documents/RGIC/backend/data/onion_homogenised.grd"
+#HomogeneousMZ = Input(filename)
+#plot(HomogeneousMZ)

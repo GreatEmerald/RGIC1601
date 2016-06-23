@@ -44,7 +44,7 @@ html, body {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family: sans-serif;
+  font-family: "Franklin Gothic Medium", Georgia, Serif;
   font-size: small;
 }
 .toolbar {
@@ -225,8 +225,8 @@ html, body {
  display: none;
  position: absolute;
  background:rgba(255,255,255, 1);
- padding: 5px;
- border: 1px solid #000000 ;
+ padding: 2px;
+ border: 3px solid #000000 ;
  top: 0px;
  right: 0px;
  max-width: 50%;

@@ -17,7 +17,7 @@
 # Source: http://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/
 # Based on: Lyndon Estes code, http://r-sig-geo.2731867.n2.nabble.com/Memory-management-with-rasterToPolygons-raster-and-rgeos-td7153049.html
 
-gdal_polygonizeR = function(x, outshape=NULL, attname='layer', gdalformat = 'GML', quiet=TRUE)
+gdal_polygonizeR = function(x, outshape=NULL, attname='tmp', gdalformat = 'GML', fieldname='layer', quiet=TRUE)
 {
     py.c <- Sys.which('gdal_polygonize.py')
 
@@ -46,7 +46,7 @@ gdal_polygonizeR = function(x, outshape=NULL, attname='layer', gdalformat = 'GML
         rast.nm <- normalizePath(x)
     } else
         stop('x must be either a file path (as a character string), or a Raster object.')
-  full.c = sprintf("%1$s %2$s -f '%3$s' %4$s %5$s", py.c, rast.nm, gdalformat, outshape, attname)
+  full.c = sprintf("%1$s %2$s -f '%3$s' %4$s %5$s %6$s", py.c, rast.nm, gdalformat, outshape, attname, fieldname)
   system(full.c)
   shp = readOGR(outshape, layer = attname, verbose=!quiet)
   projection(shp) = projection(x)
@@ -75,10 +75,15 @@ OutputFile = function(type, postfix="", directory=file.path("..", "output"))
 # Get the EPSG number of the object (must be coercable into a prj4 string)
 GetEPSG = function(obj)
 {
+    Proj = projection(obj)
+    # Hack to remove the extra prj4 parts that raster adds upon import
+    Proj = sub(" \\+ellps=WGS84 \\+towgs84=0,0,0", "", Proj)
     RefList = make_EPSG()
     for (i in 1:nrow(RefList))
     {
-        if (compareCRS(as.character(RefList[i,"prj4"]), obj))
+        # The below would be better, but right now it returns false positives...
+        #if (compareCRS(as.character(RefList[i,"prj4"]), obj))
+        if (!is.na(RefList[i,"prj4"]) && RefList[i,"prj4"] == Proj)
             return(as.integer(RefList[i,"code"]))
     }
     warning("Matching EPSG not found!")
