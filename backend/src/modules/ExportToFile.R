@@ -106,8 +106,8 @@ for (filename in filenames)
 # test begin
 # 	obj = vec[[1]]
 # 	obj = points.df
-filename = "../output/2016-04-03_bert_boerma_kale_grond_samples.shp"
-ExportToFile(points.df,SampleOutputFiles)
+# filename = "../output/2016-04-03_bert_boerma_kale_grond_samples.shp"
+# ExportToFile(points.df,SampleOutputFiles)
 #spatial.df = SamplingLocations
 #ExportToFile(points.df, filename)
 # test over
