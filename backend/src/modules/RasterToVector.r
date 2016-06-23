@@ -63,7 +63,7 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
   #oldmetadata = metadata(MZrast_in)
   oldmetadata = metadata(MZrast_in)
   
-  MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
+  #MZrast_in = aggregate(MZrast_in, fact=10, fun=modal)
   UV = unique(MZrast_in) # detect unique values / Management Zones
   MZs = seq(0, (length(UV)-1), by=1)
   MZs_vector = list(1:length(UV)) # create a list for the return
@@ -115,11 +115,10 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
     }
 }
 #in_raster = raster(file.path("..", ".." , "output", "homogenised.gri"))
-#in_VI = raster(file.path("..", ".." , "output", "Index_testfield_agg10.gri"))
+#in_VI = raster(file.path("..", ".." , "output", "index_testfield_agg10.gri"))
 #MZRasterToVector = RasterToVector(in_raster) #Homogeneous raster
-MZRasterToVectorVI = RasterToVector(in_raster, in_VI) #Homogeneous raster
+#MZRasterToVectorVI = RasterToVector(in_raster, in_VI) #Homogeneous raster
 #spplot(MZRasterToVectorVI)
 
-
-MZrast_in = in_raster
-VIrast_in = in_VI
+#MZrast_in = in_raster
+#VIrast_in = in_VI
