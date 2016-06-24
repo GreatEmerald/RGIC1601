@@ -101,7 +101,6 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3)
   
   # A SpatialPointsDataFrame as return
   return(points.df)
-  
 }
 
 # Test
