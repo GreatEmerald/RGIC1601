@@ -69,7 +69,7 @@ SamplesPerZone = 3
 # Low factors take a lot of time and memory but is more precise
 AggregationFactor = 2
 
-# Intermediary file names. These do not matter much unless you are low on space
+# Intermediary file names. These do not matter much unless you are low on disk space
 PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
 ZoneRasterIntermediaryFile = file.path("..", "output", "classified.grd")
 HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
