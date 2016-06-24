@@ -1,5 +1,6 @@
 # Input handling module for the backend of the management zone generation tool
 # Copyright (C) 2016 Yi Xiong
+# Copyright (C) 2016 William Schuch
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -93,9 +94,10 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3)
   # points.df@data$coords = cbind(coordinates(points.df)[,1],coordinates(points.df)[,2])
 
 
-  # Add metedata
+  # Add metadata
   points.df$sample_num = num_sample
   points.df$method = Method
+  points.df$Notes = ""
   
   # A SpatialPointsDataFrame as return
   return(points.df)
