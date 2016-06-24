@@ -41,11 +41,11 @@ library(raster)
 #   Raster single-band (1B) object; the 
 #   layer will be the first principle component of the input brick
 
-GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
+GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
 {    
    if(length(names(in_stack)) < 2)
    {
-       stop("The input should have at least two bands")
+       return(in_stack)
    }
    if (is.character(projection(field_mask)))
    {
