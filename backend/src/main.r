@@ -61,7 +61,7 @@ PlotOutputFile = OutputFile("png", "plot")
 
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
-AggregationFactor = 10
+AggregationFactor = 2
 
 # Intermediary file names. These do not matter much unless you are low on space
 PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
@@ -91,13 +91,13 @@ if (!file.exists(HomogenisedIntermediaryFile))
 
 if (ImageType == "vegetation" || ImageType == "soil")
 {
-    ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor*2)
+    ColourIndex = CalculateIndex(InputImage, ImageType)
     ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
 } else
     ManagementZoneVector = RasterToVector(HomogeneousMZ)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
-OutlierPoints = GetOutliers(FirstComponent)
+OutlierPoints = GetOutliers(FirstComponent, 0.005, 3)
 ExportToFile(OutlierPoints, OutlierOutputFiles)
 SamplingLocations = GetSamplingLocations(ManagementZones)
 ExportToFile(SamplingLocations, SampleOutputFiles)

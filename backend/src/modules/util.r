@@ -23,8 +23,10 @@ gdal_polygonizeR = function(x, outshape=NULL, attname='tmp', gdalformat = 'GML',
 
     if (py.c == "")
     {
-        warning("gdal_polygonizeR: Can't find gdal_polygonize.py on your system; resorting to SLOW rasterToPolygons implementation!")
+        warning("Can't find gdal_polygonize.py on your system. Make sure it is installed and in the OS PATH.\n",
+            "Resorting to SLOW and imprecise rasterToPolygons implementation!")
         require(raster)
+        x = aggregate(x, fact=2, fun=modal)
         return(rasterToPolygons(x, na.rm=TRUE))
     }
     
