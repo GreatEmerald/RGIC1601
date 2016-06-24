@@ -47,7 +47,7 @@ library(latticeExtra)
 PlotResult = function(obj, samples= NULL, outliers = NULL, filename,...)
 	{
 	
-	obj$DN = factor(c(min(obj$DN):max(obj$DN)), levels = c(min(obj$DN):max(obj$DN)), labels = paste("Zone",c(min(obj$DN):max(obj$DN))))
+	obj[1] = factor(c(min(obj[1]):max(obj[1])), levels = c(min(obj[1]):max(obj[1])), labels = paste("Zone",c(min(obj[1]):max(obj[1]))))
 	if (class(samples) != "NULL")
 	{sample = list (samples , pch = 3, col = "darkgreen",cex = 1.7)}
 	if (class(samples) != "NULL")
