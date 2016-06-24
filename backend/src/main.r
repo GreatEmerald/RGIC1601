@@ -97,9 +97,9 @@ if (ImageType == "vegetation" || ImageType == "soil")
     ManagementZoneVector = RasterToVector(HomogeneousMZ)
 ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
-OutlierPoints = GetOutliers(FirstComponent, 0.005, 3)
+OutlierPoints = GetOutliers(FirstComponent)
 ExportToFile(OutlierPoints, OutlierOutputFiles)
-SamplingLocations = GetSamplingLocations(ManagementZones)
+SamplingLocations = GetSamplingLocations(HomogeneousMZ)
 ExportToFile(SamplingLocations, SampleOutputFiles)
 
 PlotResult(ManagementZoneVector, SamplingLocations, OutlierPoints, PlotOutputFile)
