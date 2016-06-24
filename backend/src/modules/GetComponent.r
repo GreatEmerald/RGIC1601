@@ -1,5 +1,6 @@
 # Input handling module for the backend of the management zone generation tool
 # Copyright (C) 2016 Geetika Rathee
+# Copyright (C) 2016 Dainius Masiliunas
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,11 +41,11 @@ library(raster)
 #   Raster single-band (1B) object; the 
 #   layer will be the first principle component of the input brick
 
-GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
+GetComponent = function(in_stack,field_mask = NA, agg_factor = 10, ...)
 {    
    if(length(names(in_stack)) < 2)
    {
-       stop("The input should have atleast two bands")
+       return(in_stack)
    }
    if (is.character(projection(field_mask)))
    {
@@ -63,7 +64,8 @@ GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
        warning("Mask is essential for better results!")
    }
    
-   in_stack =  aggregate(in_stack, fact = agg_factor)                      
+   if (agg_factor > 1)
+       in_stack =  aggregate(in_stack, fact = agg_factor)
    in_data = getValues(in_stack)
 
 # scale=T, save scaling applied to each variable, center = T, save means that were subtracted and retx = T, save PCA scores

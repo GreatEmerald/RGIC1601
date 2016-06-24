@@ -59,11 +59,20 @@ SampleOutputFiles = c(OutputFile("kml", "samples"), OutputFile("sql", "samples")
     OutputFile("gpx", "samples"), OutputFile("shp", "samples"))
 PlotOutputFile = OutputFile("png", "plot")
 
+# Number of zones to generate. Results depend on the size and homogeneity of the field
+ZoneCount = 3
+
+# Minimum zone area, ha
+MinZoneArea = 0.05
+
+# Number of sampling sites to generate per zone.
+SamplesPerZone = 3
+
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
-AggregationFactor = 10
+AggregationFactor = 2
 
-# Intermediary file names. These do not matter much unless you are low on space
+# Intermediary file names. These do not matter much unless you are low on disk space
 PC1IntermediaryFile = file.path("..", "output", "PC1.grd")
 ZoneRasterIntermediaryFile = file.path("..", "output", "classified.grd")
 HomogenisedIntermediaryFile = file.path("..", "output", "homogenised.grd")
@@ -79,19 +88,19 @@ if (!file.exists(PC1IntermediaryFile))
 
 if (!file.exists(ZoneRasterIntermediaryFile))
 {
-    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile)
+    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", ZoneCount, filename=ZoneRasterIntermediaryFile)
 } else
     ManagementZones = raster(ZoneRasterIntermediaryFile)
 
 if (!file.exists(HomogenisedIntermediaryFile))
 {
-    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile)
+    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", MinZoneArea, filename=HomogenisedIntermediaryFile)
 } else
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 
 if (ImageType == "vegetation" || ImageType == "soil")
 {
-    ColourIndex = CalculateIndex(InputImage, ImageType, AggregationFactor*2)
+    ColourIndex = CalculateIndex(InputImage, ImageType)
     ManagementZoneVector = RasterToVector(HomogeneousMZ, ColourIndex)
 } else
     ManagementZoneVector = RasterToVector(HomogeneousMZ)
@@ -99,7 +108,7 @@ ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
 OutlierPoints = GetOutliers(FirstComponent)
 ExportToFile(OutlierPoints, OutlierOutputFiles)
-SamplingLocations = GetSamplingLocations(ManagementZones)
+SamplingLocations = GetSamplingLocations(HomogeneousMZ, num_sample=SamplesPerZone)
 ExportToFile(SamplingLocations, SampleOutputFiles)
 
 PlotResult(ManagementZoneVector, SamplingLocations, OutlierPoints, PlotOutputFile)

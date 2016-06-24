@@ -2,7 +2,7 @@ SET standard_conforming_strings = OFF;
 DROP TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" CASCADE;
 DELETE FROM geometry_columns WHERE f_table_name = '2016_04_03_bert_boerma_kale_grond_outliers' AND f_table_schema = 'public';
 BEGIN;
-CREATE TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" ( ogc_fid SERIAL, CONSTRAINT "2016_04_03_bert_boerma_kale_grond_outliers_pk" PRIMARY KEY (ogc_fid) );
+CREATE TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" ( OGC_FID SERIAL, CONSTRAINT "2016_04_03_bert_boerma_kale_grond_outliers_pk" PRIMARY KEY (OGC_FID) );
 SELECT AddGeometryColumn('public','2016_04_03_bert_boerma_kale_grond_outliers','wkb_geometry',32631,'POINT',2);
 CREATE INDEX "2016_04_03_bert_boerma_kale_grond_outliers_wkb_geometry_geom_idx" ON "public"."2016_04_03_bert_boerma_kale_grond_outliers" USING GIST ("wkb_geometry");
 ALTER TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" ADD COLUMN "v1" FLOAT8;
@@ -11,6 +11,7 @@ ALTER TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" ADD COLUMN "qu
 ALTER TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" ADD COLUMN "extreme" VARCHAR;
 ALTER TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" ADD COLUMN "outlier_detection_method" VARCHAR;
 ALTER TABLE "public"."2016_04_03_bert_boerma_kale_grond_outliers" ADD COLUMN "name" VARCHAR;
-INSERT INTO "public"."2016_04_03_bert_boerma_kale_grond_outliers" ("wkb_geometry" , "ogc_fid" , "v1", "v2", "quantile", "extreme", "outlier_detection_method", "name") VALUES ('0101000020777F0000D9B8EACC13A724415268DCC6952D5641', 1 , 676745.900228287, 5813847.10720261, 0.5, 'lower', 'Quantile Method', '1');
-INSERT INTO "public"."2016_04_03_bert_boerma_kale_grond_outliers" ("wkb_geometry" , "ogc_fid" , "v1", "v2", "quantile", "extreme", "outlier_detection_method", "name") VALUES ('0101000020777F00002112AECF59A22441717B1E55E42C5641', 11 , 676140.90562493, 5813137.32998549, 99.5, 'higher', 'Quantile Method', '11');
+INSERT INTO "public"."2016_04_03_bert_boerma_kale_grond_outliers" ("wkb_geometry" , "OGC_FID" , "v1", "v2", "quantile", "extreme", "outlier_detection_method", "name") VALUES ('0101000020777F000050F21A2A57A624419B55D0138F2D5641', 1 , 676651.582236836, 5813820.30959072, 0.5, 'lower', 'Quantile Method', '1');
+INSERT INTO "public"."2016_04_03_bert_boerma_kale_grond_outliers" ("wkb_geometry" , "OGC_FID" , "v1", "v2", "quantile", "extreme", "outlier_detection_method", "name") VALUES ('0101000020777F000000BB186D19A724417DB936E2942D5641', 2 , 676748.713079304, 5813843.53459012, 0.5, 'lower', 'Quantile Method', '2');
+INSERT INTO "public"."2016_04_03_bert_boerma_kale_grond_outliers" ("wkb_geometry" , "OGC_FID" , "v1", "v2", "quantile", "extreme", "outlier_detection_method", "name") VALUES ('0101000020777F0000AC754B9859A22441E179C744E42C5641', 11 , 676140.797450711, 5813137.07467505, 99.5, 'higher', 'Quantile Method', '11');
 COMMIT;
