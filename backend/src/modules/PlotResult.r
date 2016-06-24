@@ -18,7 +18,6 @@
 library(sp)
 library(rgdal)
 library(tools)
-library(latticeExtra)
 
 #
 # Arguments:
@@ -40,18 +39,25 @@ library(latticeExtra)
 #   Stops script and gives a message
 #
 # Returns:
-#   A list of 4, with the Homogenized raster in [[2]].
+#   A list of 4, with the Homogenized raster in [[1]].
 #   The amount of Management Zones equals the amount of elements.
 
 
 PlotResult = function(obj, samples= NULL, outliers = NULL, filename,...)
 	{
+	layout = NULL
+
+	obj[[1]] = factor(c(min(obj[[1]]):max(obj[[1]])), levels = c(min(obj[[1]]):max(obj[[1]])), labels = paste("Zone",c(min(obj[[1]]):max(obj[[1]]))))
+	if (class(samples) != "NULL")
+	{Sample = list (samples , pch = 3, col = "darkgreen",cex = 1.7)
+	layout = Sample}
 	
-	obj[1] = factor(c(min(obj[1]):max(obj[1])), levels = c(min(obj[1]):max(obj[1])), labels = paste("Zone",c(min(obj[1]):max(obj[1]))))
 	if (class(samples) != "NULL")
-	{sample = list (samples , pch = 3, col = "darkgreen",cex = 1.7)}
-	if (class(samples) != "NULL")
-	{outlier = list(outliers, pch = 13, col = "black",cex = 1)}
+	{Outlier = list(outliers, pch = "*", col = "red",cex = 1)
+		if (class(layout) != "NULL")
+		{
+		layout = list(Sample,Outlier)
+		}}
 	
 	
 	# check the expected export format
@@ -66,11 +72,9 @@ PlotResult = function(obj, samples= NULL, outliers = NULL, filename,...)
 	if (file_ext(filename) == "pdf")
 		{png(filename)
 		}
-		
-		
+			
 	# check the expected results
-		
-	print(spplot(obj[2],scales = list(draw = T),col.regions = heat.colors(100),sp.layout = list(sample)))
+	print(spplot(obj[1],scales = list(draw = T),col.regions = heat.colors(100),sp.layout = layout))
 
 	dev.off()
 }
@@ -78,11 +82,11 @@ PlotResult = function(obj, samples= NULL, outliers = NULL, filename,...)
 
  	
 # obj = readOGR("//home/yi/Documents/RGIC/backend/data/Zone-vector/zones.shp",layer = "zones")
-# filename = "/home/yi/Documents/RGIC/backend/output/myplot3.jpg"
+# filename = "/home/yi/Documents/RGIC/backend/output/myplot.png"
 # str(obj)
 # obj = Zones
 # samples = points.df
-# PlotResult(obj,samples = samples,filename= filename)
+#PlotResult(obj,samples = samples, filename= filename)
 
 #filename = "/home/yi/Documents/RGIC/backend/data/onion_homogenised.grd"
 #HomogeneousMZ = Input(filename)

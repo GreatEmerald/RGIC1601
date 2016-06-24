@@ -62,6 +62,9 @@ PlotOutputFile = OutputFile("png", "plot")
 # Number of zones to generate. Results depend on the size and homogeneity of the field
 ZoneCount = 3
 
+# Minimum zone area, ha
+MinZoneArea = 0.05
+
 # Number of sampling sites to generate per zone.
 SamplesPerZone = 3
 
@@ -91,7 +94,7 @@ if (!file.exists(ZoneRasterIntermediaryFile))
 
 if (!file.exists(HomogenisedIntermediaryFile))
 {
-    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", 0.05, filename=HomogenisedIntermediaryFile)
+    HomogeneousMZ = HomogeniseRaster(ManagementZones, "circle", MinZoneArea, filename=HomogenisedIntermediaryFile)
 } else
     HomogeneousMZ = raster(HomogenisedIntermediaryFile)
 

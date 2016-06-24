@@ -1,7 +1,7 @@
 {
     "Base layers": [
-        "CartoDB", 
-        "MapQuest aerial"
+        "ESRI world imagery", 
+        "CartoDB"
     ], 
     "Deploy": {
         "GeoServer password": "geoserver", 
@@ -16,47 +16,7 @@
         "PostGIS username": "postgres"
     }, 
     "Groups": {}, 
-    "Layers": [
-        {
-            "allowSelection": true, 
-            "clusterColor": "#3399CC", 
-            "clusterDistance": 0, 
-            "layer": "rgic01:zones", 
-            "method": 5, 
-            "popup": "", 
-            "showInControls": true, 
-            "showInOverview": true, 
-            "singleTile": false, 
-            "timeInfo": null, 
-            "visible": true
-        }, 
-        {
-            "allowSelection": true, 
-            "clusterColor": "#3399CC", 
-            "clusterDistance": 0, 
-            "layer": "rgic01:outliers", 
-            "method": 5, 
-            "popup": "", 
-            "showInControls": true, 
-            "showInOverview": true, 
-            "singleTile": false, 
-            "timeInfo": null, 
-            "visible": true
-        }, 
-        {
-            "allowSelection": true, 
-            "clusterColor": "#3399CC", 
-            "clusterDistance": 0, 
-            "layer": "rgic01:samples", 
-            "method": 5, 
-            "popup": "", 
-            "showInControls": true, 
-            "showInOverview": true, 
-            "singleTile": false, 
-            "timeInfo": null, 
-            "visible": true
-        }
-    ], 
+    "Layers": [], 
     "Settings": {
         "Add permalink functionality": true, 
         "App view CRS": "EPSG:3857", 
@@ -77,15 +37,16 @@
         "Use view CRS for WFS connections": true
     }, 
     "Widgets": {
-        "aboutpanel": {
-            "Parameters": {
-                "content": "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
-            }
-        }, 
         "attributestable": {
             "Parameters": {
                 "Zoom level when zooming to point feature": "16"
             }
+        }, 
+        "attribution": {
+            "Parameters": {}
+        }, 
+        "fullscreen": {
+            "Parameters": {}
         }, 
         "geolocation": {
             "Parameters": {}
