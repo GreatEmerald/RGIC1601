@@ -32,8 +32,6 @@ library(raster)
 #     "random"(default)
 #   num_sample(numeric):
 #     3(default) the number of samples per management zone
-#	Zone_count(numeric):
-#     Input from ClassifyToZones
 #
 # Maintains:
 #   Environment
