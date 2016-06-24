@@ -59,6 +59,9 @@ SampleOutputFiles = c(OutputFile("kml", "samples"), OutputFile("sql", "samples")
     OutputFile("gpx", "samples"), OutputFile("shp", "samples"))
 PlotOutputFile = OutputFile("png", "plot")
 
+# Number of zones to generate. Results depend on the size and homogeneity of the field
+ZoneCount = 3
+
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
 AggregationFactor = 2
@@ -79,7 +82,7 @@ if (!file.exists(PC1IntermediaryFile))
 
 if (!file.exists(ZoneRasterIntermediaryFile))
 {
-    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", filename=ZoneRasterIntermediaryFile)
+    ManagementZones = ClassifyToZones(FirstComponent, "KMeans", ZoneCount, filename=ZoneRasterIntermediaryFile)
 } else
     ManagementZones = raster(ZoneRasterIntermediaryFile)
 
