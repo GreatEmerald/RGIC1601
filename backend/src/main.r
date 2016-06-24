@@ -62,6 +62,9 @@ PlotOutputFile = OutputFile("png", "plot")
 # Number of zones to generate. Results depend on the size and homogeneity of the field
 ZoneCount = 3
 
+# Number of sampling sites to generate per zone.
+SamplesPerZone = 3
+
 # The number of pixels to merge for PCA and extracting vegetation indices.
 # Low factors take a lot of time and memory but is more precise
 AggregationFactor = 2
@@ -102,7 +105,7 @@ ExportToFile(ManagementZoneVector, ZoneOutputFiles)
 
 OutlierPoints = GetOutliers(FirstComponent)
 ExportToFile(OutlierPoints, OutlierOutputFiles)
-SamplingLocations = GetSamplingLocations(HomogeneousMZ)
+SamplingLocations = GetSamplingLocations(HomogeneousMZ, num_sample=SamplesPerZone)
 ExportToFile(SamplingLocations, SampleOutputFiles)
 
 PlotResult(ManagementZoneVector, SamplingLocations, OutlierPoints, PlotOutputFile)
