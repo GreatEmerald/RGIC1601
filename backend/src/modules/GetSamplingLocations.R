@@ -57,11 +57,11 @@ GetCentralSampleLoc <- function(Fieldraster){
 
 # Get random sampling locationn of multiple categories
 
-GetMultipleSamplingLoc = function(obj, num_sample=3, zones_count)
+GetMultipleSamplingLoc = function(obj, num_sample=3)
 	{
 	sample_matrix = c()
-	id = (1:(num_sample * zones_count))
-	for (i in 1:zones_count)
+	id = (1:(num_sample * length(unique(obj))))
+	for (i in 1:length(unique(obj)))
 	{	
 	Zone = obj
 	Zone[Zone !=i] = NA
@@ -73,11 +73,11 @@ GetMultipleSamplingLoc = function(obj, num_sample=3, zones_count)
 
 ### Return sampling number and coordinates
 
-GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, zones_count)
+GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3)
   { 
   
   if (Method == "random"){
-    Point_matrix = GetMultipleSamplingLoc(Field_raster,num_sample,zones_count)
+    Point_matrix = GetMultipleSamplingLoc(Field_raster,num_sample)
     }
   if (Method == "centre"){
     Point_matrix = c()
@@ -108,7 +108,7 @@ GetSamplingLocations <- function(Field_raster, Method = "random",num_sample=3, z
 #  source("/home/yi/Documents/RGIC/backend/src/modules/input.r")
 #  Zones_dir = "/home/yi/Documents/RGIC/backend/data/Zone/homogenised.grd"
 #  Zones = Input(Zones_dir)[[1]]
-#  points.df = GetSamplingLocations(Zones,zones_count = 3)
+#  points.df = GetSamplingLocations(Zones)
 #  spplot(Zones, sp.layout = list(points.df[2],col.regions = heat.colors(100)))
 #  Values(Zone)
 #  Test over
