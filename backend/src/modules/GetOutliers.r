@@ -128,11 +128,15 @@ GetOutliers = function(rast_in, Q = 0.005, L = 8)
     centroidsDF_upper["quantile"] = (1 - Q) * 100
     centroidsDF_lower["extreme"] = "lower"
     centroidsDF_upper["extreme"] = "higher"
+    
     centroidDF  = rbind(centroidsDF_lower, centroidsDF_upper)
     centroidDF["outlier_detection_method"] = "Quantile Method"
     xy = centroidDF[,c(1,2)]
     centroidDF <- SpatialPointsDataFrame(coords = xy, data = centroidDF, bbox = NULL,
                                    proj4string = CRS(PROJ))
+    
+    centroidDF@data$Notes = ""
+    
     return(centroidDF)
     }
     else

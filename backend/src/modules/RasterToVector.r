@@ -72,21 +72,13 @@ RasterToVector = function(MZrast_in, VIrast_in=NA)
   RtP@data$zone_number = RtP@data$layer
   RtP@data$layer = NULL
   RtP = aggregate(RtP, by = "zone_number")
-
-  for (i in MZs)
-  {
-    if (i < length(MZs))
-    {
-      RtP@data$Metadata[[i+1]] = paste(
-         i, "out of", tail(MZs,1), "management zones.")
-    }
-  }
   
+  RtP@data$Notes = paste("")
+
   testWS = RtP@data
   testWS2 = data.frame(testWS,oldmetadata)
   
   exist_col = ncol(RtP@data) # counts the existing columns
-  #exist_col = 2
   
   for (i in seq(1,(length(oldmetadata)),by=1))
   {
