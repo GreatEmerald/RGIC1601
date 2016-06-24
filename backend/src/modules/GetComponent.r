@@ -44,7 +44,7 @@ GetComponent = function(in_stack,field_mask, agg_factor = 10, ...)
 {    
    if(length(names(in_stack)) < 2)
    {
-       stop("The input should have atleast two bands")
+       stop("The input should have at least two bands")
    }
    if (is.character(projection(field_mask)))
    {
