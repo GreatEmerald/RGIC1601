@@ -35,6 +35,7 @@ getwd()
 #setwd("./modules")
 WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative_TestArea.tif"))
 WS = raster(file.path("..", ".." , "data", "2016-04-03_bert_boerma_kale_grond_index_cumulative.tif"))
+WS = raster(file.path("..", ".." , "output", "index_testfield_agg10.gri")) # VI
 Zones_PC5 = raster(file.path("..", ".." , "output", "Zones_PC5.gri"))
 #Zones_PC5_Filterd = raster(file.path("..", ".." , "output", "Zones_PC5.gri..."))
 #WSS = stack(WS)
@@ -43,12 +44,16 @@ Zones_PC5 = raster(file.path("..", ".." , "output", "Zones_PC5.gri"))
 
 # GetOutliers
 
-rast_in = WS
-Q = 0.005
-L = 8
-
-GetOutl = GetOutliers(WS,0.005,8) # used for 'Singe-band image'
+GetOutl = GetOutliers(WS) # used for 'Singe-band image'
 plot(GetOutl)
+hist(WS, maxpixels=1000000, plot=TRUE, freq=TRUE, breaks=200)
+
+return(list(rast_in,
+            Vec_upper, Vec_lower,
+            SLDF_upper, SLDF_lower,
+            Polyclust_upper, Polyclust_lower,
+            centroidsDF_upper, centroidsDF_lower,
+            centroidDF))
 
 rv_pnt_up = list("sp.points", GetOutl[[2]], col = "red")
 rv_pnt_lo = list("sp.points", GetOutl[[3]], col = "green")
@@ -64,15 +69,27 @@ rv_cent_lo = list("sp.points", GetOutl[[9]], col = "white")
 
 SPplotWS = spplot(GetOutl[[1]], scales = list(draw = TRUE),
                    xlab = "X", ylab = "Y",
-                   ol.regions = rainbow(99, start=.1),
-                   sp.layout = list(rv_lin_up,rv_lin_lo))
+                   #ol.regions = rainbow(99, start=.1),
+                   sp.layout = list(rv_cent_up,rv_cent_lo))
 SPplotWS
 
-spplot(GetOutl[[6]])
+spplot(GetOutl[[10]])
+plot(GetOutl[[10]])
 
 
+# PLot Result
+PlotResult(MZRasterToVectorVI,filename= "plot1.png")
 
 
+# GetSamplingLocations
+
+GSL = GetSamplingLocations(in_raster)
+
+
+# Export
+
+ExportToFile(MZRasterToVectorVI, file.path("..", ".." , "output", "MZtest.shp"))
+ExportToFile(GetOutl[[10]], file.path("..", ".." , "output", "Outliers1.shp"))
 
 # RasterToVector
 
