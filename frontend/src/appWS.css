@@ -73,6 +73,7 @@ div.img {
 	right: 4px;
 	width: 320px;
 	height: 160px;
+	z-index: 800;
 }
 
 #navlist li {
@@ -112,7 +113,9 @@ html, body {
   font-size: small;
 }
 
-
+#table-panel{
+	z-index: 900;
+}
 
 #main {
   width: 100%;
