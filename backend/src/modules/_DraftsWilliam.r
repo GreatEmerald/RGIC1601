@@ -44,7 +44,7 @@ Zones_PC5 = raster(file.path("..", ".." , "output", "Zones_PC5.gri"))
 
 # GetOutliers
 
-GetOutl = GetOutliers(WS) # used for 'Singe-band image'
+GetOutl = GetOutliers(WS, Q=0.005, L=10) # used for 'Singe-band image'
 plot(GetOutl)
 hist(WS, maxpixels=1000000, plot=TRUE, freq=TRUE, breaks=200)
 
