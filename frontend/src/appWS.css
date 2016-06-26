@@ -1,3 +1,73 @@
+.ol-scale-line-inner{
+	width: 270px;
+	height: 60px;
+	font-size: 25px;
+}
+
+button.ol-zoom-in{
+	width: 30px;
+	height: 30px;
+	font-size: 25px;
+}
+
+button.ol-zoom-out{
+	width: 30px;
+	height: 30px;
+	font-size: 25px;
+}
+
+button.ol-rotate-reset{
+	position: absolute;
+	width: 38px;
+	height: 38px;
+	font-size: 25px;
+	border: 3px solid grey;
+	right: 40px;
+}
+
+button.ol-full-screen-false{
+	position: absolute;
+	width: 38px;
+	height: 38px;
+	font-size: 25px;
+	border: 3px solid grey;
+	right: 0px;
+}
+
+button.ol-full-screen-true{
+	position: absolute;
+	width: 38px;
+	height: 38px;
+	font-size: 25px;
+	border: 3px solid red;
+	right: 0px;
+}
+
+button.btn.btn-default.layerlistbutton{
+	position: absolute;
+	top: 14px;
+	right: 2px;
+}
+
+div.legend{
+	position: absolute;
+	top: 100px;
+	right: 8px;
+}
+
+canvas.ol-unselectable{
+	z-index: -100
+}
+
+
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: "Gadugi", Georgia, Serif;
+  font-size: small;
+}
+
 #main {
   width: 100%;
   height: 100%;
@@ -40,13 +110,7 @@
   margin-top: 12px;
   margin-right: 5px;
 }
-html, body {
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  font-family: "Franklin Gothic Medium", Georgia, Serif;
-  font-size: small;
-}
+
 .toolbar {
   height: 60px;
   padding-right: 15px;
