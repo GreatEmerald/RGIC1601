@@ -70,12 +70,12 @@ CalculateIndex = function(in_stack,fieldtype, agg_factor = 10, ...)
         stop("Could not find nir band in raster stack.")
       }
       
-      NDVI_stack = stack(in_stack[[red_index]], in_stack[[nir_index]])
+      NDVI_stack = stack(in_stack[[nir_index]], in_stack[[red_index]])
       
         fun = function(rst) {(rst[[1]]-rst[[2]])/(rst[[1]]+rst[[2]])}
         new_raster = calc(NDVI_stack, fun)
-        return
         metadata(new_raster) = list(zones_coloured_by="NDVI")
+        return(new_raster)
     } 
   
 ##    albedo function        
@@ -83,8 +83,8 @@ CalculateIndex = function(in_stack,fieldtype, agg_factor = 10, ...)
     
     {
         new_raster = sum(in_stack)/dim(in_stack)[3]
-        return(new_raster)
         metadata(new_raster) = list(zones_coloured_by="albedo")
+        return(new_raster)
         
         
     } 
