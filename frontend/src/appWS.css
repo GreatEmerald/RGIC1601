@@ -1,3 +1,122 @@
+.ol-scale-line-inner{
+	width: 270px;
+	height: 60px;
+	font-size: 25px;
+}
+
+button.ol-zoom-in{
+	width: 30px;
+	height: 30px;
+	font-size: 25px;
+}
+
+button.ol-zoom-out{
+	width: 30px;
+	height: 30px;
+	font-size: 25px;
+}
+
+button.ol-rotate-reset{
+	position: absolute;
+	width: 38px;
+	height: 38px;
+	font-size: 25px;
+	border: 3px solid grey;
+	right: 44px;
+}
+
+button.ol-full-screen-false{
+	position: absolute;
+	width: 38px;
+	height: 38px;
+	font-size: 25px;
+	border: 3px solid grey;
+	right: 0px;
+}
+
+button.ol-full-screen-true{
+	position: absolute;
+	width: 38px;
+	height: 38px;
+	font-size: 25px;
+	border: 3px solid red;
+	right: 0px;
+}
+
+button.btn.btn-default.layerlistbutton{
+	position: absolute;
+	top: 14px;
+	right: 2px;
+}
+
+div.legend{
+	position: absolute;
+	top: 100px;
+	right: 8px;
+}
+
+canvas.ol-unselectable{
+	z-index: -100
+}
+
+div.img {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 180px;
+}
+
+
+#navlist {
+    position: absolute;
+	bottom: 40px;
+	right: 4px;
+	width: 320px;
+	height: 160px;
+	z-index: 800;
+}
+
+#navlist li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+}
+
+#navlist li, #navlist a {
+    height: 100%;
+    display: block;
+}
+
+#aurea {
+    top: 10px;
+	left: 0px;
+    width: 100%;
+    height: auto;
+    background: url("pics/AureaImaging_green.png") 0 0;
+	background-size: 100% 100%;
+    background-repeat: no-repeat; 
+}
+
+#aurea a:hover {
+    background: url("pics/AureaImaging_red.png") 0 0;
+	background-size: 100% 100%;
+	background-repeat: no-repeat; 
+}
+
+
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: "Gadugi", Georgia, Serif;
+  font-size: small;
+}
+
+#table-panel{
+	z-index: 900;
+}
+
 #main {
   width: 100%;
   height: 100%;
@@ -40,13 +159,7 @@
   margin-top: 12px;
   margin-right: 5px;
 }
-html, body {
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  font-family: "Franklin Gothic Medium", Georgia, Serif;
-  font-size: small;
-}
+
 .toolbar {
   height: 60px;
   padding-right: 15px;

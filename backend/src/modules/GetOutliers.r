@@ -56,6 +56,10 @@ GetOutliers = function(rast_in, Q = 0.005, L = 8)
   {
     stop(paste("Input", (data.class(rast_in)), "is not single-banded."))
   }
+  if (!grepl(".tif",rast_in@file@name))
+  {
+    stop(paste("Input", (data.class(rast_in)), "is not a geoTIFF."))
+  }
   if (class(Q) != "numeric")
   {
     stop("Quantile value (Q) has to be a Numeric variable")
@@ -64,6 +68,16 @@ GetOutliers = function(rast_in, Q = 0.005, L = 8)
   {
     stop("Quantile value (Q) must be between 0 and 1.")
   }
+  
+  if (class(L) != "numeric")
+  {
+    stop("Level value (L) has to be a numeric variable")
+  }
+  if (L>10 | L<3 | L%%1)
+  {
+    stop("Level value (L) must be a whole number between 3 and 10.")
+  }
+  
   UV = unique(rast_in)
   
   if (length(UV) > 128) # used to check for INTS datatype input
@@ -86,7 +100,7 @@ GetOutliers = function(rast_in, Q = 0.005, L = 8)
     Dim_upper = as.image.SpatialGridDataFrame(Dsg_upper)  # convert again to an image
     Dim_lower = as.image.SpatialGridDataFrame(Dsg_lower) 
 
-    Dcl_upper = contourLines(Dim_upper, nlevels = L)  # create contour object - change 8 for more/fewer levels
+    Dcl_upper = contourLines(Dim_upper, nlevels = L)  # create contour object
     Dcl_lower = contourLines(Dim_lower, nlevels = L)
 
     SLDF_upper = ContourLines2SLDF(Dcl_upper, proj4string = CRS(PROJ))  # convert to SpatialLinesDataFrame
@@ -95,8 +109,17 @@ GetOutliers = function(rast_in, Q = 0.005, L = 8)
     for (z in seq(3, length(SLDF_upper), by=1))
     {
       Polyclust_upper = try(gPolygonize(SLDF_upper[z, ]))
+      
+      if (data.class(Polyclust_upper) == "try-error")
+      {
+        warning("Level value (L) is too high or too low.\n",
+                "An other value will be used.")
+        #return(GetOutliers(rast_in,Q,L=L+1))
+      }
+      
       gas_upper = try(gArea(Polyclust_upper, byid = T)/10000)
       Polyclust_upper = try(SpatialPolygonsDataFrame(Polyclust_upper, data = data.frame(gas_upper), match.ID = F))
+
       
       if (data.class(gas_upper) == "numeric")
       {
@@ -107,7 +130,24 @@ GetOutliers = function(rast_in, Q = 0.005, L = 8)
     for (z in seq(3, length(SLDF_lower), by=1))
     {
       Polyclust_lower = try(gPolygonize(SLDF_lower[z, ]))
+      
+      if (data.class(Polyclust_lower) == "try-error")
+      {
+        warning("Level value (L) is too high or too low.\n",
+                "An other value will be used.")
+        #return(GetOutliers(rast_in,Q,L=L+1))
+      }
+      
       gas_lower = try(gArea(Polyclust_lower, byid = T)/10000)
+      
+      if (data.class(gas_lower) == "try-error")
+      {
+        warning("Level value (L) is too high or too low.\n",
+                "An other value will be used.")
+        #return(GetOutliers(rast_in,Q,L=L+1))
+      }
+      
+      
       Polyclust_lower = try(SpatialPolygonsDataFrame(Polyclust_lower, data = data.frame(gas_lower), match.ID = F))
       
       if (data.class(gas_lower) == "numeric")
