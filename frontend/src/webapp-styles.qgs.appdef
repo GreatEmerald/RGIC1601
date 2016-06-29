@@ -1,7 +1,7 @@
 {
     "Base layers": [
-        "CartoDB", 
-        "ESRI world imagery"
+        "ESRI world imagery", 
+        "CartoDB"
     ], 
     "Deploy": {
         "GeoServer password": "geoserver", 
@@ -15,13 +15,44 @@
         "PostGIS schema": "rgic1test1", 
         "PostGIS username": "postgres"
     }, 
-    "Groups": {}, 
+    "Groups": {
+        "Bare soil, Boerma (2016-04-03)": {
+            "layers": [
+                "Bare soil, Boerma (Management Zones)", 
+                "Bare soil, Boerma (Sample Locations)", 
+                "Bare soil, Boerma (Outliers)"
+            ], 
+            "showContent": true
+        }, 
+        "Field, Intersnack (2016-06-06)": {
+            "layers": [
+                "Field, Intersnack (2016-06-06) (Management Zones)", 
+                "Field, Intersnack (2016-06-06) (Outliers)"
+            ], 
+            "showContent": true
+        }, 
+        "Field, Intersnack (2016-06-22)": {
+            "layers": [
+                "Field, Intersnack (2016-06-22) (Management Zones)", 
+                "Field, Intersnack (2016-06-22) (Outliers)"
+            ], 
+            "showContent": true
+        }, 
+        "Onion field, Hemelrijkst (2016-06-08)": {
+            "layers": [
+                "Onion field, Hemelrijkst (Management Zones)", 
+                "Onion field, Hemelrijkst (Outliers)", 
+                "Onion field, Hemelrijkst (Sample Locations)"
+            ], 
+            "showContent": true
+        }
+    }, 
     "Layers": [
         {
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Teun Hemelrijkst msp (zones)", 
+            "layer": "Onion field, Hemelrijkst (Management Zones)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -34,7 +65,7 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Teun Hemelrijkst msp (outliers)", 
+            "layer": "Onion field, Hemelrijkst (Outliers)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -47,7 +78,7 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Teun Hemelrijkst msp (samples)", 
+            "layer": "Onion field, Hemelrijkst (Sample Locations)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -60,7 +91,7 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Teun intersnack a1 (zones)", 
+            "layer": "Bare soil, Boerma (Management Zones)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -73,7 +104,7 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Teun intersnack a1 (outliers)", 
+            "layer": "Bare soil, Boerma (Sample Locations)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -86,7 +117,7 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Bert Boerma kale grond (zones)", 
+            "layer": "Bare soil, Boerma (Outliers)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -99,7 +130,7 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Bert Boerma kale grond (outliers)", 
+            "layer": "Field, Intersnack (2016-06-22) (Management Zones)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -112,7 +143,33 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Bert Boerma kale grond (samples)", 
+            "layer": "Field, Intersnack (2016-06-22) (Outliers)", 
+            "method": 5, 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Field, Intersnack (2016-06-06) (Management Zones)", 
+            "method": 5, 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Field, Intersnack (2016-06-06) (Outliers)", 
             "method": 5, 
             "popup": "", 
             "showInControls": true, 
@@ -136,7 +193,7 @@
         "Restrict to extent": false, 
         "Show popups on hover": false, 
         "Theme": "basic", 
-        "Title": "RGIC01 test01", 
+        "Title": "Taking Management Zones into the Field", 
         "Use JSONP for WFS connections": true, 
         "Use layer scale dependent visibility": true, 
         "Use view CRS for WFS connections": true
